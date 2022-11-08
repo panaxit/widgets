@@ -2,7 +2,7 @@
 xmlns:x="http://panax.io/xover"
 xmlns:session="http://panax.io/session"
 xmlns:sitemap="http://panax.io/sitemap"
-xmlns:attributes="http://panax.io/attributes"
+xmlns:widget="http://panax.io/widget"
 xmlns:shell="http://panax.io/shell"
 xmlns:state="http://panax.io/state"
 xmlns:source="http://panax.io/xover/binding/source"
@@ -17,11 +17,11 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 
 	<xsl:template match="/" priority="-1">
 		<section>
-			<xsl:apply-templates mode="shell"/>
+			<xsl:apply-templates mode="widget"/>
 		</section>
 	</xsl:template>
 
-	<xsl:template match="shell:shell" mode="shell">
+	<xsl:template match="shell:shell" mode="widget">
 		<div id="shell" class="wrapper sitemap_collapsed">
 			<script>
 				<![CDATA[
@@ -87,11 +87,11 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 						<!--Logo-->
 						<a href="/" title="Ir a la página principal">
 							<img class="logo" src="assets/logo.png" height="40.61px">
-								<xsl:apply-templates mode="attributes:nav.img" select="."/>
+								<xsl:apply-templates mode="widget:nav-img" select="."/>
 							</img>
 						</a>
 					</div>
-					<xsl:apply-templates mode="nav.title" select="."/>
+					<xsl:apply-templates mode="shell:nav-title" select="."/>
 					<div class="">
 						<ul class="navbar-nav ml-auto">
 							<li class="nav-item dropdown">
@@ -120,22 +120,15 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					</ul>
 				</div>
 			</footer>
-			<aside class="sidebar" xo-section="#sitemap" xo-stylesheet="sitemap.xslt" id="sitemap"/>
-			<div class="settings" xo-section="#settings" xo-stylesheet="settings.xslt"/>
+			<xsl:apply-templates mode="shell:aside-right" select="."/>
 		</div>
 	</xsl:template>
 
-	<xsl:template mode="attributes:nav.img" match="*|@*"></xsl:template>
+	<xsl:template mode="shell:nav-img" match="*|@*"/>
 
-	<xsl:template mode="nav.search" match="*">
-		<div class="anteanter_section search">
-			<section class="section_nav navbar-form navbar-left hpadding0 hmargecontenidozul" method="GET" id="frmBuscador">
-				<div id="sitemap_horizontal" xo-section="#sitemap" xo-stylesheet="sitemap_horizontal.xslt"/>
-			</section>
-		</div>
-	</xsl:template>
+	<xsl:template mode="widget:nav-img" match="*|@*"/>
 
-	<xsl:template mode="nav.title" match="*">
+	<xsl:template mode="shell:nav-title" match="*|@*">
 		<div class="anteanter_section search">
 			<header class="section_nav navbar-form navbar-left hpadding0 hmargecontenidozul">
 				<h1 xo-section="active" xo-stylesheet="title.xslt"></h1>
@@ -143,7 +136,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 		</div>
 	</xsl:template>
 
-	<xsl:template mode="nav.search.menu" match="*">
+	<xsl:template mode="shell:nav-search-menu" match="*">
 		<div class="category_items">
 			<div class="form-group col-auto my-1">
 				<select class="form-control search_pandc" id="exampleFormControlSelect1">
