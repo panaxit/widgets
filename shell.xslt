@@ -23,6 +23,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 
 	<xsl:template match="shell:shell" mode="widget">
 		<div id="shell" class="wrapper sitemap_collapsed">
+			<link rel="stylesheet" href="widgets/panax/shell.css" />
 			<script>
 				<![CDATA[
 				function toggleSidebar(show) {
@@ -74,12 +75,12 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				
 				.menu_toggle {
 					color: silver; 
-					cursor:wait;
+					cursor: wait;
 				}
 				]]>
 			</style>
 			<nav class="navbar navbar-expand navbar-light" style="padding:.6rem 1.25rem; position: sticky;">
-				<span class="menu_toggle" style="font-size:30px;cursor:pointer" onclick="toggleSidebar()">
+				<span class="menu_toggle" style="font-size:30px;" onclick="toggleSidebar()">
 					&#9776;
 				</span>
 				<div class="navbar-collapse collapse">
