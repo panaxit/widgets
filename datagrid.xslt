@@ -217,6 +217,9 @@
 			<xsl:if test="$context='header'">
 				<xsl:attribute name="scope">col</xsl:attribute>
 			</xsl:if>
+			<xsl:attribute name="style">
+				<xsl:apply-templates mode="datagrid:cell-style" select="current()"/></xsl:attribute>
+			<xsl:apply-templates mode="datagrid:cell-attributes" select="current()"/>
 			<xsl:apply-templates mode="datagrid:cell-content" select="current()">
 				<xsl:with-param name="context" select="$context"/>
 				<xsl:with-param name="dataset" select="$dataset"/>
@@ -226,6 +229,9 @@
 			</xsl:comment>
 		</xsl:element>
 	</xsl:template>
+
+	<xsl:template mode="datagrid:cell-style" match="@*"/>
+	<xsl:template mode="datagrid:cell-attributes" match="@*"/>
 
 	<xsl:template mode="datagrid:cell-content-append" match="@*">
 		<xsl:text></xsl:text>

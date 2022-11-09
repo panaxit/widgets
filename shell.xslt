@@ -52,7 +52,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					margin-bottom: var(--margin-bottom);
 					padding-bottom: var(--padding-bottom);
 					overflow-y: scroll;
-					height: calc(100vh - 135px);
+					height: calc(100vh - var(--footer-height, var(--margin-bottom, 135px)));
 
 				}
 				
@@ -66,7 +66,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					border-top: 2px solid silver !important;
 					position: fixed;
 					bottom: 0;
-					height: var(--margin-bottom);
+					height: var(--footer-height, var(--margin-bottom, 135px));
 					background-color: var(--bg-white) !important;
 					z-index: 98;
 					width: 100%;

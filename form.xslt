@@ -73,6 +73,9 @@
 				<xsl:text>: </xsl:text>
 			</label>
 			<div class="col-sm-10">
+				<xsl:if test="not($dataset)">
+					<xsl:attribute name="class">col-sm-10 skeleton skeleton-text skeleton-text__body</xsl:attribute>
+				</xsl:if>
 				<xsl:apply-templates mode="widget" select="current()">
 					<xsl:with-param name="dataset" select="$dataset"/>
 				</xsl:apply-templates>
