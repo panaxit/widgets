@@ -117,9 +117,11 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 			<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 px-3">
 				<xsl:apply-templates mode="shell:footer-content" select="."/>
 			</footer>
-			<xsl:apply-templates mode="shell:aside-right" select="."/>
+			<xsl:apply-templates mode="shell:extra-content" select="."/>
 		</div>
 	</xsl:template>
+
+	<xsl:template mode="shell:extra-content" match="*|@*"/>
 
 	<xsl:template mode="shell:nav-img-attributes" match="*|@*"/>
 
