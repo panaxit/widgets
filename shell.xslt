@@ -88,11 +88,13 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 						<!--Logo-->
 						<a href="/" title="Ir a la página principal">
 							<img class="logo" src="assets/logo.png" height="40.61px">
-								<xsl:apply-templates mode="widget:nav-img" select="."/>
+								<xsl:apply-templates mode="shell:nav-img-attributes" select="."/>
 							</img>
 						</a>
 					</div>
-					<xsl:apply-templates mode="shell:nav-title" select="."/>
+					<div class="anteanter_section search navbar-left">
+						<xsl:apply-templates mode="shell:nav-title" select="."/>
+					</div>
 					<div class="">
 						<ul class="navbar-nav ml-auto">
 							<li class="nav-item dropdown">
@@ -105,7 +107,6 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 
 								<span xo-section="#menu">
 								</span>
-
 							</li>
 						</ul>
 					</div>
@@ -114,42 +115,16 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 			<main>
 			</main>
 			<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 px-3">
-				<div id="page_controls" xo-section="active" xo-stylesheet="page_controls.xslt" class="col-md-8 d-flex align-items-center">
-				</div>
-				<div id="shell_buttons" class="col-md-4 d-flex align-items-center" xo-section="active" xo-stylesheet="shell_buttons.xslt">
-					<ul class="col-12 nav justify-content-end list-unstyled d-flex">
-					</ul>
-				</div>
+				<xsl:apply-templates mode="shell:footer-content" select="."/>
 			</footer>
 			<xsl:apply-templates mode="shell:aside-right" select="."/>
 		</div>
 	</xsl:template>
 
-	<xsl:template mode="shell:nav-img" match="*|@*"/>
+	<xsl:template mode="shell:nav-img-attributes" match="*|@*"/>
 
-	<xsl:template mode="widget:nav-img" match="*|@*"/>
+	<xsl:template mode="shell:nav-title" match="*|@*"/>
 
-	<xsl:template mode="shell:nav-title" match="*|@*">
-		<div class="anteanter_section search">
-			<header class="section_nav navbar-form navbar-left hpadding0 hmargecontenidozul">
-				<h1 xo-section="active" xo-stylesheet="title.xslt"></h1>
-			</header>
-		</div>
-	</xsl:template>
-
-	<xsl:template mode="shell:nav-search-menu" match="*">
-		<div class="category_items">
-			<div class="form-group col-auto my-1">
-				<select class="form-control search_pandc" id="exampleFormControlSelect1">
-					<option>Todas las categorías</option>
-					<xsl:for-each select="//source:categorias/x:r">
-						<option>
-							<xsl:value-of select="@NombreCategoria"/>
-						</option>
-					</xsl:for-each>
-				</select>
-			</div>
-		</div>
-	</xsl:template>
+	<xsl:template mode="shell:footer-content" match="*|@*"/>
 
 </xsl:stylesheet>
