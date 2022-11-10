@@ -19,6 +19,10 @@
     --z-index-alert: 1093;
 }
 
+.input-group-append > button.dropdown-toggle {
+    height: 100%;
+}
+
 .btn-primary {
     color: var(--bg-white) !important;
     background-color: var(--bg-primary) !important;

@@ -52,7 +52,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					margin-bottom: var(--margin-bottom);
 					padding-bottom: var(--padding-bottom);
 					overflow-y: scroll;
-					height: calc(100vh - var(--footer-height, var(--margin-bottom, 135px)));
+					height: calc(100vh - 66px - var(--footer-height, var(--margin-bottom, 135px)));
 
 				}
 				
