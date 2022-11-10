@@ -208,7 +208,7 @@ li.sidebar-item.menu > a {
 		</xsl:variable>
 		<li class="sidebar-item {$type}">
 			<a href="javascript:void(0)" class="sidebar-link {$collapsed_status}" onclick="classList.toggle('collapsed'); parentElement.querySelector(':scope > ul').classList.toggle('show')">
-				<xsl:apply-templates mode="sitemap:target.href" select="."/>
+				<xsl:apply-templates mode="sitemap:target-href" select="."/>
 				<xsl:if test="$type='menu'">
 					<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 					<!--<xsl:attribute name="onclick">
@@ -239,7 +239,9 @@ li.sidebar-item.menu > a {
 		</span>
 	</xsl:template>
 
-	<xsl:template mode="sitemap:target.href" match="*">
+	<xsl:template mode="sitemap:target-href" match="*"/>
+
+	<xsl:template mode="sitemap:target-href" match="*[@target]">
 		<xsl:attribute name="href">
 			<xsl:value-of select="@target"/>
 		</xsl:attribute>
