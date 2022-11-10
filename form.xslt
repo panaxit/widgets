@@ -6,7 +6,7 @@
   xmlns:meta="http://panax.io/metadata"
   xmlns:data="http://panax.io/source"
   xmlns:px="http://panax.io/entity"
-  xmlns:form="http://panax.io/widgets/form"
+  xmlns:form="http://panax.io/widget/form"
   exclude-result-prefixes="xo state xsl form data px meta"
 >
 	<xsl:import href="../keys.xslt"/>

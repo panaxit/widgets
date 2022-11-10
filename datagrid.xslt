@@ -6,7 +6,7 @@
   xmlns:meta="http://panax.io/metadata"
   xmlns:data="http://panax.io/source"
   xmlns:px="http://panax.io/entity"
-  xmlns:datagrid="http://panax.io/widgets/datagrid"
+  xmlns:datagrid="http://panax.io/widget/datagrid"
   xmlns:container="http://panax.io/layout/container"
   exclude-result-prefixes="xo state xsl datagrid data px meta"
 >

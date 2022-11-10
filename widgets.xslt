@@ -13,11 +13,11 @@
   xmlns:container="http://panax.io/layout/container"
   xmlns:readonly="http://panax.io/state/readonly"
 
-  xmlns:form="http://panax.io/widgets/form"
-  xmlns:widget="http://panax.io/widgets"
-  xmlns:datagrid="http://panax.io/widgets/datagrid"
-  xmlns:combobox="http://panax.io/widgets/combobox"
-  xmlns:cardview="http://panax.io/widgets/cardview"
+  xmlns:form="http://panax.io/widget/form"
+  xmlns:widget="http://panax.io/widget"
+  xmlns:datagrid="http://panax.io/widget/datagrid"
+  xmlns:combobox="http://panax.io/widget/combobox"
+  xmlns:cardview="http://panax.io/widget/cardview"
   exclude-result-prefixes="widget xo state xsl xsi form cardview data height width data container px readonly layout meta"
 >
 	<xsl:import href="../keys.xslt"/>

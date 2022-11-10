@@ -6,7 +6,7 @@
   xmlns:custom="http://panax.io/custom"
   xmlns:data="http://panax.io/source"
   xmlns:meta="http://panax.io/metadata"
-  xmlns:combobox="http://panax.io/widgets/combobox"
+  xmlns:combobox="http://panax.io/widget/combobox"
   xmlns:px="http://panax.io/entity"
   exclude-result-prefixes="xo xsl combobox data px"
 >
