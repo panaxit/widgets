@@ -12,6 +12,7 @@
   xmlns:px="http://panax.io/entity"
   xmlns:container="http://panax.io/layout/container"
   xmlns:readonly="http://panax.io/state/readonly"
+  xmlns:file="http://panax.io/widget/file"
 
   xmlns:form="http://panax.io/widget/form"
   xmlns:widget="http://panax.io/widget"
@@ -37,7 +38,7 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
-		<xsl:variable name="schema" select="key('reference',concat(ancestor::*[@meta:type='entity'][1]/@xo:id,'::header::field:ref::',name()))/.."/>
+		<xsl:variable name="schema" select="key('reference',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'::header::field:ref::',name()))/.."/>
 		<input type="text" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name()}" onfocus="this.value=(scope.value || this.value)">
 			<xsl:attribute name="maxLength">
 				<xsl:value-of select="$schema/@DataLength"/>
