@@ -68,11 +68,6 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
 		<thead class="freeze">
-			<!--<tr>
-				<td>
-		name: <xsl:value-of select="count($dataset)"/>-
-				</td>
-			</tr>-->
 			<xsl:apply-templates mode="datagrid:row" select="current()">
 				<xsl:with-param name="dataset" select="$dataset"/>
 				<xsl:with-param name="context">header</xsl:with-param>
@@ -217,24 +212,24 @@
 	<xsl:template mode="datagrid:cell-style" match="@*"/>
 	<xsl:template mode="datagrid:cell-attributes" match="@*"/>
 
-	<xsl:template mode="datagrid:cell-content-append" match="@*">
+	<xsl:template mode="datagrid:field-append" match="@*">
 		<xsl:text></xsl:text>
 	</xsl:template>
 
-	<xsl:template mode="datagrid:cell-content-prepend" match="@*">
+	<xsl:template mode="datagrid:field-prepend" match="@*">
 		<xsl:text>&#160;</xsl:text>
 	</xsl:template>
 
 	<xsl:template mode="datagrid:cell-content" match="@*">
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="dataset" select="."/>
-		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$dataset/../@Name[.=current()]"/>
+		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$dataset[.=current()]"/>
 		<span>
 			<xsl:choose>
 				<xsl:when test="count($ref_field|current())=1">
-					<xsl:apply-templates mode="datagrid:cell-content-prepend" select="."/>
-					<xsl:apply-templates mode="widget" select="."/>
-					<xsl:apply-templates mode="datagrid:cell-content-append" select="."/>
+					<xsl:apply-templates mode="datagrid:field-prepend" select="."/>
+					<xsl:apply-templates mode="datagrid:field" select="current()"/>
+					<xsl:apply-templates mode="datagrid:field-append" select="."/>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates mode="datagrid:cell-content" select="$ref_field">
@@ -245,7 +240,7 @@
 		</span>
 	</xsl:template>
 
-	<xsl:template mode="datagrid:cell-content" match="container:*/@Name">
+	<!--<xsl:template mode="datagrid:cell-content" match="container:*/@Name">
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:choose>
@@ -266,10 +261,24 @@
 				</xsl:apply-templates>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>-->
+
+	<xsl:template mode="datagrid:field" match="@*">
+		<span>
+			<xsl:apply-templates select="."/>
+		</span>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:field" match="xo:r[@state:edit='true']/@*">
+		<span>
+			<xsl:apply-templates mode="widget" select="."/>
+		</span>
 	</xsl:template>
 
 	<xsl:template mode="widget" match="*[key('datagrid:header-node',@xo:id)]/@*">
-		<xsl:apply-templates mode="headerText" select="."/>
+		<span>
+			<xsl:apply-templates mode="headerText" select="."/>
+		</span>
 	</xsl:template>
 
 	<xsl:template mode="datagrid:buttons-new" match="@*">
