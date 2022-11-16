@@ -71,18 +71,21 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:variable name="value" select="$dataset/@*[local-name()=current()/@Name]|$schema[self::px:Association[not(@Type='belongsTo')]]/px:Entity"/>
+		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$dataset/../@Name[.=current()]"/>
 		<div class="mb-3 row">
 			<label class="col-sm-2 col-form-label">
 				<xsl:apply-templates mode="form:header" select="current()"/>
 				<xsl:text>: </xsl:text>
 			</label>
 			<div class="col-sm-10">
-				<xsl:if test="not($dataset)">
-					<xsl:attribute name="class">col-sm-10 skeleton skeleton-text skeleton-text__body</xsl:attribute>
-				</xsl:if>
-				<xsl:apply-templates mode="widget" select="current()">
-					<xsl:with-param name="dataset" select="$dataset"/>
-				</xsl:apply-templates>
+				<xsl:choose>
+					<xsl:when test="count($ref_field|current())=1">
+						<xsl:apply-templates mode="widget" select="."/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates mode="widget" select="$ref_field"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</div>
 		</div>
 	</xsl:template>
