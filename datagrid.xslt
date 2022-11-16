@@ -7,7 +7,10 @@
   xmlns:data="http://panax.io/source"
   xmlns:px="http://panax.io/entity"
   xmlns:datagrid="http://panax.io/widget/datagrid"
+  xmlns:field="http://panax.io/layout/fieldref"
   xmlns:container="http://panax.io/layout/container"
+  xmlns:association="http://panax.io/datatypes/association"
+  xmlns:widget="http://panax.io/widget"
   exclude-result-prefixes="xo state xsl datagrid data px meta"
 >
 	<xsl:import href="../keys.xslt"/>
@@ -225,9 +228,14 @@
 	<xsl:template mode="datagrid:cell-content" match="@*">
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="dataset" select="."/>
-		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$dataset[.=current()]"/>
+		<xsl:variable name="ref_field" select="$dataset[name()=current()[parent::field:ref]]|$dataset[name()=concat('meta:',current()[parent::association:ref])]"/>
 		<span>
 			<xsl:choose>
+				<xsl:when test="$context='header'">
+					<xsl:apply-templates mode="headerText" select=".">
+						<xsl:with-param name="dataset" select="$dataset"/>
+					</xsl:apply-templates>
+				</xsl:when>
 				<xsl:when test="count($ref_field|current())=1">
 					<xsl:apply-templates mode="datagrid:field-prepend" select="."/>
 					<xsl:apply-templates mode="datagrid:field" select="current()"/>
@@ -240,6 +248,17 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</span>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:cell-content" match="container:*/@*">
+		<xsl:param name="context">body</xsl:param>
+		<xsl:param name="schema" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
+		<xsl:apply-templates mode="datagrid:cell-content" select="../*/@Name">
+			<xsl:with-param name="context" select="$context"/>
+			<xsl:with-param name="schema" select="$schema"/>
+			<xsl:with-param name="dataset" select="$dataset"/>
+		</xsl:apply-templates>
 	</xsl:template>
 
 	<!--<xsl:template mode="datagrid:cell-content" match="container:*/@Name">
@@ -267,6 +286,9 @@
 
 	<xsl:template mode="datagrid:field" match="@*">
 		<span>
+			<xsl:attribute name="style">
+				<xsl:apply-templates mode="widget:style" select="."/>
+			</xsl:attribute>
 			<xsl:apply-templates select="."/>
 		</span>
 	</xsl:template>
