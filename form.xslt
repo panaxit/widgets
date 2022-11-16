@@ -19,14 +19,17 @@
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="layout" select="$schema"/>
 		<xsl:param name="selection" select="node-expected"/>
-		<form class="needs-validation" novalidate="">
-			<div class="row g-3">
-				<xsl:apply-templates mode="form:body" select="$layout">
-					<xsl:with-param name="schema" select="$schema"/>
-					<xsl:with-param name="dataset" select="$dataset/ancestor-or-self::*[1]/descendant-or-self::xo:r/@xo:id"/>
-				</xsl:apply-templates>
-			</div>
-		</form>
+		<xsl:for-each select="$dataset/ancestor-or-self::*[1]/descendant-or-self::xo:r/@xo:id">
+			<form class="needs-validation" novalidate="">
+				<div class="row g-3">
+					<xsl:apply-templates mode="form:body" select="$layout">
+						<xsl:with-param name="schema" select="$schema"/>
+						<xsl:with-param name="dataset" select="current()"/>
+					</xsl:apply-templates>
+				</div>
+			</form>
+			<hr/>
+		</xsl:for-each>
 	</xsl:template>
 
 	<xsl:template mode="form:header" match="@*">
@@ -106,6 +109,24 @@
 					<xsl:with-param name="reference" select="$schema/self::Association"/>
 				</xsl:apply-templates>
 			</fieldset>
+		</div>
+	</xsl:template>
+
+	<xsl:template mode="form:field" match="@*">
+		<xsl:variable name="label">
+			<xsl:apply-templates mode="headerText" select="."/>
+		</xsl:variable>
+		<div>
+			<xsl:attribute name="style">
+				<xsl:text/>min-width: calc(<xsl:value-of select="concat(string-length($label)+1,'ch')"/> + 6rem);<xsl:text/>
+			</xsl:attribute>
+			<xsl:attribute name="class">
+				<xsl:text>form-floating input-group</xsl:text>
+			</xsl:attribute>
+			<xsl:apply-templates mode="widget" select="current()"/>
+			<label for="{../@xo:id}" class="floating-label">
+				<xsl:value-of select="$label"/>
+			</label>
 		</div>
 	</xsl:template>
 

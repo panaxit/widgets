@@ -19,6 +19,9 @@
     --z-index-alert: 1093;
 }
 
+hr {
+    margin-bottom: 3rem !important;
+}
 
 .cu-skeleton-subcategory__item:after {
     position: absolute;
