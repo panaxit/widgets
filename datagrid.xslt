@@ -92,11 +92,13 @@
 			</xsl:apply-templates>
 			<xsl:if test="not($dataset)">
 				<tr>
+					<td>&#160;</td>
 					<xsl:for-each select="$layout">
 						<td style="text-align:center">
 							<div class="skeleton skeleton-text">&#160;</div>
 						</td>
 					</xsl:for-each>
+					<td>&#160;</td>
 				</tr>
 			</xsl:if>
 		</tbody>

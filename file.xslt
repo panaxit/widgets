@@ -25,7 +25,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 	<xsl:template mode="file:preceding-siblings" match="@*"></xsl:template>
 	<xsl:template mode="file:following-siblings" match="@*"></xsl:template>
 
-	<xsl:template mode="widget" name="file:widget" match="@*[key('file:widget',concat(ancestor::*[@meta:type='entity'][1]/@xo:id,'.',name()))]">
+	<xsl:template mode="file:widget" match="@*">
 		<xsl:param name="data_field" select="current()"/>
 		<xsl:param name="field" select="."/>
 		<xsl:param name="type"/>
