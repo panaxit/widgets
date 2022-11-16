@@ -74,23 +74,23 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:variable name="value" select="$dataset/@*[local-name()=current()/@Name]|$schema[self::px:Association[not(@Type='belongsTo')]]/px:Entity"/>
-		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@meta:*[local-name()=current()]|$dataset/parent::*[not(@Name)]/@*[name()=current()]|$dataset/../@Name[.=current()]"/>
-		<xsl:choose>
-			<xsl:when test="count($ref_field|current())=1">
-				<div class="mb-3 row">
-					<label class="col-sm-2 col-form-label">
-						<xsl:apply-templates mode="form:header" select="current()"/>
-						<xsl:text>: </xsl:text>
-					</label>
-					<div class="col-sm-10">
-						<xsl:apply-templates mode="form:field" select="."/>
-					</div>
-				</div>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates mode="form:body" select="$ref_field"/>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$dataset/../@Name[.=current()]"/>
+		<div class="mb-3 row">
+			<label class="col-sm-2 col-form-label">
+				<xsl:apply-templates mode="form:header" select="current()"/>
+				<xsl:text>: </xsl:text>
+			</label>
+			<div class="col-sm-10">
+				<xsl:choose>
+					<xsl:when test="count($ref_field|current())=1">
+						<xsl:apply-templates mode="widget" select="."/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates mode="widget" select="$ref_field"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</div>
+		</div>
 	</xsl:template>
 
 	<xsl:template mode="form:body" match="*[key('association',@xo:id)][key('foreignTable',concat(ancestor::px:Entity[1]/@xo:id,'::',@Name))]/@*">
