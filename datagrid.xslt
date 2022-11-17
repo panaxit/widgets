@@ -221,8 +221,13 @@
 		<xsl:text></xsl:text>
 	</xsl:template>
 
-	<xsl:template mode="datagrid:field-prepend" match="@*">
+	<xsl:template mode="datagrid:field-append" match="xo:r/@*">
 		<xsl:text>&#160;</xsl:text>
+	</xsl:template>
+
+
+	<xsl:template mode="datagrid:field-prepend" match="@*">
+		<xsl:text></xsl:text>
 	</xsl:template>
 
 	<xsl:template mode="datagrid:cell-content" match="@*">
@@ -293,6 +298,14 @@
 		</span>
 	</xsl:template>
 
+	<xsl:template mode="datagrid:field" match="association:ref/@*">
+		<div class="skeleton skeleton-text">&#160;</div>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:field" match="field:ref/@*">
+		<div>&#160;</div>
+	</xsl:template>	
+
 	<xsl:template mode="datagrid:field" match="xo:r[@state:edit='true']/@*">
 		<span>
 			<xsl:apply-templates mode="widget" select="."/>
@@ -306,7 +319,7 @@
 	</xsl:template>
 
 	<xsl:template mode="datagrid:buttons-new" match="@*">
-		<button type="button" class="btn btn-success btn-sm" onclick="px.navigateTo('{concat(../@Schema,'/',../@Name)}~add','{ancestor-or-self::*[@meta:type='entity'][1]/data:rows/@xo:id}')">Agregar registro</button>
+		<button type="button" class="btn btn-success btn-sm" onclick="px.navigateTo('{concat(ancestor::px:Entity[1]/@Schema,'/',ancestor::px:Entity[1]/@Name)}~add','{ancestor-or-self::*[@meta:type='entity'][1]/data:rows/@xo:id}')">Agregar registro</button>
 	</xsl:template>
 
 	<xsl:key name="selected" match="*[@state:selected]" use="@xo:id"/>
