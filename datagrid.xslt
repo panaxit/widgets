@@ -55,7 +55,7 @@
 					<xsl:with-param name="layout" select="$layout"/>
 				</xsl:apply-templates>
 				<xsl:apply-templates mode="datagrid:body" select="$dataset">
-					<xsl:with-param name="dataset" select="$dataset/ancestor-or-self::*[1]/descendant-or-self::xo:r/@xo:id"/>
+					<xsl:with-param name="dataset" select="$dataset/ancestor-or-self::*[1]/descendant-or-self::*[self::xo:r or self::xo:empty]/@xo:id"/>
 					<xsl:with-param name="layout" select="$layout"/>
 				</xsl:apply-templates>
 				<xsl:apply-templates mode="datagrid:footer" select="$dataset">
@@ -84,11 +84,6 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
 		<tbody class="table-group-divider">
-			<!--<tr>
-				<td>
-					<xsl:value-of select="count($dataset/ancestor-or-self::*[1]/descendant-or-self::xo:r/@xo:id)"/>
-				</td>
-			</tr>-->
 			<xsl:apply-templates mode="datagrid:row" select="$dataset">
 				<xsl:with-param name="context" select="$context"/>
 				<xsl:with-param name="layout" select="$layout"/>
@@ -158,6 +153,33 @@
 				<xsl:with-param name="dataset" select="$dataset"/>
 			</xsl:apply-templates>
 		</tr>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:row" match="xo:empty/@*">
+		<xsl:param name="context">body</xsl:param>
+		<xsl:param name="dataset" select="../@*"/>
+		<xsl:param name="layout" select="node-expected"/>
+		<tr xo-scope="{../@xo:id}">
+			<xsl:attribute name="style">
+				<xsl:apply-templates mode="datagrid:row-style" select="."/>
+			</xsl:attribute>
+			<xsl:apply-templates mode="datagrid:row-attributes" select="current()"/>
+			<xsl:apply-templates mode="datagrid:row-header" select="current()">
+				<xsl:with-param name="context" select="$context"/>
+				<xsl:with-param name="dataset" select="$dataset"/>
+			</xsl:apply-templates>
+			<td colspan="{count($dataset)}">
+				<xsl:apply-templates select="current()"/>
+			</td>
+			<xsl:apply-templates mode="datagrid:row-footer" select="current()">
+				<xsl:with-param name="context" select="$context"/>
+				<xsl:with-param name="dataset" select="$dataset"/>
+			</xsl:apply-templates>
+		</tr>
+	</xsl:template>
+
+	<xsl:template match="xo:empty/@*">
+		<label>No hay registros</label>
 	</xsl:template>
 
 	<xsl:template mode="datagrid:row" match="xo:r[@state:delete]/@xo:id">
