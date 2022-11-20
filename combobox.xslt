@@ -49,11 +49,11 @@
 		<xsl:param name="selection" select="node-expected"/>
 		<xsl:param name="items" select="*"/>
 		<xsl:variable name="id" select="ancestor-or-self::*[@xo:id][1]/@xo:id"/>
-		<li onclick="scope.$$('*').remove()">
+		<li onclick="scope.$$('descendant-or-self::data:rows[1]').remove()">
 			<a class="dropdown-item" href="#">Actualizar</a>
 		</li>
 		<li>
-			<a class="dropdown-item" href="#{@Schema}/{@Name}~add">Crear Nuevo</a>
+			<a class="dropdown-item" href="#{ancestor::px:Entity[1]/@Schema}/{ancestor::px:Entity[1]/@Name}~add">Crear Nuevo</a>
 		</li>
 		<xsl:if test="string($selection)!=''">
 			<li>
@@ -68,7 +68,7 @@
 	<xsl:key name="referencee" match="px:Association/px:Mappings/px:Mapping/@Referencee" use="concat(ancestor::px:Association[1]/@xo:id,'::',.)"/>
 	<xsl:key name="mapping" match="px:Association/px:Mappings/px:Mapping" use="concat(ancestor::px:Association[1]/@xo:id,'::',@Referencer,'::',@Referencee)"/>
 	<xsl:template mode="combobox:widget" match="@*">
-		<xsl:param name="dataset" select="key('dataset',concat(ancestor::px:Entity[1]/@xo:id,'.',name()))"/>
+		<xsl:param name="dataset" select="."/>
 		<xsl:param name="selection" select="."/>
 		<xsl:param name="target" select="."/>
 		<xsl:param name="class"></xsl:param>
@@ -120,7 +120,7 @@
 				</xsl:for-each>
 			</xsl:variable>-->
 		<!--<xsl:apply-templates mode="combobox:preceding-siblings" select="."/>-->
-		<select class="form-select" xo-scope="{current()/../@xo:id}" xo-attribute="{name()}">
+		<select class="form-select" xo-scope="{../@xo:id}" xo-attribute="{name()}">
 			<xsl:attribute name="style">
 				<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
 			</xsl:attribute>
