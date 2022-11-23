@@ -15,7 +15,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 
 	<xsl:param name="session:user_login"/>
 	<xsl:param name="session:status"/>
-	<xsl:param name="session:connection_id">main</xsl:param>
+	<xsl:param name="session:connection_id"/>
 	<xsl:param name="js:secure"><![CDATA[location.protocol.indexOf('https')!=-1 || location.hostname=='localhost']]></xsl:param>
 
 	<xsl:template mode="widget-attributes" match="@*" priority="-1"/>
