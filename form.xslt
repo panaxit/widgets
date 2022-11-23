@@ -22,7 +22,7 @@
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="layout" select="$schema"/>
 		<xsl:param name="selection" select="node-expected"/>
-		<xsl:for-each select="$dataset/ancestor-or-self::*[1]/descendant-or-self::xo:r/@xo:id">
+		<xsl:for-each select="$dataset/ancestor-or-self::*[1]/xo:r/@xo:id">
 			<form class="needs-validation" novalidate="">
 				<div class="row g-3">
 					<xsl:apply-templates mode="form:field" select="$layout">
@@ -73,7 +73,7 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:variable name="value" select="$dataset/@*[local-name()=current()/@Name]|$schema[../self::px:Association[not(@Type='belongsTo')]]/../px:Entity/@xo:id"/>
-		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$schema[.=current()]/../@AssociationName"/>
+		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$dataset/../px:Association[@AssociationName=current()]/@AssociationName"/>
 		<div class="mb-3 row" xo-sections="{$dataset/@xo:id}">
 			<fieldset>
 				<legend>
