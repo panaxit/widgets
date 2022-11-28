@@ -281,7 +281,7 @@
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="dataset" select="node-expected"/>
-		<xsl:apply-templates mode="datagrid:cell-content" select="../*/@Name">
+		<xsl:apply-templates mode="datagrid:cell-content" select="../*[$context='header'][1]/@Name|../*[$context!='header']/@Name">
 			<xsl:with-param name="context" select="$context"/>
 			<xsl:with-param name="schema" select="$schema"/>
 			<xsl:with-param name="dataset" select="$dataset"/>
