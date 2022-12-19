@@ -82,7 +82,7 @@
 				</legend>
 				<xsl:apply-templates mode="widget" select="$ref_field">
 					<xsl:with-param name="schema" select="$schema"/>
-					<xsl:with-param name="reference" select="$schema/self::Association"/>
+					<xsl:with-param name="reference" select="$schema/self::px:Association"/>
 				</xsl:apply-templates>
 			</fieldset>
 		</div>

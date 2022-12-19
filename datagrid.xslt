@@ -49,6 +49,7 @@
 					opacity: .5;
 				}]]>
 			</style>
+			<xo-listener attribute="xsi:nil"/>
 			<table class="table table-striped table-hover table-sm">
 				<xsl:apply-templates mode="datagrid:header" select="$schema/ancestor-or-self::px:Record[1]/@xo:id">
 					<xsl:with-param name="dataset" select="$schema"/>
@@ -91,11 +92,20 @@
 			<xsl:if test="not($dataset)">
 				<tr>
 					<td>&#160;</td>
-					<xsl:for-each select="$layout">
-						<td style="text-align:center">
-							<div class="skeleton skeleton-text">&#160;</div>
-						</td>
-					</xsl:for-each>
+					<xsl:choose>
+						<xsl:when test="../@xsi:nil">
+							<td colspan="{count($layout)}">
+								<label>No hay registros</label>
+							</td>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:for-each select="$layout">
+								<td style="text-align:center">
+									<div class="skeleton skeleton-text">&#160;</div>
+								</td>
+							</xsl:for-each>
+						</xsl:otherwise>
+					</xsl:choose>
 					<td>&#160;</td>
 				</tr>
 			</xsl:if>
@@ -259,7 +269,7 @@
 		<span>
 			<xsl:choose>
 				<xsl:when test="$context='header'">
-					<xsl:apply-templates mode="headerText" select=".">
+					<xsl:apply-templates mode="datagrid:header-content" select=".">
 						<xsl:with-param name="dataset" select="$dataset"/>
 					</xsl:apply-templates>
 				</xsl:when>
@@ -274,6 +284,16 @@
 					</xsl:apply-templates>
 				</xsl:otherwise>
 			</xsl:choose>
+		</span>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:header-content" match="@*">
+		<xsl:param name="dataset" select="."/>
+		<xsl:variable name="ref_field" select="$dataset[name()=current()[parent::field:ref]]|$dataset[name()=concat('meta:',current()[parent::association:ref])]"/>
+		<span>
+			<xsl:apply-templates mode="headerText" select=".">
+				<xsl:with-param name="dataset" select="$dataset"/>
+			</xsl:apply-templates>
 		</span>
 	</xsl:template>
 
@@ -326,7 +346,7 @@
 
 	<xsl:template mode="datagrid:field" match="field:ref/@*">
 		<div>&#160;</div>
-	</xsl:template>	
+	</xsl:template>
 
 	<xsl:template mode="datagrid:field" match="xo:r[@state:edit='true']/@*">
 		<span>
@@ -341,7 +361,14 @@
 	</xsl:template>
 
 	<xsl:template mode="datagrid:buttons-new" match="@*">
-		<button type="button" class="btn btn-success btn-sm" onclick="px.navigateTo('{concat(ancestor::px:Entity[1]/@Schema,'/',ancestor::px:Entity[1]/@Name)}~add','{ancestor-or-self::*[@meta:type='entity'][1]/data:rows/@xo:id}')">Agregar registro</button>
+		<xsl:variable name="reference">
+			<xsl:choose>
+				<xsl:when test="ancestor::px:Association">
+					<xsl:value-of select="concat('@',../@xo:id)"/>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<button type="button" class="btn btn-success btn-sm" onclick="px.navigateTo('{concat(ancestor::px:Entity[1]/@Schema,'/',ancestor::px:Entity[1]/@Name,$reference)}~add','{ancestor-or-self::*[@meta:type='entity'][1]/data:rows/@xo:id}')">Agregar registro</button>
 	</xsl:template>
 
 	<xsl:key name="selected" match="*[@state:selected]" use="@xo:id"/>

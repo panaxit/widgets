@@ -16,7 +16,9 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 	<xsl:param name="session:user_login"/>
 	<xsl:param name="session:status"/>
 	<xsl:param name="session:connection_id"/>
-	<xsl:param name="js:secure"><![CDATA[location.protocol.indexOf('https')!=-1 || location.hostname=='localhost']]></xsl:param>
+	<xsl:param name="js:year"><![CDATA[(new Date()).getFullYear()]]></xsl:param>
+	<xsl:param name="session:copyright"><![CDATA['']]></xsl:param>
+	
 
 	<xsl:template mode="widget-attributes" match="@*" priority="-1"/>
 
@@ -119,7 +121,8 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 						<xsl:otherwise>Ingresar</xsl:otherwise>
 					</xsl:choose>
 				</button>
-				<p class="mt-5 mb-3 text-muted mx-auto">©Panax 2022</p>
+				<p class="mt-5 mb-3 text-muted mx-auto">©<xsl:value-of select="concat($session:copyright,' ')"/> <xsl:value-of select="$js:year"/>
+			</p>
 			</form>
 		</div>
 	</xsl:template>

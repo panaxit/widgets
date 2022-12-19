@@ -2,6 +2,7 @@
 xmlns:x="http://panax.io/xover"
 xmlns:session="http://panax.io/session"
 xmlns:sitemap="http://panax.io/sitemap"
+xmlns:xo="http://panax.io/xover"
 xmlns:widget="http://panax.io/widget"
 xmlns:shell="http://panax.io/shell"
 xmlns:state="http://panax.io/state"
@@ -15,13 +16,13 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 
 	<xsl:param name="session:user_login">User</xsl:param>
 
-	<xsl:template match="/" priority="-1">
+	<xsl:template match="/*" priority="-1">
 		<section>
-			<xsl:apply-templates mode="widget"/>
+			<xsl:apply-templates mode="widget" select="@xo:id"/>
 		</section>
 	</xsl:template>
 
-	<xsl:template match="shell:shell" mode="widget">
+	<xsl:template match="shell:shell/@*" mode="widget">
 		<div id="shell" class="wrapper sitemap_collapsed">
 			<link rel="stylesheet" href="widgets/panax/shell.css" />
 			<script>
@@ -53,7 +54,6 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					padding-bottom: var(--padding-bottom);
 					overflow-y: scroll;
 					height: calc(100vh - 66px - var(--footer-height, var(--margin-bottom, 135px)));
-
 				}
 				
 				nav header h1 {
@@ -85,11 +85,15 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				</span>
 				<div class="navbar-collapse collapse">
 					<div>
-						<!--Logo-->
 						<a href="/" title="Ir a la página principal">
-							<img class="logo" src="assets/logo.png" height="40.61px">
-								<xsl:apply-templates mode="shell:nav-img-attributes" select="."/>
-							</img>
+							<picture class="logo">
+								<source media="(min-width: 64em)" src="high-res.jpg"/>
+								<source media="(min-width: 37.5em)" src="med-res.jpg"/>
+								<source src="assets/logo.png"/>
+								<img src="assets/logo.png" height="40.61px">
+									<xsl:apply-templates mode="shell:nav-img-attributes" select="."/>
+								</img>
+							</picture>
 						</a>
 					</div>
 					<div class="anteanter_section search navbar-left">

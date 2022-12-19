@@ -53,7 +53,7 @@
 			<a class="dropdown-item" href="#">Actualizar</a>
 		</li>
 		<li>
-			<a class="dropdown-item" href="#{ancestor::px:Entity[1]/@Schema}/{ancestor::px:Entity[1]/@Name}~add">Crear Nuevo</a>
+			<a class="dropdown-item" href="javascript:void(0)" onclick="px.navigateTo('#{ancestor::px:Entity[1]/@Schema}/{ancestor::px:Entity[1]/@Name}~add','')">Crear Nuevo</a>
 		</li>
 		<xsl:if test="string($selection)!=''">
 			<li>
@@ -127,7 +127,7 @@
 			<xsl:attribute name="onmouseover">px.loadData(scope.$(`ancestor::px:Entity[1]/px:Record/px:Association[@AssociationName="${scope.localName}"]/px:Entity`))</xsl:attribute>
 			<xsl:apply-templates mode="combobox:attributes" select="."/>
 			<xsl:choose>
-				<xsl:when test="not($dataset|$selection[not($dataset)])">
+				<xsl:when test="$dataset[local-name()='nil' and namespace-uri()='http://www.w3.org/2001/XMLSchema-instance'] or not($dataset|$selection[not($dataset)])">
 					<option value="">Sin opciones</option>
 				</xsl:when>
 				<xsl:when test="$dataset">

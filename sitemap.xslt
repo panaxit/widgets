@@ -195,6 +195,7 @@ li.sidebar-item.menu > a {
 				<ul class="sidebar-nav">
 					<xsl:apply-templates mode="sitemap:body" select="ancestor-or-self::*[1]/*"/>
 				</ul>
+				<xsl:apply-templates mode="sitemap:footer" select="current()"/>
 			</div>
 		</aside>
 	</xsl:template>
@@ -231,10 +232,23 @@ li.sidebar-item.menu > a {
 		</li>
 	</xsl:template>
 
+	<xsl:template mode="sitemap:footer" match="@*">
+	</xsl:template>
+
 	<xsl:template mode="sitemap:header" match="@*">
-		<span class="sidebar-brand mt-1 d-flex">
-			<a href="javascript:void(0)" onclick="toggleSidebar()">
-				<img src="assets/logotype-alpha-white.png" width="190px"/>
+		<span class="sidebar-brand mt-1 d-flex" style="padding-left: 15pt; padding-top: .5rem; padding-bottom: .5rem;">
+			<span class="menu_toggle" style="font-size:30px; color:white;" onclick="toggleSidebar()">
+				&#9776;
+			</span>
+			<a href="javascript:void(0)" onclick="toggleSidebar()" style="margin:0;padding:0;">
+				<picture class="logo">
+					<source media="(min-width: 64em)" src="high-res.jpg"/>
+					<source media="(min-width: 37.5em)" src="med-res.jpg"/>
+					<source src="assets/logo.png"/>
+					<img src="assets/logo.png" height="40.61px">
+						<xsl:apply-templates mode="sitemap:img-attributes" select="."/>
+					</img>
+				</picture>
 			</a>
 		</span>
 	</xsl:template>
