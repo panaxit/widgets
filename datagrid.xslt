@@ -331,6 +331,7 @@
 		</xsl:choose>
 	</xsl:template>-->
 
+	<xsl:template mode="widget:style" match="@*"/>
 	<xsl:template mode="datagrid:field" match="@*">
 		<span>
 			<xsl:attribute name="style">
