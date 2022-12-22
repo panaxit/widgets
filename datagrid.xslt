@@ -56,7 +56,7 @@
 					<xsl:with-param name="layout" select="$layout"/>
 				</xsl:apply-templates>
 				<xsl:apply-templates mode="datagrid:body" select="$dataset">
-					<xsl:with-param name="dataset" select="$dataset/ancestor-or-self::*[1]/descendant-or-self::*[self::xo:r or self::xo:empty]/@xo:id"/>
+					<xsl:with-param name="dataset" select="$dataset/ancestor-or-self::*[1]/xo:r/@xo:id"/>
 					<xsl:with-param name="layout" select="$layout"/>
 				</xsl:apply-templates>
 				<xsl:apply-templates mode="datagrid:footer" select="$dataset">
@@ -265,7 +265,7 @@
 	<xsl:template mode="datagrid:cell-content" match="@*">
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="dataset" select="."/>
-		<xsl:variable name="ref_field" select="$dataset[name()=current()[parent::field:ref]]|$dataset[name()=concat('meta:',current()[parent::association:ref])]"/>
+		<xsl:variable name="ref_field" select="$dataset[name()=current()[parent::field:ref]]|$dataset[name()=concat('meta:',current()[parent::association:ref])]|$dataset/../px:Association[@AssociationName=current()]/@xo:id"/>
 		<span>
 			<xsl:choose>
 				<xsl:when test="$context='header'">
@@ -336,7 +336,7 @@
 			<xsl:attribute name="style">
 				<xsl:apply-templates mode="widget:style" select="."/>
 			</xsl:attribute>
-			<xsl:apply-templates select="."/>
+			<xsl:apply-templates mode="widget" select="."/>
 		</span>
 	</xsl:template>
 
