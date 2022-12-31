@@ -50,10 +50,8 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				}
 				
 				main { 
-					margin-bottom: var(--margin-bottom);
-					padding-bottom: var(--padding-bottom);
 					overflow-y: scroll;
-					height: calc(100vh - 66px - var(--footer-height, var(--margin-bottom, 135px)));
+					height: calc(100vh - 66px - var(--nav-height,0px) - var(--footer-height, var(--margin-bottom, 135px)));
 				}
 				
 				nav header h1 {
@@ -68,6 +66,8 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					bottom: 0;
 					height: var(--footer-height, var(--margin-bottom, 135px));
 					background-color: var(--bg-white) !important;
+					padding-top: 0 !important;
+					padding-left: 0 !important;
 					z-index: 98;
 					width: 100%;
 					overflow: hidden;
@@ -116,7 +116,9 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					</div>
 				</div>
 			</nav>
+			<nav class="navbar navbar-expand-md" xo-section="active" xo-stylesheet="page_navbar.xslt"/>
 			<main>
+				<xsl:apply-templates mode="shell:body" select="."/>
 			</main>
 			<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 px-3">
 				<xsl:apply-templates mode="shell:footer-content" select="."/>
@@ -124,6 +126,8 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 			<xsl:apply-templates mode="shell:extra-content" select="."/>
 		</div>
 	</xsl:template>
+
+	<xsl:template mode="shell:body" match="*|@*"/>
 
 	<xsl:template mode="shell:extra-content" match="*|@*"/>
 

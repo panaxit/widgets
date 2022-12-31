@@ -16,6 +16,48 @@
     --z-index-modal: 1091;
     --z-index-spinner: 1092;
     --z-index-alert: 1093;
+    --width-max-modal: 800px;
+}
+
+.select-box {
+    position: relative;
+}
+
+.options-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: white;
+    border: 1px solid gray;
+    z-index: 1;
+    display: none;
+}
+
+.options-list li {
+    margin: 0;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.options-list li:hover {
+    background-color: lightgray;
+}
+
+.select-box {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: white url("dropdown-arrow.svg") no-repeat right;
+    border: 1px solid gray;
+    padding: 5px;
+}
+
+.modal-dialog {
+    max-width: var(--width-max-modal,inherit) !important;
 }
 
 hr {

@@ -7,6 +7,7 @@ xmlns:widget="http://panax.io/widget"
 xmlns:login="http://panax.io/widget/login"
 xmlns:file="http://panax.io/widget/file"
 xmlns:state="http://panax.io/state"
+xmlns:text="http://panax.io/state/text"
 xmlns:source="http://panax.io/xover/binding/source"
 xmlns:js="http://panax.io/languages/javascript"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -25,6 +26,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 	<xsl:template mode="file:preceding-siblings" match="@*"></xsl:template>
 	<xsl:template mode="file:following-siblings" match="@*"></xsl:template>
 
+	<xsl:key name="display-text" match="xo:r/@text:*" use="concat(../@xo:id, '::',local-name())" />
 	<xsl:template mode="file:widget" match="@*">
 		<xsl:param name="data_field" select="current()"/>
 		<xsl:param name="field" select="."/>
@@ -38,10 +40,17 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:variable name="display_name">
-			<xsl:call-template name="substring-after-last">
-				<xsl:with-param name="string" select="current()" />
-				<xsl:with-param name="delimiter" select="'\'" />
-			</xsl:call-template>
+			<xsl:choose>
+				<xsl:when test="starts-with(current(),'blob:')">
+					<xsl:apply-templates select="key('display-text',concat(../@xo:id, '::',local-name()))"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="substring-after-last">
+						<xsl:with-param name="string" select="current()" />
+						<xsl:with-param name="delimiter" select="'\'" />
+					</xsl:call-template>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="file_name">
 			<xsl:choose>
@@ -72,46 +81,52 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 		<xsl:variable name="style">
 			<xsl:if test="../@xsi:type='mock'">visibility:hidden</xsl:if>
 		</xsl:variable>
-		<div class="input-group" role="group" style="position:relative;" xo-scope="{$id}">
-			<xsl:if test="not(self::xo:id)">
-				<xsl:attribute name="xo-attribute">
-					<xsl:value-of select="name()"/>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates mode="file:preceding-siblings" select="."/>
-			<input type="file" id="file_{$id}" hidden="">
-				<xsl:if test="not(self::*)">
+		<div class="card shadow col-2" style="width: 200px;text-align: center;">
+			<div class="card-body" style="padding: unset;">
+				<xsl:if test="not(self::xo:id)">
 					<xsl:attribute name="xo-attribute">
 						<xsl:value-of select="name()"/>
 					</xsl:attribute>
 				</xsl:if>
-			</input>
-			<xsl:choose>
-				<xsl:when test=".!=''">
-					<label style="float: right; margin:10px; ">
-						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="button bi bi-trash" viewBox="0 0 16 16" style="{$style}" onclick="scope.set('')">
-							<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-							<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-						</svg>
-					</label>
-					<a href="{.}" style="float: left; margin:10px; {$style}" target="_blank">
-						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
-							<path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
-							<path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
-						</svg>
-					</a>
-				</xsl:when>
-				<xsl:otherwise>
-					<label for="file_{$id}" class="file button" style="float: right; margin:10px; ">
-						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="button bi bi-file-earmark-plus" viewBox="0 0 16 16">
-							<path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5z"/>
-							<path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
-						</svg>
-					</label>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:value-of select="$display_name"/>
-			<xsl:apply-templates mode="file:following-siblings" select="."/>
+				<xsl:apply-templates mode="file:preceding-siblings" select="."/>
+				<input type="file" id="file_{$id}" hidden="">
+					<xsl:if test="not(self::*)">
+						<xsl:attribute name="xo-attribute">
+							<xsl:value-of select="name()"/>
+						</xsl:attribute>
+					</xsl:if>
+				</input>
+				<xsl:choose>
+					<xsl:when test=".!=''">
+						<label style="float: right; margin:10px; ">
+							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="button bi bi-trash" viewBox="0 0 16 16" style="{$style}" onclick="scope.set('')">
+								<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+								<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+							</svg>
+						</label>
+						<a href="{.}" style="float: left; margin:10px; {$style}" target="_blank">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+								<path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+								<path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+							</svg>
+						</a>
+					</xsl:when>
+					<xsl:otherwise>
+						<label for="file_{$id}" class="file button" style="float: right; margin:10px; ">
+							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="button bi bi-file-earmark-plus" viewBox="0 0 16 16">
+								<path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5z"/>
+								<path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
+							</svg>
+						</label>
+					</xsl:otherwise>
+				</xsl:choose>
+				<!--<xsl:value-of select="$display_name"/>-->
+				<img id="{@xo:id}" src="{current()}" style="height:100px;" />
+			</div>
+			<div class="card-footer">
+				<xsl:value-of select="$display_name"/>
+				<xsl:apply-templates mode="file:following-siblings" select="."/>
+			</div>
 		</div>
 		<!--<div class="input-group mb-2 file_control">
 			<xsl:choose>

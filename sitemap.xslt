@@ -188,11 +188,19 @@ li.sidebar-item.menu > a {
     -webkit-transition: all .2s ease-out;
     transition: all .2s ease-out;
 }
+
+.sidebar-nav > li.menu {
+	padding-left: 1rem;
+}
+
+.sidebar-nav > li.menu > a {
+	padding-left: 0rem;
+}
 ]]>
 			</style>
 			<div style="height:100%; overflow-y:scroll; overflow-x: clip; margin-bottom: var(--margin-bottom)">
 				<xsl:apply-templates mode="sitemap:header" select="current()"/>
-				<ul class="sidebar-nav">
+				<ul class="sidebar-nav sidebar-dropdown">
 					<xsl:apply-templates mode="sitemap:body" select="ancestor-or-self::*[1]/*"/>
 				</ul>
 				<xsl:apply-templates mode="sitemap:footer" select="current()"/>
