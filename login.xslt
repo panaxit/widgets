@@ -60,6 +60,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 	max-width: 330px;
 	padding: 15px;
 	margin: 0 auto;
+    flex-direction: column;
 }
 
 .form-signin .checkbox {

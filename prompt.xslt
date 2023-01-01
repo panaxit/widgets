@@ -194,7 +194,7 @@
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:for-each>
-						<xsl:text>}).then(_ => this.closest('[role="alertdialog"]').remove());</xsl:text>
+						<xsl:text>})/*.then(_ => this.closest('[role="alertdialog"]').remove())*/;</xsl:text>
 					</xsl:attribute>
 				</xsl:when>
 				<xsl:otherwise>
