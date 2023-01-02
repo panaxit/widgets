@@ -8,6 +8,7 @@
   xmlns:meta="http://panax.io/metadata"
   xmlns:combobox="http://panax.io/widget/combobox"
   xmlns:comboboxButton="http://panax.io/widget/combobox-button"
+  xmlns:route="http://panax.io/routes"
   xmlns:px="http://panax.io/entity"
   exclude-result-prefixes="xo xsl combobox data px"
 >
@@ -45,6 +46,36 @@
 		</span>
 	</xsl:template>
 
+	<xsl:template mode="combobox:route-widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='add']/@*">
+		<xsl:param name="context" select="node-expected"/>
+		<li>
+			<a class="dropdown-item" href="javascript:void(0)" onclick="px.navigateTo('#{ancestor::px:Entity[1]/@Schema}/{ancestor::px:Entity[1]/@Name}~add','')">
+				<xsl:apply-templates mode="widget" select="."/>
+			</a>
+		</li>
+	</xsl:template>
+
+	<xsl:template mode="combobox:route-widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='edit']/@*">
+		<xsl:param name="context" select="node-expected"/>
+		<li>
+			<a class="dropdown-item" href="javascript:void(0)" onclick="px.editSelectedOption(selectSingleNode('ancestor::*[xhtml:select]/xhtml:select'))">
+				<xsl:apply-templates mode="widget" select="."/>
+			</a>
+		</li>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route/@*">
+		<xsl:text></xsl:text>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='add']/@*" priority="2">
+		<xsl:text>Crear nuevo</xsl:text>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='edit']/@*" priority="2">
+		<xsl:text>Editar registro</xsl:text>
+	</xsl:template>
+
 	<xsl:template mode="comboboxButton:widget-options" match="@*">
 		<xsl:param name="selection" select="node-expected"/>
 		<xsl:param name="items" select="*"/>
@@ -52,16 +83,9 @@
 		<li onclick="scope.$$('descendant-or-self::data:rows[1]').remove()">
 			<a class="dropdown-item" href="#">Actualizar</a>
 		</li>
-		<li>
-			<a class="dropdown-item" href="javascript:void(0)" onclick="px.navigateTo('#{ancestor::px:Entity[1]/@Schema}/{ancestor::px:Entity[1]/@Name}~add','')">Crear Nuevo</a>
-		</li>
-		<xsl:if test="string($selection)!=''">
-			<li>
-				<a class="dropdown-item" href="javascript:void(0)" onclick="px.editSelectedOption(selectSingleNode('ancestor::*[xhtml:select]/xhtml:select'))">
-					Editar registro
-				</a>
-			</li>
-		</xsl:if>
+		<xsl:apply-templates mode="combobox:route-widget" select="ancestor::px:Entity[1]/px:Routes/px:Route[@Method='add' or @Method='edit']/@xo:id">
+			<xsl:with-param name="context" select="parent::xo:r"/>
+		</xsl:apply-templates>
 	</xsl:template>
 
 	<xsl:key name="referencer" match="px:Association/px:Mappings/px:Mapping/@Referencer" use="concat(ancestor::px:Entity[1]/@xo:id,'::',ancestor::px:Association[1]/@AssociationName)"/>

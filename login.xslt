@@ -61,6 +61,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 	padding: 15px;
 	margin: 0 auto;
     flex-direction: column;
+	gap: 1em;
 }
 
 .form-signin .checkbox {

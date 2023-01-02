@@ -11,7 +11,8 @@
   xmlns:container="http://panax.io/layout/container"
   xmlns:association="http://panax.io/datatypes/association"
   xmlns:widget="http://panax.io/widget"
-  exclude-result-prefixes="xo state xsl datagrid data px meta"
+  xmlns:route="http://panax.io/routes"
+  exclude-result-prefixes="xo state xsl datagrid data px meta route"
 >
 	<xsl:import href="../keys.xslt"/>
 	<xsl:import href="../values.xslt"/>
@@ -377,7 +378,9 @@
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		<button type="button" class="btn btn-success btn-sm" onclick="px.navigateTo('{concat(ancestor::px:Entity[1]/@Schema,'/',ancestor::px:Entity[1]/@Name,$reference)}~add','{ancestor-or-self::*[@meta:type='entity'][1]/data:rows/@xo:id}')" xo-scope="{../data:rows/@xo:id}">Agregar registro</button>
+		<xsl:apply-templates mode="route:widget" select="ancestor::px:Entity[1]/px:Routes/px:Route[@Method='add']/@xo:id">
+			<xsl:with-param name="context" select=".."/>
+		</xsl:apply-templates>		
 	</xsl:template>
 
 	<xsl:key name="selected" match="*[@state:selected]" use="@xo:id"/>
