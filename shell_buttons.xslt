@@ -12,6 +12,7 @@ xmlns:data="http://panax.io/source"
   xmlns:route="http://panax.io/routes"
 exclude-result-prefixes="#default xsl px xo xsi route"
 >
+	<xsl:import href="routes.xslt"/>
 	<xsl:output method="xml"
 	   omit-xml-declaration="yes"
 	   indent="yes"/>
