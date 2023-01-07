@@ -7,6 +7,7 @@
   xmlns:form="http://panax.io/widget/form"
   xmlns:datagrid="http://panax.io/widget/datagrid"
   xmlns:combobox="http://panax.io/widget/combobox"
+  xmlns:autocompleteBox="http://panax.io/widget/autocompleteBox"
   xmlns:file="http://panax.io/widget/file"
   xmlns:percentage="http://panax.io/widget/percentage"
   xmlns:field="http://panax.io/layout/fieldref"
@@ -24,8 +25,8 @@
 	<xsl:key name="form:widget" match="px:Entity[@control:type='form:control']/@xo:id" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
 	<xsl:key name="form:widget" match="px:Entity[@Type='hasOne']/@xo:id" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
 
-	<xsl:key name="combobox:widget" match="px:Entity[@control:type='combobox:control']/@xo:id" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
-	<xsl:key name="combobox:widget" match="xo:r/@meta:*" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
+	<xsl:key name="autocompleteBox:widget" match="px:Entity[@control:type='combobox:control']/@xo:id" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
+	<xsl:key name="autocompleteBox:widget" match="xo:r/@meta:*" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
 	<xsl:key name="file:widget" match="px:Field[@DataType='file']" use="concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',@Name)"/>
 	<xsl:key name="file:widget" match="px:Field[@DataType='filePath']" use="concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',@Name)"/>
 	<xsl:key name="percentage:widget" match="px:Field[@DataType='percent']" use="concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',@Name)"/>

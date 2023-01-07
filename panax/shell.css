@@ -19,7 +19,7 @@
     --width-max-modal: 800px;
 }
 
-.select-box {
+.autocomplete-box {
     position: relative;
 }
 
@@ -47,7 +47,7 @@
     background-color: lightgray;
 }
 
-.select-box {
+.autocomplete-box {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -154,7 +154,7 @@ form.form-view hr {
 
 .navbar {
     background-color: var(--navbar-bg-color);
-    position: unset; /*Se agrega para que no se encime en otros elementos con diferente z-index, como los menús*/
+    position: unset; /*Se agrega para que no se encime en otros elementos con diferente z-index, como los menï¿½s*/
 }
 
 /*floating headers*/

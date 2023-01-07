@@ -22,13 +22,13 @@
   xmlns:datagrid="http://panax.io/widget/datagrid"
   xmlns:combobox="http://panax.io/widget/combobox"
   xmlns:comboboxButton="http://panax.io/widget/combobox-button"
-  xmlns:selectbox="http://panax.io/widget/selectbox"
-  xmlns:selectboxButton="http://panax.io/widget/selectbox-button"
+  xmlns:autocompleteBox="http://panax.io/widget/autocompleteBox"
+  xmlns:autocompleteBoxButton="http://panax.io/widget/autocompleteBox-button"
   xmlns:field="http://panax.io/layout/fieldref"
   xmlns:container="http://panax.io/layout/container"
   xmlns:association="http://panax.io/datatypes/association"
   xmlns:cardview="http://panax.io/widget/cardview"
-  exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file percentage picture form widget datagrid combobox comboboxButton selectbox selectboxButton field container association cardview modal"
+  exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file percentage picture form widget datagrid combobox comboboxButton autocompleteBox autocompleteBoxButton field container association cardview modal"
 >
 	<xsl:import href="keys.xslt"/>
 	<xsl:import href="panax/modal.xslt"/>
@@ -36,7 +36,7 @@
 	<xsl:import href="panax/file.xslt"/>
 	<xsl:import href="panax/percentage.xslt"/>
 	<xsl:import href="panax/combobox.xslt"/>
-	<!--<xsl:import href="panax/selectbox.xslt"/>-->
+	<xsl:import href="panax/autocompleteBox.xslt"/>
 	<xsl:import href="form.xslt"/>
 	<xsl:import href="datagrid.xslt"/>
 
@@ -179,9 +179,9 @@
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<xsl:key name="selectbox:widget" match="node-expected" use="see-below"/>
-	<xsl:template mode="widget" match="@*[key('combobox:widget',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',name()))]">
-		<xsl:apply-templates mode="combobox:widget" select=".">
+	<xsl:key name="autocompleteBox:widget" match="node-expected" use="see-below"/>
+	<xsl:template mode="widget" match="@*[key('autocompleteBox:widget',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',name()))]">
+		<xsl:apply-templates mode="autocompleteBox:widget" select=".">
 			<xsl:with-param name="dataset" select="key('dataset',concat(ancestor::px:Entity[1]/@xo:id,'.',name()))"/>
 		</xsl:apply-templates>
 	</xsl:template>

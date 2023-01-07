@@ -6,26 +6,26 @@
   xmlns:custom="http://panax.io/custom"
   xmlns:data="http://panax.io/source"
   xmlns:meta="http://panax.io/metadata"
-  xmlns:selectbox="http://panax.io/widget/selectbox"
-  xmlns:selectboxButton="http://panax.io/widget/selectbox-button"
+  xmlns:autocompleteBox="http://panax.io/widget/autocompleteBox"
+  xmlns:autocompleteBoxButton="http://panax.io/widget/autocompleteBox-button"
   xmlns:px="http://panax.io/entity"
-  exclude-result-prefixes="xo xsl selectbox data px"
+  exclude-result-prefixes="xo xsl autocompleteBox data px"
 >
 	<xsl:import href="../keys.xslt"/>
 
-	<xsl:key name="selectbox:widget" match="node-expected" use="@xo:id"/>
+	<xsl:key name="autocompleteBox:widget" match="node-expected" use="@xo:id"/>
 
 	<xsl:template mode="widget-attributes" match="@*" priority="-1"/>
 
-	<xsl:template mode="selectbox:attributes" match="@*" priority="-1">
+	<xsl:template mode="autocompleteBox:attributes" match="@*" priority="-1">
 		<xsl:apply-templates mode="widget-attributes" select="."/>
 	</xsl:template>
 
-	<xsl:template mode="selectbox:preceding-siblings" match="@*" priority="-1"></xsl:template>
+	<xsl:template mode="autocompleteBox:preceding-siblings" match="@*" priority="-1"></xsl:template>
 
-	<xsl:template mode="selectbox:following-siblings" match="@*" priority="-1"></xsl:template>
+	<xsl:template mode="autocompleteBox:following-siblings" match="@*" priority="-1"></xsl:template>
 
-	<xsl:template mode="selectboxButton:widget" match="@*">
+	<xsl:template mode="autocompleteBoxButton:widget" match="@*">
 		<xsl:param name="selection" select="node-expected"/>
 		<xsl:param name="items" select="ancestor-or-self::*[1]"/>
 		<xsl:variable name="id" select="ancestor-or-self::*[@xo:id][1]/@xo:id"/>
@@ -37,7 +37,7 @@
 				</svg>
 			</button>
 			<ul class="dropdown-menu">
-				<xsl:apply-templates mode="selectboxButton:widget-options" select=".">
+				<xsl:apply-templates mode="autocompleteBoxButton:widget-options" select=".">
 					<xsl:with-param name="selection" select="$selection"/>
 					<xsl:with-param name="items" select="$items"/>
 				</xsl:apply-templates>
@@ -45,7 +45,7 @@
 		</span>
 	</xsl:template>
 
-	<xsl:template mode="selectboxButton:widget-options" match="@*">
+	<xsl:template mode="autocompleteBoxButton:widget-options" match="@*">
 		<xsl:param name="selection" select="node-expected"/>
 		<xsl:param name="items" select="*"/>
 		<xsl:variable name="id" select="ancestor-or-self::*[@xo:id][1]/@xo:id"/>
@@ -67,7 +67,7 @@
 	<xsl:key name="referencer" match="px:Association/px:Mappings/px:Mapping/@Referencer" use="concat(ancestor::px:Entity[1]/@xo:id,'::',ancestor::px:Association[1]/@AssociationName)"/>
 	<xsl:key name="referencee" match="px:Association/px:Mappings/px:Mapping/@Referencee" use="concat(ancestor::px:Association[1]/@xo:id,'::',.)"/>
 	<xsl:key name="mapping" match="px:Association/px:Mappings/px:Mapping" use="concat(ancestor::px:Association[1]/@xo:id,'::',@Referencer,'::',@Referencee)"/>
-	<xsl:template mode="selectbox:widget" match="@*">
+	<xsl:template mode="autocompleteBox:widget" match="@*">
 		<xsl:param name="dataset" select="."/>
 		<xsl:param name="selection" select="."/>
 		<xsl:param name="target" select="."/>
@@ -110,45 +110,39 @@
 			</xsl:for-each>
 			<xsl:text>|</xsl:text>
 		</xsl:variable>
-		<!--$selection: <xsl:value-of select="count($referencees)"/>-->
-		<!--<xsl:variable name="selected_values" select="($dataset/@meta:value|$dataset/@meta:id)[.=$selected_value]"/>-->
-		<!--selected_values: <xsl:value-of select="$selected_values"/>-->
-		<!--<xsl:variable name="referencers">
-				<xsl:for-each select="$dataset/ancestor::px:Association[1]/px:Mappings/px:Mapping/@Referencer">
-					<xsl:if test="position()&gt;1">/</xsl:if>
-					<xsl:value-of select="current()"/>
-				</xsl:for-each>
-			</xsl:variable>-->
-		<!--<xsl:apply-templates mode="selectbox:preceding-siblings" select="."/>-->
-		<div class="select-box">
-			<input type="text" class="form-select" xo-scope="{../@xo:id}" xo-attribute="{name()}" autocomplete="off" onclick="nextElementSibling.style.display='inline'" input="filterOptions()" style="position: relative">
-				<xsl:attribute name="style">
-					<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
-				</xsl:attribute>
-				<xsl:attribute name="onmouseover">px.loadData(scope.$(`ancestor::px:Entity[1]/px:Record/px:Association[@AssociationName="${scope.localName}"]/px:Entity`))</xsl:attribute>
-				<xsl:apply-templates mode="selectbox:attributes" select="."/>
-			</input>
-			<ul id="datalist_{../@xo:id}" class="dropdown-menu dropdown-menu-start" aria-labelledby="dropdownMenuLink" data-bs-popper="none">
+		<xsl:variable name="scope" select="."/>
+		<input type="text" class="form-control dropdown-toggle" xo-scope="{../@xo:id}" xo-attribute="search:{local-name()}" autocomplete="off" onblur="this.value='{.}'; /*nextElementSibling.querySelector('ul').style.display='none';*/" onfocus="px.loadData(scope.parentNode.$(`ancestor-or-self::px:Entity[1]/px:Record/px:Association[@AssociationName='{local-name()}']/px:Entity`)); nextElementSibling.querySelector('ul').classList.toggle('show'); this.select()" keydown="filterOptions()" style="position: relative" value="{.}">
+			<xsl:attribute name="style">
+				<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
+			</xsl:attribute>
+			<xsl:apply-templates mode="autocompleteBox:attributes" select="."/>
+		</input>
+		<span class="autocomplete-box" xo-scope="{../@xo:id}" xo-attribute="{name()}" onclick="this.querySelector('ul').classList.toggle('show')">
+			<xsl:attribute name="onmouseover">px.loadData(scope.$(`ancestor::px:Entity[1]/px:Record/px:Association[@AssociationName="${scope.localName}"]/px:Entity`))</xsl:attribute>
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+				<path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+			</svg>
+			<ul id="datalist_{../@xo:id}_{local-name()}" class="dropdown-menu dropdown-menu-start" aria-labelledby="dropdownMenuLink" data-bs-popper="none">
 				<xsl:choose>
 					<xsl:when test="$dataset[local-name()='nil' and namespace-uri()='http://www.w3.org/2001/XMLSchema-instance'] or not($dataset|$selection[not($dataset)])">
 						<li value="" class="dropdown-item">Sin opciones</li>
 					</xsl:when>
 					<xsl:when test="$dataset">
-						<xsl:apply-templates mode="selectbox:previous-options" select=".">
+						<xsl:apply-templates mode="autocompleteBox:previous-options" select=".">
 							<xsl:sort select="../@meta:text"/>
 							<xsl:with-param name="selection" select="$selection"/>
 							<xsl:with-param name="referencees" select="$referencees"/>
 							<xsl:with-param name="selected_value" select="$selected_value"/>
 							<xsl:with-param name="selected_values" select="$selected_values"/>
 						</xsl:apply-templates>
-						<xsl:apply-templates mode="selectbox:option" select="$referencees/../@xo:id">
+						<xsl:apply-templates mode="autocompleteBox:option" select="$referencees/../@xo:id">
 							<xsl:sort select="../@meta:text"/>
 							<xsl:with-param name="referencer" select="$selection"/>
 							<xsl:with-param name="referencees" select="$referencees"/>
 							<xsl:with-param name="selected_value" select="$selected_value"/>
 							<xsl:with-param name="selected_values" select="$selected_values"/>
 						</xsl:apply-templates>
-						<!--<xsl:apply-templates mode="selectbox:option" select="($dataset|$selection[not($dataset)])/@meta:id|($dataset|$selection)[not($dataset)]/@meta:value">
+						<!--<xsl:apply-templates mode="autocompleteBox:option" select="($dataset|$selection[not($dataset)])/@meta:id|($dataset|$selection)[not($dataset)]/@meta:value">
 							<xsl:sort select="../@meta:text"/>
 							<xsl:with-param name="value" select="@meta:id|@meta:value"/>
 						</xsl:apply-templates>-->
@@ -160,37 +154,80 @@
 						</li>
 					</xsl:otherwise>
 				</xsl:choose>
-				<xsl:apply-templates mode="selectbox:following-siblings" select=".">
+				<xsl:apply-templates mode="autocompleteBox:following-siblings" select=".">
 					<xsl:with-param name="catalog" select="$dataset"/>
 				</xsl:apply-templates>
 			</ul>
 			<script>
 				<![CDATA[
-        let optionsList = top.document.getElementById("datalist_]]><xsl:value-of select="../@xo:id"/><![CDATA[");
-		let inputField = optionsList.previousElementSibling;
-        let options = inputField.getElementsByTagName("li");
-		inputField.addEventListener("input", () => {
+		function filterOptions() {
+			let inputField = event.srcElement;
+			let optionsList = inputField.nextElementSibling;
+			let options = optionsList.getElementsByTagName("li");
+			filtered_options = []
+			for (let option of options) {
+				if (option.textContent.toLowerCase().includes(inputField.value.toLowerCase())) {
+					option.style.display = "block";
+					filtered_options.push(option);
+				} else {
+					option.style.display = "none";
+				}
+			}
+			return filtered_options;
+		}
+
+        let optionsList = top.document.getElementById("datalist_]]><xsl:value-of select="concat(../@xo:id,'_',local-name())"/><![CDATA[");
+		let inputField = optionsList.parentNode.previousElementSibling;
+        let options = optionsList.getElementsByTagName("li");
+		inputField.addEventListener("keydown", (event) => {
+			if (!['ArrowDown','ArrowUp','Tab','Escape'].includes(event.key)) return null;
+            filtered_options = filterOptions();
+			let active_item_index = filtered_options.findIndex(op => op.classList.contains("active"));
+			if (event.key=='Escape') {
+				optionsList.classList.remove('show');
+			}
+            if (event.key=='ArrowDown') {
+				++ active_item_index;
+				active_item_index = active_item_index >= filtered_options.length ? filtered_options.length - 1 : active_item_index;
+			}
+            if (event.key=='ArrowUp') {
+				-- active_item_index;
+				active_item_index = active_item_index < 0 ? 0 : active_item_index;
+			}
+			let active_item = filtered_options[active_item_index];
+			[...options].forEach(op => op.classList.remove("active"));
+			active_item && active_item.classList.add("active");
+            if (event.key=='Tab') {
+				active_item && active_item.click();
+				/*active_item && active_item.closest('.autocomplete-box').scope.set(active_item.classList.contains("disabled")? "" : active_item.textContent)*/
+				optionsList.classList.remove('show');
+			}
+			//console.log(event.key+': '+active_item.textContent)
+        });
+		
+		inputField.addEventListener("input", (event) => {
             filterOptions();
         });
 
         for (let option of options) {
-            option.addEventListener("click", () => {
-                inputField.value = option.textContent;
-                optionsList.style.display = "none";
-            });
+			option.addEventListener("click", () => {
+				let active_item = option;
+				active_item && active_item.closest('.autocomplete-box').scope.set(active_item.classList.contains("disabled") ? "" : active_item.textContent);
+				optionsList.classList.remove('show');
+			});
         }
 			]]>
 			</script>
-		</div>
+		</span>
 	</xsl:template>
 
-	<xsl:template mode="selectbox:previous-options" match="@*">
-		<li class="dropdown-item" value="">
+	<xsl:template mode="autocompleteBox:previous-options" match="@*">
+		<li class="dropdown-item disabled" value="">
 			Selecciona...
 		</li>
 	</xsl:template>
 
-	<xsl:template mode="selectbox:option" match="@*">
+	<xsl:template mode="autocompleteBox:option" match="@*">
 		<xsl:param name="referencer" select="node-expected|current()"/>
 		<xsl:param name="selected_value"/>
 		<xsl:param name="selected_values"></xsl:param>
