@@ -25,8 +25,8 @@
 		<xsl:param name="layout" select="$schema"/>
 		<xsl:param name="selection" select="node-expected"/>
 		<xsl:for-each select="$dataset/ancestor-or-self::xo:r[1]/@xo:id">
-			<form class="form-view needs-validation" novalidate="">
-				<div class="row g-3">
+			<form class="form-view needs-validation col-12" novalidate="">
+				<div class="col-12 g-3">
 					<xsl:apply-templates mode="form:field" select="$layout">
 						<xsl:with-param name="schema" select="$schema"/>
 						<xsl:with-param name="dataset" select="ancestor-or-self::xo:r/@*"/>

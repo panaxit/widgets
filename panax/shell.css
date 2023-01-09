@@ -224,7 +224,6 @@ dialog::backdrop {
 }
 
 form.form-view {
-    display: grid;
     gap: 1em;
 }
 
