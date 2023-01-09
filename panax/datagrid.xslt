@@ -14,13 +14,15 @@
   xmlns:route="http://panax.io/routes"
   exclude-result-prefixes="xo state xsl datagrid data px meta route"
 >
-	<xsl:import href="../keys.xslt"/>
+	<!--<xsl:import href="../keys.xslt"/>
 	<xsl:import href="../values.xslt"/>
-	<xsl:import href="../headers.xslt"/>
+	<xsl:import href="../headers.xslt"/>-->
 
 	<xsl:param name="state:delete"/>
 
-	<xsl:key name="datagrid:widget" match="dummy" use="@xo:id"/>
+	<xsl:key name="datagrid:widget" match="key-expected" use="@xo:id"/>
+	<xsl:key name="datagrid:header-node" match="key-expected" use="@xo:id"/>
+	
 	<xsl:key name="data:wrapper" match="data:rows" use="generate-id()"/>
 
 	<xsl:template mode="datagrid:widget" match="@*">

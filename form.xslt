@@ -51,7 +51,7 @@
 				<xsl:apply-templates mode="form:field-header" select="$reference"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:apply-templates mode="headerText" select="."/>
+				<xsl:apply-templates mode="headerText" select="../@xo:id"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

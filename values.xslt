@@ -26,27 +26,13 @@
 
 	<xsl:key name="combobox_text" match="px:Association/px:Entity/data:rows/xo:r/@text" use="concat(ancestor::px:Entity[2]/@xo:id,'::',ancestor::px:Association/px:Mappings/px:Mapping/@Referencer,'::',../@Id)"/>
 
-	<xsl:template name="format">
-		<xsl:param name="value">0</xsl:param>
-		<xsl:param name="mask">'$#,##0.00###;-$#,##0.00###'</xsl:param>
-		<xsl:param name="value_for_invalid"></xsl:param>
-		<xsl:choose>
-			<xsl:when test="number($value)=$value">
-		<xsl:value-of select="format-number($value,$mask)"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$value_for_invalid"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
 	<xsl:template match="@*">
 		<xsl:variable name="text" select="key('display-text',concat(parent::xo:r[1]/@xo:id,'::',name()))"/>
 		<xsl:choose>
 			<xsl:when test="$text">
 				<xsl:value-of select="$text"/>
 			</xsl:when>
-			<xsl:when test="number(.)=.">
+			<xsl:when test="substring(.,1,1)!='0' and number(.)=.">
 				<xsl:value-of select="number(.)"/>
 			</xsl:when>
 			<xsl:otherwise>

@@ -12,17 +12,19 @@
   xmlns:association="http://panax.io/datatypes/association"
   exclude-result-prefixes="xo state xsl form data px meta"
 >
-	<xsl:import href="../keys.xslt"/>
+	<xsl:import href="keys.xslt"/>
 
 	<!--<xsl:key name="readonly" match="@readonly:*" use="concat(@xo:id,'::',local-name())"/>-->
+	<xsl:key name="reference" match="key-expected" use="@xo:id"/>
+	<xsl:key name="association" match="key-expected" use="@xo:id"/>
+	<xsl:key name="foreignTable" match="key-expected" use="@xo:id"/>
 
 	<xsl:template mode="form:widget" match="@*">
-		<xsl:param name="headers" select="current()"/>
 		<xsl:param name="dataset" select="current()"/>
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="layout" select="$schema"/>
 		<xsl:param name="selection" select="node-expected"/>
-		<xsl:for-each select="$dataset/ancestor-or-self::*[1]/xo:r/@xo:id">
+		<xsl:for-each select="$dataset/ancestor-or-self::xo:r[1]/@xo:id">
 			<form class="form-view needs-validation" novalidate="">
 				<div class="row g-3">
 					<xsl:apply-templates mode="form:field" select="$layout">
@@ -43,7 +45,11 @@
 			<xsl:otherwise>
 				<xsl:apply-templates mode="headerText" select="key('reference',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'::header::',name(..),'::',../@Name))"/>
 			</xsl:otherwise>
-		</xsl:choose>!
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template mode="form:field-header" match="*[@headerText]/@*">
+		<xsl:value-of select="../@headerText"/>
 	</xsl:template>
 
 	<xsl:template mode="form:field-body-prepend" match="@*">
@@ -53,6 +59,8 @@
 	<xsl:template mode="form:field-body-append" match="@*">
 		<xsl:text>&#160;</xsl:text>
 	</xsl:template>
+
+	<xsl:template mode="form:field-attributes" match="@*"/>
 
 	<xsl:template mode="form:field" match="@*">
 		<xsl:param name="dataset" select="node-expected"/>
@@ -94,13 +102,13 @@
 		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$dataset/../px:Association[@AssociationName=current()]/@AssociationName"/>
 		<xsl:variable name="headerText">
 			<xsl:apply-templates mode="form:field-header" select="current()"/>
-			<xsl:text>: </xsl:text>
 		</xsl:variable>
 		<div class="mb-3 row" xo-sections="{$dataset/@xo:id}">
 			<fieldset>
 				<xsl:if test="$headerText!=''">
 					<legend>
 						<xsl:value-of select="$headerText"/>
+						<xsl:text>: </xsl:text>
 					</legend>
 				</xsl:if>
 				<xsl:apply-templates mode="widget" select="$ref_field">
@@ -174,12 +182,24 @@
 		<div class="input-group d-flex justify-content-between">
 			<xsl:for-each select="../*/@Name">
 				<div class="input-group-append">
+					<xsl:apply-templates mode="form:field-attributes" select="current()"/>
 					<xsl:apply-templates mode="form:field-body" select="current()">
 						<xsl:with-param name="schema" select="$schema"/>
 						<xsl:with-param name="dataset" select="$dataset"/>
 					</xsl:apply-templates>
 				</div>
 			</xsl:for-each>
+		</div>
+	</xsl:template>
+
+	<xsl:template mode="form:field-body" match="container:modal/@*">
+		<xsl:param name="schema" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
+		<div class="input-group d-flex justify-content-between col-4" xo-scope="{../@xo:id}" xo-attribute="state:active">
+			<xsl:apply-templates mode="widget" select=".">
+				<xsl:with-param name="schema" select="$schema"/>
+				<xsl:with-param name="dataset" select="$dataset"/>
+			</xsl:apply-templates>
 		</div>
 	</xsl:template>
 

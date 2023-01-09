@@ -11,8 +11,6 @@
   xmlns:px="http://panax.io/entity"
   exclude-result-prefixes="xo xsl autocompleteBox data px"
 >
-	<xsl:import href="../keys.xslt"/>
-
 	<xsl:key name="autocompleteBox:widget" match="node-expected" use="@xo:id"/>
 
 	<xsl:template mode="widget-attributes" match="@*" priority="-1"/>
@@ -111,7 +109,7 @@
 			<xsl:text>|</xsl:text>
 		</xsl:variable>
 		<xsl:variable name="scope" select="."/>
-		<input type="text" class="form-control dropdown-toggle" xo-scope="{../@xo:id}" xo-attribute="search:{local-name()}" autocomplete="off" onblur="this.value='{.}'; /*nextElementSibling.querySelector('ul').style.display='none';*/" onfocus="px.loadData(scope.parentNode.$(`ancestor-or-self::px:Entity[1]/px:Record/px:Association[@AssociationName='{local-name()}']/px:Entity`)); nextElementSibling.querySelector('ul').classList.toggle('show'); this.select()" keydown="filterOptions()" style="position: relative" value="{.}">
+		<input type="text" class="form-control dropdown-toggle" xo-scope="{../@xo:id}" xo-attribute="search:{local-name()}" autocomplete="off" onblur="this.value='{.}'; /*nextElementSibling.querySelector('ul').style.display='none';*/" onfocus="px.loadData(scope.parentNode.$(`ancestor-or-self::px:Entity[1]/px:Record/px:Association[@AssociationName='{local-name()}']/px:Entity`)); nextElementSibling.querySelector('ul').classList.toggle('show'); this.value=(this.scope.value || this.value); this.scope.value &amp;&amp; filterOptions(); this.select()" keydown="filterOptions()" style="position: relative" value="{.}">
 			<xsl:attribute name="style">
 				<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
 			</xsl:attribute>

@@ -2,9 +2,11 @@
   xmlns:xo="http://panax.io/xover"
   xmlns:source="http://panax.io/fetch/request"
   xmlns:state="http://panax.io/state"
+  xmlns:data="http://panax.io/source"
   xmlns:modal="http://panax.io/widget/modal"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:px="http://panax.io"
-  exclude-result-prefixes="px state xo source"
+  exclude-result-prefixes="px state xo source data xsi"
   xmlns="http://www.w3.org/1999/xhtml"
 >
 	<xsl:template match="/" priority="-1">
@@ -22,6 +24,9 @@
 	</xsl:template>
 
 	<xsl:template match="@*" mode="modal:widget" priority="-1">
+		<xsl:param name="schema" select="../px:Record/*[not(@AssociationName)]/@Name|../px:Record/*/@AssociationName"/>
+		<xsl:param name="dataset" select="../data:rows/@xsi:nil|../data:rows/xo:r/@*|../data:rows/xo:r/xo:f/@Name"/>
+		<xsl:param name="layout" select="../*[local-name()='layout']/*/@Name"/>
 		<div role="alertdialog">
 			<div class="modal fade" id="modal_{@xo:id}" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel_{@xo:id}" aria-hidden="true">
 				<!--data-bs-backdrop="static" data-bs-keyboard="false" -->
@@ -43,10 +48,18 @@
 							</button>
 						</div>
 						<div class="modal-body">
-							<xsl:apply-templates mode="modal:widget-body" select="."/>
+							<xsl:apply-templates mode="modal:widget-body" select=".">
+								<xsl:with-param name="layout" select="$layout"/>
+								<xsl:with-param name="schema" select="$schema"/>
+								<xsl:with-param name="dataset" select="$dataset"/>
+							</xsl:apply-templates>
 						</div>
 						<div class="modal-footer">
-							<xsl:apply-templates mode="modal:widget-footer" select="."/>
+							<xsl:apply-templates mode="modal:widget-footer" select=".">
+								<xsl:with-param name="layout" select="$layout"/>
+								<xsl:with-param name="schema" select="$schema"/>
+								<xsl:with-param name="dataset" select="$dataset"/>
+							</xsl:apply-templates>
 						</div>
 					</div>
 				</div>

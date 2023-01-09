@@ -30,6 +30,7 @@
   xmlns:cardview="http://panax.io/widget/cardview"
   exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file percentage picture form widget datagrid combobox comboboxButton autocompleteBox autocompleteBoxButton field container association cardview modal"
 >
+	<xsl:import href="values.xslt"/>
 	<xsl:import href="keys.xslt"/>
 	<xsl:import href="panax/modal.xslt"/>
 	<xsl:import href="panax/picture.xslt"/>
@@ -225,7 +226,7 @@
 
 	<xsl:template mode="widget" match="@*[key('form:widget',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',name()))]">
 		<xsl:param name="schema" select="../px:Record/*[not(@AssociationName)]/@Name|../px:Record/*/@AssociationName"/>
-		<xsl:param name="dataset" select="../data:rows/@xo:id"/>
+		<xsl:param name="dataset" select="../data:rows/@xsi:nil|../data:rows/xo:r/@*|../data:rows/xo:r/xo:f/@Name"/>
 		<xsl:param name="layout" select="../*[local-name()='layout']/*/@Name"/>
 		<xsl:param name="selection" select="node-expected"/>
 		<xsl:variable name="current" select="."/>
@@ -352,6 +353,41 @@
 	</xsl:template>
 
 	<xsl:template mode="modal:widget-body" match="@*">
-		<xsl:apply-templates mode="widget" select="."/>
+		<xsl:param name="layout" select="node-expected"/>
+		<xsl:param name="schema" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
+		<div class="input-group d-flex justify-content-between col-4" xo-scope="{../@xo:id}">
+			<xsl:apply-templates mode="form:widget" select="current()">
+				<xsl:with-param name="layout" select="$layout"/>
+				<xsl:with-param name="schema" select="$schema"/>
+				<xsl:with-param name="dataset" select="$dataset"/>
+			</xsl:apply-templates>
+		</div>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="container:modal/@*">
+		<xsl:param name="schema" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
+		<a class="text-muted" href="#" xo-scope="{../@xo:id}" xo-attribute="state:active" onclick="scope.toggle('true',null)">
+			<button class="btn btn-secondary">
+				<xsl:apply-templates mode="headerText" select="."/>
+			</button>
+		</a>
+		<xsl:apply-templates mode="widget" select="../@state:active">
+			<xsl:with-param name="schema" select="$schema"/>
+			<xsl:with-param name="dataset" select="$dataset"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="container:modal/@state:active"/>
+
+	<xsl:template mode="widget" match="container:modal/@state:active[.='true']">
+		<xsl:param name="schema" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
+		<xsl:apply-templates mode="modal:widget" select="../@state:active">
+			<xsl:with-param name="layout" select="../*/@Name"/>
+			<xsl:with-param name="schema" select="$schema"/>
+			<xsl:with-param name="dataset" select="$dataset"/>
+		</xsl:apply-templates>
 	</xsl:template>
 </xsl:stylesheet>
