@@ -100,4 +100,8 @@
 			</xsl:choose>
 		</xsl:for-each>
 	</xsl:template>
+
+	<xsl:template mode="widget" match="px:Route[ancestor-or-self::*/@mode='readonly']/@*" priority="2">
+		<xsl:text></xsl:text>
+	</xsl:template>
 </xsl:stylesheet>

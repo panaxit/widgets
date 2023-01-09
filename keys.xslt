@@ -54,7 +54,7 @@
 
 	<!--controls-->
 	<xsl:key name="readonly" match="px:Record/px:Field[@mode='readonly']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
-	<xsl:key name="readonly" match="px:Record/px:Association[@mode='readonly']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@AssociationName)"/>
+	<xsl:key name="readonly" match="px:Record/px:Association[@mode='readonly']" use="concat(ancestor::px:Entity[1]/@xo:id,'::meta:',@AssociationName)"/>
 
 	<xsl:key name="password" match="px:Field[contains(@xsi:type,'password')]" use="concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'::',@Name)"/>
 	<xsl:key name="combobox" match="px:Association[*[@meta:type='entity']/@xsi:type='combobox:control']" use="concat(../@xo:id,'::',@Name)"/>
