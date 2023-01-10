@@ -73,9 +73,6 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 	<xsl:template mode="headerText" match="px:Parameter/@parameterName">
 		<xsl:value-of select="substring(.,2)"/>
 	</xsl:template>
-	<xsl:template mode="headerText" match="key('parameter','@FolioSap')">Folio SAP</xsl:template>
-	<xsl:template mode="headerText" match="key('parameter','@FI')">Inicio</xsl:template>
-	<xsl:template mode="headerText" match="key('parameter','@FF')">Fin</xsl:template>
 
 	<xsl:template mode="widget" match="px:Parameter/@parameterName">
 		<input type="text" class="form-control" placeholder="" aria-label="" xo-scope="{../@xo:id}" xo-attribute="value" value="{../@value}" list="options_{../@xo:id}"/>
@@ -83,18 +80,6 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 		<datalist id="options_{../@xo:id}">
 			<xsl:apply-templates mode="widget:options" select="$catalog"/>
 		</datalist>
-	</xsl:template>
-
-	<xsl:template mode="widget" match="key('parameter','@FI')|key('parameter','@FF')">
-		<input type="date" class="form-control" xo-scope="{../@xo:id}" xo-attribute="value" value="{../@value}"/>
-	</xsl:template>
-
-	<xsl:template mode="widget" match="key('parameter','@Estatus')">
-		<xsl:variable name="catalog" select="key('parameter-options',.)"/>
-		<select class="form-select" xo-scope="{../@xo:id}" xo-attribute="value" value="{../@value}">
-			<option value="null"></option>
-			<xsl:apply-templates mode="widget:options" select="$catalog"/>
-		</select>
 	</xsl:template>
 
 	<xsl:key name="parameter-options" match="px:Parameter/data:rows/xo:r" use="../../@parameterName"/>
