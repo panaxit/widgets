@@ -230,7 +230,7 @@
 		<xsl:param name="layout" select="../*[local-name()='layout']/*/@Name"/>
 		<xsl:param name="selection" select="node-expected"/>
 		<xsl:variable name="current" select="."/>
-		<div class="row g-5" style="margin-top:0px;">
+		<div class="row g-3" style="margin-top:0px;">
 			<style>
 				<![CDATA[
 .form-floating > label.floating-label { display: none }
