@@ -263,6 +263,12 @@ li.sidebar-item.menu > a {
 
 	<xsl:template mode="sitemap:target-href" match="*"/>
 
+	<xsl:template mode="sitemap:target-href" match="*[@catalogName]">
+		<xsl:attribute name="href">
+			<xsl:value-of select="concat('#',translate(substring-before(@catalogName,'].['),'[]',''),'/',translate(substring-after(@catalogName,'].['),'[]',''),'~',@mode)"/>
+		</xsl:attribute>
+	</xsl:template>
+
 	<xsl:template mode="sitemap:target-href" match="*[@target]">
 		<xsl:attribute name="href">
 			<xsl:value-of select="@target"/>
