@@ -259,7 +259,6 @@
 		<xsl:text>&#160;</xsl:text>
 	</xsl:template>
 
-
 	<xsl:template mode="datagrid:field-prepend" match="@*">
 		<xsl:text></xsl:text>
 	</xsl:template>
@@ -312,7 +311,7 @@
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="dataset" select="node-expected"/>
-		<xsl:apply-templates mode="datagrid:cell-content" select="../*[$context='header'][1]/@Name|../*[$context!='header']/@Name">
+		<xsl:apply-templates mode="datagrid:cell-content" select="../*[$context='header']/@Name|../*[$context!='header']/@Name|../*[$context='header'][not(@Name)]/@xo:id|../*[$context!='header'][not(@Name)]/@xo:id">
 			<xsl:with-param name="context" select="$context"/>
 			<xsl:with-param name="schema" select="$schema"/>
 			<xsl:with-param name="dataset" select="$dataset"/>
