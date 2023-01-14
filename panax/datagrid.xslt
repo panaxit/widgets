@@ -29,7 +29,7 @@
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="*"/>
-		<div class="row">
+		<div class="">
 			<xsl:if test="concat(../@Schema,'.',../@Name)='Reportes.Embarques'">
 				<xsl:attribute name="class"/>
 			</xsl:if>
