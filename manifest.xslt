@@ -53,7 +53,7 @@
 	</xsl:template>
 
 	<xsl:template match="/">
-		<div class="container-fluid" style="margin-top:0px;">
+		<div class="container-fluid p-3" style="margin-top:0px;">
 			<xsl:apply-templates mode="widget" select="px:Entity/@xo:id"/>
 		</div>
 	</xsl:template>
@@ -212,7 +212,7 @@
 		<xsl:param name="dataset" select="../data:rows/@xsi:nil|../data:rows/xo:r/@*|../data:rows/xo:r/xo:f/@Name"/>
 		<xsl:param name="layout" select="../*[local-name()='layout']/*/@Name"/>
 		<xsl:param name="selection" select="node-expected"/>
-		<div class="row g-3" style="margin-top:0px;">
+		<div class="g-3" style="margin-top:0px;">
 			<div class="col-md-9 col-lg-11">
 				<xsl:apply-templates mode="datagrid:widget" select="current()">
 					<xsl:with-param name="schema" select="$schema"/>
