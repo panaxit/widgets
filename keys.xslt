@@ -26,8 +26,8 @@
 	<xsl:key name="form:widget" match="px:Entity[@control:type='form:control']/@xo:id" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
 	<xsl:key name="form:widget" match="px:Entity[@Type='hasOne']/@xo:id" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
 
-	<xsl:key name="autocompleteBox:widget" match="px:Entity[@control:type='combobox:control']/@xo:id" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
-	<xsl:key name="autocompleteBox:widget" match="xo:r/@meta:*" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
+	<xsl:key name="combobox:widget" match="px:Entity[@control:type='combobox:control']/@xo:id" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
+	<xsl:key name="combobox:widget" match="xo:r/@meta:*" use="concat(ancestor::px:Entity[1]/@xo:id,'.',name())"/>
 	<xsl:key name="file:widget" match="px:Field[@DataType='file']" use="concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',@Name)"/>
 	<xsl:key name="file:widget" match="px:Field[@DataType='filePath']" use="concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',@Name)"/>
 	<xsl:key name="percentage:widget" match="px:Field[@DataType='percent']" use="concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',@Name)"/>
@@ -48,9 +48,9 @@
 	<xsl:key name="datagrid:nodeType" match="px:Entity/px:Record/px:Field" use="concat(@xo:id,'::header')"/>
 	<xsl:key name="datagrid:nodeType" match="px:Entity/px:Record/px:Association" use="concat(@xo:id,'::header')"/>
 
-	<xsl:key name="datagrid:node" match="px:Entity[@controlType='datagridView']/*/field:ref" use="@xo:id"/>
-	<xsl:key name="datagrid:node" match="px:Entity[@controlType='datagridView']/*/association:ref" use="@xo:id"/>
-	<xsl:key name="datagrid:node" match="px:Entity[@controlType='datagridView']/*/container:*" use="@xo:id"/>
+	<xsl:key name="datagrid:node" match="px:Entity[@controlType='datagridView']/*[local-name()='layout']//field:ref" use="@xo:id"/>
+	<xsl:key name="datagrid:node" match="px:Entity[@controlType='datagridView']/*[local-name()='layout']//association:ref" use="@xo:id"/>
+	<xsl:key name="datagrid:node" match="px:Entity[@controlType='datagridView']/*[local-name()='layout']//container:*" use="@xo:id"/>
 
 	<!--controls-->
 	<xsl:key name="readonly" match="px:Record/px:Field[@mode='readonly']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
@@ -79,6 +79,7 @@
 	<xsl:key name="money" match="px:Field[@DataType='money']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
 	<xsl:key name="year" match="px:Field[@controlType='year']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
 	<xsl:key name="color" match="px:Field[@DataType='color']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
+	<xsl:key name="picture" match="px:Field[@DataType='picture']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
 
 	<xsl:key name="formula" match="px:Record/px:Field[@formula]" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
 
@@ -94,6 +95,7 @@
 	<xsl:key name="layout" match="*[local-name()='layout']" use="'#any'"/>
 	<xsl:key name="layout" match="*[local-name()='layout']" use="@xo:id"/>
 	<xsl:key name="layout" match="*[local-name()='layout']" use="../@controlType"/>
+	<xsl:key name="layout" match="*[local-name()='layout']" use="substring-before(../@control:type,':')"/>
 
 	<!--deprecated-->
 	<xsl:key name="entity" match="px:Entity[@xsi:type='datagrid:control']" use="'datagrid:widget'"/>

@@ -35,14 +35,15 @@
 		</xsl:variable>
 		<xsl:for-each select="$context">
 			<a href="#{ancestor-or-self::px:Entity[1]/@Schema}/{ancestor-or-self::px:Entity[1]/@Name}{$reference}~{$route/../@Method}">
-				<xsl:apply-templates mode="widget" select="$route">
+				<xsl:apply-templates mode="route:widget-attributes" select="."/>
+				<xsl:apply-templates mode="route:widget-button" select="$route">
 					<xsl:with-param name="context" select="$context"/>
 				</xsl:apply-templates>
 			</a>
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="px:Route[@Method='edit']/@*" priority="1">
+	<xsl:template mode="route:widget-button" match="px:Route[@Method='edit']/@*" priority="-1">
 		<xsl:param name="context" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
 		<xsl:variable name="identity" select="$context/@meta:id"/>
@@ -69,7 +70,7 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="px:Route[@Method='delete']/@*" priority="1">
+	<xsl:template mode="route:widget-button" match="px:Route[@Method='delete']/@*" priority="-1">
 		<xsl:param name="context" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
 		<xsl:for-each select="$context[self::px:Entity or self::data:rows or self::xo:r]">
@@ -86,7 +87,7 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="px:Route[@Method='add']/@*" priority="1">
+	<xsl:template mode="route:widget-button" match="px:Route[@Method='add']/@*" priority="-1">
 		<xsl:param name="context" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
 		<xsl:for-each select="$context[self::px:Entity or self::data:rows or self::xo:r]">
@@ -101,7 +102,7 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="px:Route[ancestor-or-self::*/@mode='readonly']/@*" priority="2">
-		<xsl:text></xsl:text>
+	<xsl:template mode="route:widget-button" match="px:Route[ancestor-or-self::*/@mode='readonly']/@*" priority="-1">
+		<xsl:comment>La ruta <xsl:value-of select="../@Method"/> no está disponible</xsl:comment>
 	</xsl:template>
 </xsl:stylesheet>

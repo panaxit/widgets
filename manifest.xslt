@@ -16,6 +16,8 @@
   xmlns:percentage="http://panax.io/widget/percentage"
   xmlns:picture="http://panax.io/widget/picture"
   xmlns:modal="http://panax.io/widget/modal"
+  xmlns:tabPanel="http://panax.io/widget/tabPanel"
+  xmlns:groupTabPanel="http://panax.io/widget/groupTabPanel"
 
   xmlns:form="http://panax.io/widget/form"
   xmlns:widget="http://panax.io/widget"
@@ -28,12 +30,16 @@
   xmlns:container="http://panax.io/layout/container"
   xmlns:association="http://panax.io/datatypes/association"
   xmlns:cardview="http://panax.io/widget/cardview"
-  exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file percentage picture form widget datagrid combobox comboboxButton autocompleteBox autocompleteBoxButton field container association cardview modal"
+  exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file percentage picture form widget datagrid combobox comboboxButton autocompleteBox autocompleteBoxButton field container association cardview modal tabPanel groupTabPanel"
 >
 	<xsl:import href="values.xslt"/>
 	<xsl:import href="keys.xslt"/>
+	<xsl:import href="headers.xslt"/>
 	<xsl:import href="panax/modal.xslt"/>
+	<xsl:import href="panax/tabPanel.xslt"/>
+	<xsl:import href="panax/groupTabPanel.xslt"/>
 	<xsl:import href="panax/picture.xslt"/>
+	<xsl:import href="panax/cardview.xslt"/>
 	<xsl:import href="panax/file.xslt"/>
 	<xsl:import href="panax/percentage.xslt"/>
 	<xsl:import href="panax/combobox.xslt"/>
@@ -166,13 +172,7 @@
 
 	<xsl:key name="related_values" match="px:Mappings/px:Mapping/@Referencer" use="concat(ancestor::px:Entity[1]/@xo:id,'::',ancestor::px:Association[1]/@AssociationName,'::',.)"/>
 	<!--<xsl:key name="related_values" match="data:rows/xo:r/@*" use="concat(ancestor::px:Entity[1]/@xo:id,'::',ancestor::px:Entity[1]/px:Record/px:Association[1]/@AssociationName,'::',name())"/>-->
-
-
-	<xsl:key name="picture:widget" match="node-expected" use="see-below"/>
-	<xsl:template mode="widget" match="@*[key('picture:widget',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',name()))]">
-		<xsl:apply-templates mode="picture:widget" select="."/>
-	</xsl:template>
-
+	
 	<xsl:key name="combobox:widget" match="node-expected" use="see-below"/>
 	<xsl:template mode="widget" match="@*[key('combobox:widget',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',name()))]">
 		<xsl:apply-templates mode="combobox:widget" select=".">
@@ -207,10 +207,10 @@
 		</input>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="@*[key('datagrid:widget',concat(ancestor::px:Entity[1]/@xo:id,'.',name()))]">
-		<xsl:param name="schema" select="../px:Record/*[not(@AssociationName)]/@Name|../px:Record/*/@AssociationName"/>
-		<xsl:param name="dataset" select="../data:rows/@xsi:nil|../data:rows/xo:r/@*|../data:rows/xo:r/xo:f/@Name"/>
-		<xsl:param name="layout" select="../*[local-name()='layout']/*/@Name"/>
+	<!--<xsl:template mode="widget" match="@*[key('datagrid:widget',concat(ancestor::px:Entity[1]/@xo:id,'.',name()))]">
+		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
+		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows/xo:r/@*|ancestor::px:Entity[1]/data:rows/xo:r/xo:f/@Name"/>
+		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/@xo:id"/>
 		<xsl:param name="selection" select="node-expected"/>
 		<div class="g-3" style="margin-top:0px;">
 			<div class="col-md-9 col-lg-11">
@@ -222,12 +222,12 @@
 				</xsl:apply-templates>
 			</div>
 		</div>
-	</xsl:template>
+	</xsl:template>-->
 
-	<xsl:template mode="widget" match="@*[key('form:widget',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'.',name()))]">
+	<xsl:template mode="widget" match="px:Entity/@*">
 		<xsl:param name="schema" select="../px:Record/*[not(@AssociationName)]/@Name|../px:Record/*/@AssociationName"/>
 		<xsl:param name="dataset" select="../data:rows/@xsi:nil|../data:rows/xo:r/@*|../data:rows/xo:r/xo:f/@Name"/>
-		<xsl:param name="layout" select="../*[local-name()='layout']/*/@Name"/>
+		<xsl:param name="layout" select="../*[local-name()='layout']/@xo:id"/>
 		<xsl:param name="selection" select="node-expected"/>
 		<xsl:variable name="current" select="."/>
 		<div class="row g-3" style="margin-top:0px;">
@@ -239,17 +239,38 @@
 			]]>
 			</style>
 			<div class="col-md-9 col-lg-11">
-				<xsl:apply-templates mode="form:widget" select="current()">
-					<xsl:with-param name="schema" select="$schema"/>
-					<xsl:with-param name="dataset" select="$dataset"/>
-					<xsl:with-param name="layout" select="$layout"/>
-					<xsl:with-param name="selection" select="$selection"/>
-				</xsl:apply-templates>
+				<xsl:apply-templates mode="widget" select="../*[local-name()='layout']/@xo:id"/>
 			</div>
 		</div>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="key('layout','formView')//*/@*">
+	<xsl:template mode="widget" match="key('layout','form')/@*">
+		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
+		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows/xo:r/@*|ancestor::px:Entity[1]/data:rows/xo:r/xo:f/@Name"/>
+		<xsl:param name="layout" select="../*[local-name()='layout']/*/@Name"/>
+		<xsl:apply-templates mode="form:widget" select="current()">
+			<xsl:with-param name="schema" select="$schema"/>
+			<xsl:with-param name="dataset" select="$dataset"/>
+			<xsl:with-param name="layout" select="../*/@Name|../*[not(@Name)]/@xo:id"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="key('layout','datagrid')/@*">
+		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
+		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows/xo:r/@*|ancestor::px:Entity[1]/data:rows/xo:r/xo:f/@Name"/>
+		<xsl:param name="layout" select="../*[local-name()='layout']/*/@xo:id"/>
+		<xsl:apply-templates mode="datagrid:widget" select="current()">
+			<xsl:with-param name="schema" select="$schema"/>
+			<xsl:with-param name="dataset" select="$dataset"/>
+			<xsl:with-param name="layout" select="../*/@Name|../*[not(@Name)]/@xo:id"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="*[local-name()='layout'][container:*]/@*">
+		<xsl:apply-templates mode="widget" select="../*/@xo:id"/>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="*[key('form:item',@xo:id)]/@*">
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="class"></xsl:param>
@@ -266,7 +287,7 @@
 		</div>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="key('layout','formView')//*/@Name">
+	<xsl:template mode="widget" match="*[key('form:item',@xo:id)]/@Name">
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="class"></xsl:param>
@@ -299,7 +320,7 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="key('layout','formView')//container:*/@*">
+	<xsl:template mode="widget" match="container:*[key('form:item',@xo:id)]/@*">
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="dataset" select="node-expected"/>
 		<div class="input-group">
@@ -318,9 +339,14 @@
 		<xsl:apply-templates mode="widget" select="../*"/>
 	</xsl:template>
 
+	<xsl:key name="picture:widget" match="node-expected" use="see-below"/>
+	<xsl:template mode="widget" match="@*[key('picture',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'::',name()))]">
+		<xsl:apply-templates mode="picture:widget" select="."/>
+	</xsl:template>
+
 	<xsl:template mode="widget" match="px:Association/@*">
 		<span>
-			<xsl:apply-templates mode="widget" select="../px:Entity/@xo:id"/>
+			<xsl:apply-templates mode="widget" select="../px:Entity/*[local-name()='layout']/@xo:id"/>
 		</span>
 	</xsl:template>
 
@@ -389,5 +415,58 @@
 			<xsl:with-param name="schema" select="$schema"/>
 			<xsl:with-param name="dataset" select="$dataset"/>
 		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="*[container:groupTabPanel]/@*">
+		<xsl:param name="schema" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
+		<xsl:apply-templates mode="groupTabPanel:widget" select="."/>
+	</xsl:template>
+
+	<xsl:key name="active" match="node-expected" use="@xo:id"/>
+	<xsl:template mode="widget" match="container:groupTabPanel/@*">
+		<xsl:apply-templates mode="groupTabPanel:widget" select="."/>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="container:tab/@*">
+		<xsl:param name="schema" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
+		<xsl:variable name="active">
+			<xsl:choose>
+				<xsl:when test="key('active', ../@xo:id)">active</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<li class="nav-item" style="margin-bottom: 10px;" xo-scope="{../../@xo:id}" xo-attribute="state:active" onclick="scope.set('{../@xo:id}')">
+			<a class="nav-link {$active}" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">
+				<xsl:apply-templates mode="headerText" select="."/>
+			</a>
+		</li>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="container:panel/@*">
+		panel
+	</xsl:template>
+
+	<xsl:template mode="widget" match="container:panel[key('form:item', @xo:id)]/@*">
+		<xsl:apply-templates mode="form:widget" select=".">
+			<xsl:with-param name="layout" select="../*/@Name|../*[not(@Name)]/@xo:id"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="container:panel[key('datagrid:item', @xo:id)]/@*">
+		<xsl:apply-templates mode="datagrid:widget" select=".">
+			<xsl:with-param name="layout" select="../*/@Name|../*[not(@Name)]/@xo:id"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="container:tabPanel[not(container:groupTabPanel)]/@*">
+		<xsl:param name="schema" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
+		<xsl:variable name="active">
+			<xsl:choose>
+				<xsl:when test="key('active', ../@xo:id)">active</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:apply-templates mode="tabPanel:widget" select="."></xsl:apply-templates>
 	</xsl:template>
 </xsl:stylesheet>

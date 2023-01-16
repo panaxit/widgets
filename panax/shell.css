@@ -338,19 +338,19 @@ nav ul {
 }
 
 a.active {
-    background-color: #E7004C !important;
+    background-color: var(--bg-tab, var(--bg-primary)) !important;
     color: #ffffff !important;
     border-color: #ffffff !important;
 }
 
 .nav-tabs .nav-link.active {
-    background-color: #E7004C !important;
+    background-color: var(--bg-tab, var(--bg-primary)) !important;
     color: #ffffff !important;
     border-color: #ffffff !important;
 }
 
 .nav-pills .nav-link.active {
-    background-color: #E7004C !important;
+    background-color: var(--bg-tab, var(--bg-primary)) !important;
 }
 
 a.nav-link {
