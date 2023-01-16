@@ -266,7 +266,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="*[local-name()='layout'][container:*]/@*">
+	<xsl:template mode="widget" match="*[local-name()='layout'][not(field:ref or association:ref)]/@*">
 		<xsl:apply-templates mode="widget" select="../*/@xo:id"/>
 	</xsl:template>
 
