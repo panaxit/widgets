@@ -31,7 +31,7 @@
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="current_panel" select="../container:groupTabPanel[key('active', @xo:id)]/container:subGroupTabPanel[key('active', @xo:id)]/container:panel/*"/>
-		<div class="row group-tab-pane">
+		<div class="row group-tab-pane align-top">
 			<xo-listener attribute="state:active_child"/>
 			<div class="col-4 col-md-3 col-lg-2 col-xl-2 group-tab-nav">
 				<div class="accordion" id="accordionExample">

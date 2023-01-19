@@ -316,6 +316,10 @@ a.text-dark.sidebar-link:hover {
     align-items: center;
 }
 
+.align-top {
+    align-items: unset;
+}
+
 nav ul {
     margin-bottom: 0
 }
