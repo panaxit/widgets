@@ -23,16 +23,18 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 	</xsl:template>
 
 	<xsl:template match="shell:shell/@*" mode="widget">
-		<div id="shell" class="wrapper sitemap_collapsed">
+		<div id="shell" class="wrapper">
 			<link rel="stylesheet" href="widgets/panax/shell.css" />
 			<script>
 				<![CDATA[
 				function toggleSidebar(show) {
 					let sidebar = document.querySelector('.sidebar');
 					if (!sidebar) return
-					let width = Number.parseInt(sidebar.style.width);
-					sidebar.closest('.wrapper').classList.toggle('sitemap_collapsed', !!width || show === false)
-					sidebar.style.width = width || show === false ? 0 : '350px';
+					if (show == false) {
+						sidebar.closest('body').classList.add('sitemap_collapsed')
+					} else {
+						sidebar.closest('body').classList.toggle('sitemap_collapsed')
+					}
 				}
 				
 				xover.listener.on('keyup', async function (event) {

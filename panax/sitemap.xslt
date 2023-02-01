@@ -25,7 +25,7 @@ exclude-result-prefixes="#default session sitemap shell state"
 		<aside class="sidebar">
 			<script>
 				<![CDATA[xo.listener.on('click', function(){ 
-			    if (!event.srcElement.closest('aside,nav')) {
+			    if (!event.srcElement.closest('aside,.menu_toggle')) {
 			        toggleSidebar(false);
 				}
 			})]]>
@@ -36,9 +36,15 @@ body {
   font-family: "Lato", sans-serif;
 }
 
+.sitemap_collapsed .sidebar {
+	width: 0%
+}
+
 .sidebar {
   height: 100%;
-  width: 0;
+  width: 100%;
+  min-width: var(--sitemap-min-width,0px);
+  max-width: var(--sitemap-width);
   position: fixed;
   z-index: var(--z-index-side-bar) !important;
   top: 0;

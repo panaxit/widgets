@@ -27,8 +27,8 @@
     animation: fa-spin 2s linear infinite;
 }
 
-.wrapper > span.page-menu > nav {
-    margin-left: var(--width-sitemap);
+.page-menu > * {
+    margin-left: var(--sitemap-width);
 }
 
 .options-list {
