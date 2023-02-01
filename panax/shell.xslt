@@ -51,7 +51,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				
 				main { 
 					overflow-y: scroll;
-					height: calc(100vh - 66px - var(--nav-height,0px) - var(--footer-height, var(--margin-bottom, 135px)));
+					height: calc(100vh - var(--header-height,0px) - var(--nav-height,0px) - var(--footer-height, 0px));
 				}
 				
 				nav header h1 {
@@ -64,7 +64,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					border-top: 2px solid silver !important;
 					position: fixed;
 					bottom: 0;
-					height: var(--footer-height, var(--margin-bottom, 135px));
+					height: var(--footer-height, 0px);
 					background-color: var(--bg-white) !important;
 					padding-top: 0 !important;
 					padding-left: 0 !important;
@@ -79,7 +79,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				}
 				]]>
 			</style>
-			<nav class="navbar navbar-expand navbar-light" style="padding:.6rem 1.25rem; position: sticky;">
+			<header class="navbar navbar-expand navbar-light" style="padding:.6rem 1.25rem; position: sticky;">
 				<span class="menu_toggle" style="font-size:30px;" onclick="toggleSidebar()">
 					&#9776;
 				</span>
@@ -115,7 +115,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 						</ul>
 					</div>
 				</div>
-			</nav>
+			</header>
 			<nav class="navbar navbar-expand-md" xo-section="active" xo-stylesheet="page_navbar.xslt"/>
 			<main>
 				<xsl:apply-templates mode="shell:body" select="."/>

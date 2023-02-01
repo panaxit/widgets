@@ -216,7 +216,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 			<xsl:choose>
 				<xsl:when test="$data_field/@value!=''">
 					<div class="input-group-append">
-						<button class="btn btn-outline-danger" type="button" xo-source="{$data_field/@xo:id}" onclick="this.source.setAttribute('@value','')">
+						<button class="btn btn-outline-danger" type="button" xo-source="{$data_field/@xo:id}" onclick="this.source.setAttribute('value','')">
 							<xsl:apply-templates mode="control.attributes" select="$data_field"/>
 							<i class="far fa-trash-alt" style="cursor:pointer;"></i>
 						</button>

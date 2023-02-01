@@ -1,6 +1,5 @@
 :root {
     --margin-top: 25px;
-    --margin-bottom: 71px;
     --bg-shell-footer: #fff;
     --sitemap-scrollbar: orange;
     --outline-selection: 2px solid lime;
@@ -17,10 +16,19 @@
     --z-index-spinner: 1092;
     --z-index-alert: 1093;
     --width-max-modal: 800px;
+    --header-height: 70px;
 }
 
 .autocomplete-box {
     position: relative;
+}
+
+.spinning {
+    animation: fa-spin 2s linear infinite;
+}
+
+.wrapper > span.page-menu > nav {
+    margin-left: var(--width-sitemap);
 }
 
 .options-list {

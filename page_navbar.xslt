@@ -18,9 +18,9 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 	<xsl:param name="appendTo-data:rows"/>
 
 	<xsl:template match="/">
-		<span class="page-menu">
+		<nav class="page-menu">
 			<xsl:apply-templates/>
-		</span>
+		</nav>
 	</xsl:template>
 
 	<xsl:template match="px:Entity//*">
@@ -32,24 +32,23 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 
 	<xsl:template mode="widget" match="px:Parameters[px:Parameter]">
 		<style>
-			<![CDATA[span.page-menu nav {
-    padding-top: 0rem !important;
-    padding-right: 1rem !important;
-    padding-left: 1rem !important;
+			<![CDATA[.page-menu {
+			    height: var(--nav-height,0px);
+				padding-top: var(--nav-padding-top, .5rem) !important;
+				padding-right: var(--nav-padding-right, 1rem) !important;
+				padding-left: var(--nav-padding-left, 1rem) !important;
 			}
 			]]>
 		</style>
 		<style>
 			:root { --nav-height: 46px; }
 		</style>
-		<nav class="navbar navbar-expand-md">
-			<form action="javascript:void(0);">
-				<xsl:apply-templates mode="widget" select="px:Parameter"/>
-				<button type="submit" class="btn btn-success" onclick="px.applyFilters(scope)" xo-scope="{parent::px:Entity/@xo:id}" xo-attribute="data:rows">
-					<xsl:text>Filtrar</xsl:text>
-				</button>
-			</form>
-		</nav>
+		<form action="javascript:void(0);">
+			<xsl:apply-templates mode="widget" select="px:Parameter"/>
+			<button type="submit" class="btn btn-success" onclick="px.applyFilters(scope)" xo-scope="{parent::px:Entity/@xo:id}" xo-attribute="data:rows">
+				<xsl:text>Filtrar</xsl:text>
+			</button>
+		</form>
 	</xsl:template>
 
 	<xsl:template mode="widget" match="px:Parameter">
