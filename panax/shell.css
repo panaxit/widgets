@@ -26,9 +26,13 @@
 .spinning {
     animation: fa-spin 2s linear infinite;
 }
-
-.page-menu > * {
+/*
+.wrapper > header h1 {
     margin-left: var(--sitemap-width);
+}*/
+
+.page-menu > form {
+    flex-direction: row;
 }
 
 .options-list {
