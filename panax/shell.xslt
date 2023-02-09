@@ -14,8 +14,6 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 	   omit-xml-declaration="yes"
 	   indent="yes"/>
 
-	<xsl:param name="session:user_login">User</xsl:param>
-
 	<xsl:template match="/*" priority="-1">
 		<section>
 			<xsl:apply-templates mode="widget" select="@xo:id"/>
@@ -86,16 +84,9 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					&#9776;
 				</span>
 				<div class="navbar-collapse collapse">
-					<div>
-						<a href="/" title="Ir a la página principal">
-							<picture class="logo">
-								<source media="(min-width: 64em)" src="high-res.jpg"/>
-								<source media="(min-width: 37.5em)" src="med-res.jpg"/>
-								<source src="assets/logo.png"/>
-								<img src="assets/logo.png" height="40.61px">
-									<xsl:apply-templates mode="shell:nav-img-attributes" select="."/>
-								</img>
-							</picture>
+					<div style="white-space:nowrap">
+						<a href="/" title="Ir a la página principal" style="text-decoration:none;">
+							<xsl:apply-templates mode="shell:nav-brand" select="."/>
 						</a>
 					</div>
 					<div class="anteanter_section search navbar-left">
@@ -134,6 +125,17 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 	<xsl:template mode="shell:extra-content" match="*|@*"/>
 
 	<xsl:template mode="shell:nav-img-attributes" match="*|@*"/>
+
+	<xsl:template mode="shell:nav-brand" match="*|@*">
+		<picture class="logo">
+			<source media="(min-width: 64em)" src="high-res.jpg"/>
+			<source media="(min-width: 37.5em)" src="med-res.jpg"/>
+			<source src="assets/logo.png"/>
+			<img src="assets/logo.png" height="40.61px">
+				<xsl:apply-templates mode="shell:nav-img-attributes" select="."/>
+			</img>
+		</picture>
+	</xsl:template>
 
 	<xsl:template mode="shell:nav-title" match="*|@*"/>
 

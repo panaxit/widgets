@@ -97,8 +97,8 @@
 		<xsl:param name="target" select="."/>
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
-		<xsl:variable name="referencee_entity" select="$dataset/ancestor::px:Association[1]/px:Entity"/>
-		<xsl:variable name="selected_value">
+		<!--<xsl:variable name="referencee_entity" select="$dataset/ancestor::px:Association[1]/px:Entity"/>-->
+		<!--<xsl:variable name="selected_value">
 			<xsl:for-each select="key('referencer',concat(ancestor::px:Entity[1]/@xo:id,'::',local-name()))">
 				<xsl:if test="position()&gt;1">/</xsl:if>
 				<xsl:value-of select="$selection/parent::xo:r/@*[name()=current()]"/>
@@ -123,17 +123,17 @@
 						<xsl:when test="not(key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',$referencer,'::',name($referencee)))/preceding-sibling::*)">|</xsl:when>
 						<xsl:otherwise>/</xsl:otherwise>
 					</xsl:choose>
-					<!--<xsl:value-of select="name($referencee)"/>: <xsl:value-of select="$referencee"/>-->
+					--><!--<xsl:value-of select="name($referencee)"/>: <xsl:value-of select="$referencee"/>--><!--
 					<xsl:if test="$referencee=$selection/parent::xo:r/@*[name()=$referencer]">
-						<!--<xsl:value-of select="count(key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',$referencer,'::',name($referencee)))/preceding-sibling::*)"/>-->
+						--><!--<xsl:value-of select="count(key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',$referencer,'::',name($referencee)))/preceding-sibling::*)"/>--><!--
 						<xsl:value-of select="$referencee"/>
-						<!--<xsl:value-of select="position()"/>: <xsl:value-of select="name($referencee)"/>
-						<xsl:value-of select="$referencee"/>-->
+						--><!--<xsl:value-of select="position()"/>: <xsl:value-of select="name($referencee)"/>
+						<xsl:value-of select="$referencee"/>--><!--
 					</xsl:if>
 				</xsl:for-each>
 			</xsl:for-each>
 			<xsl:text>|</xsl:text>
-		</xsl:variable>
+		</xsl:variable>-->
 		<!--$selection: <xsl:value-of select="count($referencees)"/>-->
 		<!--<xsl:variable name="selected_values" select="($dataset/@meta:value|$dataset/@meta:id)[.=$selected_value]"/>-->
 		<!--selected_values: <xsl:value-of select="$selected_values"/>-->
@@ -158,16 +158,16 @@
 					<xsl:apply-templates mode="combobox:previous-options" select=".">
 						<xsl:sort select="../@meta:text"/>
 						<xsl:with-param name="selection" select="$selection"/>
-						<xsl:with-param name="referencees" select="$referencees"/>
+						<!--<xsl:with-param name="referencees" select="$referencees"/>
 						<xsl:with-param name="selected_value" select="$selected_value"/>
-						<xsl:with-param name="selected_values" select="$selected_values"/>
+						<xsl:with-param name="selected_values" select="$selected_values"/>-->
 					</xsl:apply-templates>
-					<xsl:apply-templates mode="combobox:option" select="$referencees/../@xo:id">
+					<xsl:apply-templates mode="combobox:option" select="$dataset/@meta:text">
 						<xsl:sort select="../@meta:text"/>
 						<xsl:with-param name="referencer" select="$selection"/>
-						<xsl:with-param name="referencees" select="$referencees"/>
+						<!--<xsl:with-param name="referencees" select="$referencees"/>
 						<xsl:with-param name="selected_value" select="$selected_value"/>
-						<xsl:with-param name="selected_values" select="$selected_values"/>
+						<xsl:with-param name="selected_values" select="$selected_values"/>-->
 					</xsl:apply-templates>
 					<!--<xsl:apply-templates mode="combobox:option" select="($dataset|$selection[not($dataset)])/@meta:id|($dataset|$selection)[not($dataset)]/@meta:value">
 							<xsl:sort select="../@meta:text"/>
@@ -182,6 +182,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</select>
+
 		<xsl:apply-templates mode="combobox:following-siblings" select=".">
 			<xsl:with-param name="catalog" select="$dataset"/>
 		</xsl:apply-templates>
@@ -195,6 +196,7 @@
 
 	<xsl:template mode="combobox:option" match="@*">
 		<xsl:param name="referencer" select="node-expected|current()"/>
+		<!--
 		<xsl:param name="selected_value"/>
 		<xsl:param name="selected_values"></xsl:param>
 
@@ -215,24 +217,17 @@
 					</xsl:for-each>
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
-		<xsl:if test="$visible!=''">
-			<option value="{$value}" xo-scope="{../@xo:id}">
-				<xsl:variable name="selected">
-					<xsl:choose>
-						<xsl:when test="current() = $selected_value">true</xsl:when>
-						<xsl:when test="contains($selected_values,concat('|',$value,'|'))">true</xsl:when>
-					</xsl:choose>
-				</xsl:variable>
-				<xsl:if test="$selected = 'true'">
-					<xsl:attribute name="selected"/>
-				</xsl:if>
-				<!--<xsl:value-of select="$value"/>:
-				<xsl:value-of select="$visible"/>:-->
-				<xsl:apply-templates select="current()/../@*[name()=$referencee_entity/@custom:displayText]|../@meta:text[not($referencee_entity/@custom:displayText)]|current()[not(../@meta:text)]">
-					<xsl:with-param name="referencer" select="$referencer"/>
-				</xsl:apply-templates>
-			</option>
-		</xsl:if>
+		</xsl:variable>-->
+		<option value="{.}" xo-scope="{../@xo:id}">
+			<xsl:variable name="selected">
+				<xsl:choose>
+					<xsl:when test="current() = $referencer">true</xsl:when>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:if test="$selected = 'true'">
+				<xsl:attribute name="selected"/>
+			</xsl:if>
+			<xsl:apply-templates select="."/>
+		</option>
 	</xsl:template>
 </xsl:stylesheet>

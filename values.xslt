@@ -20,6 +20,7 @@
 	<xsl:key name="display-text" match="xo:r/@text:*" use="concat(../@xo:id, '::',local-name())" />
 	<xsl:key name="money" match="px:Field[@DataType='money']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
 	<xsl:key name="time" match="px:Field[@DataType='time']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
+	<xsl:key name="file" match="px:Field[@DataType='file']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
 	<xsl:key name="percent" match="px:Field[@DataType='percent']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
 	<xsl:key name="date" match="xo:r/@*[contains(.,'T00:00:00')]" use="concat(ancestor::px:Entity[1]/@xo:id,'::',name())"/>
 
@@ -65,6 +66,10 @@
 
 	<xsl:template match="@*[key('date',concat(ancestor::px:Entity[1]/@xo:id,'::',name()))]">
 		<xsl:value-of select="substring(.,1,10)"/>
+	</xsl:template>
+
+	<xsl:template match="*[concat('datagrid:',@Schema,'.',@Name)]/*/@*[key('file',concat(ancestor::px:Entity[1]/@xo:id,'::',name()))]">
+		<xsl:value-of select="substring-before(substring-after(.,'?name='),'&amp;')"/>
 	</xsl:template>
 
 	<xsl:template match="@*[.='']">

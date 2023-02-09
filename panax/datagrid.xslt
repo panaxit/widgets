@@ -25,19 +25,19 @@
 
 	<xsl:key name="data:wrapper" match="data:rows" use="generate-id()"/>
 
+	<xsl:template match="@*" mode="datagrid:attributes"/>
+
 	<xsl:template mode="datagrid:widget" match="@*">
 		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
 		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows/xo:r/@*|ancestor::px:Entity[1]/data:rows/xo:r/xo:f/@Name"/>
 		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/@xo:id"/>
 		<div class="">
-			<xsl:if test="concat(../@Schema,'.',../@Name)='Reportes.Embarques'">
-				<xsl:attribute name="class"/>
-			</xsl:if>
+			<xsl:apply-templates mode="datagrid:attributes" select="."/>
 			<style>
 				<![CDATA[
 				tr.deleting, tr.deleting:hover {
-				background: red;
-				color:white !important;
+					background: red;
+					color:white !important;
 				}
 
 				tr.deleting:after {

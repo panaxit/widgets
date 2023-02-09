@@ -8,7 +8,8 @@ xmlns:state="http://panax.io/state"
 xmlns:xo="http://panax.io/xover"
 exclude-result-prefixes="#default session sitemap shell state"
 >
-	<xsl:include href="../keys.xslt"/>
+	<xsl:import href="../keys.xslt"/>
+	<xsl:import href="shell.xslt"/>
 	<xsl:output method="xml"
 	   omit-xml-declaration="yes"
 	   indent="yes"/>
@@ -32,180 +33,25 @@ exclude-result-prefixes="#default session sitemap shell state"
 			</script>
 			<style>
 				<![CDATA[
-body {
-  font-family: "Lato", sans-serif;
-}
-
-.sitemap_collapsed .sidebar {
-	width: 0%
-}
-
-.sidebar {
-  height: 100%;
-  width: 100%;
-  min-width: var(--sitemap-min-width,0px);
-  max-width: var(--sitemap-width);
-  position: fixed;
-  z-index: var(--z-index-side-bar) !important;
-  top: 0;
-  left: 0;
-  background-color: rgba(50, 62, 72, 0.9);
-  overflow-x: hidden;
-  transition: 0.5s;
-  margin-top: var(--margin-top-sitemap);
-  padding-top: var(--padding-top-sitemap) !important;
-  padding-bottom: var(--margin-bottom);
-  overflow-y: hidden;
-  overflow-x: clip;
-}
-
-aside * {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(50, 62, 72, 0.9);
-}
-
-/* Works on Chrome, Edge, and Safari */
-aside *::-webkit-scrollbar {
-  width: 12px;
-}
-
-aside *::-webkit-scrollbar-track {
-  background: rgba(50, 62, 72, 0.9);
-}
-
-aside *::-webkit-scrollbar-thumb {
-  background-color: var(--sitemap-scrollbar);
-  border-radius: 20px;
-  border: 3px solid rgba(50, 62, 72, 0.9);
-}
-
 .menu_toggle {
-	color:var(--menu-toggler); 
-	cursor:pointer
+    color: var(--menu-toggler);
+    cursor: pointer
 }
 
-.sitemap_collapsed .menu_toggle {
-	color:unset
+
+aside.sidebar li {
+    padding: 8px 8px 8px 8px;
+    font-size: 1rem;
+    display: block;
+    transition: 0.3s;
 }
 
-.sidebar a {
-  padding: 8px 8px 8px 16px;
-  text-decoration: none;
-  font-size: 1rem;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-a.sidebar-brand {
-  padding-right: 8px;
-}
-
-.sidebar a:hover {
-  color: #f1f1f1;
-}
-
-.sidebar .closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
-}
-
-@media screen and (max-height: 450px) {
-  .sidebar {padding-top: 15px;}
-  .sidebar a {font-size: 18px;}
-}
-
-.sidebar, .sidebar-content, .sidebar-link, a.sidebar-link {
-    background-color: #2A3F54 !important;
-}
-
-.sidebar-nav {
-	padding-bottom: 3.5rem;
-    padding-left: 0;
-    list-style: none;
-}
-
-.sidebar li.sidebar-item:not(.menu):before {
-    background: #425668;
-    bottom: auto;
-    content: "";
-    height: 8px;
-    left: 23px;
-    margin-top: 15px;
-    position: absolute;
-    right: auto;
-    width: 8px;
-    z-index: 1;
-    border-radius: 50%;
-}
-
-.sidebar li.sidebar-item:not(.menu):after {
-    border-left: 1px solid #425668;
-    bottom: 0;
-    content: "";
-    left: 27px;
-    position: absolute;
-    top: 0;
-}
-
-.sidebar li.sidebar-item:not(.menu) a {
-    border-right: 5px solid var(--border-right-sidebar);
-}
-
-.sidebar li.sidebar-item.menu:has(:scope > ul:not(.collapse)) a {
-    border-right: 5px solid var(--border-right-sidebar);
-}
-
-li.sidebar-item {
-	position: relative;
-	white-space: nowrap
-}
-
-li.sidebar-item.menu > a {
-	color: white
-} 
-
-.sidebar-link i, .sidebar-link svg, a.sidebar-link i, a.sidebar-link svg {
-    margin-right: .75rem;
-    color: #fff;
-}
-
-.sidebar-dropdown .sidebar-link {
-    padding: .625rem 1.5rem .625rem 2.75rem;
-    color: #adb5bd;
-    background: #313b4c;
-    font-weight: 400;
-}
-
-.sidebar [data-toggle=collapse]:before {
-    content: " ";
-    border: solid;
-    border-width: 0 .1rem .1rem 0;
-    display: inline-block;
-    padding: 2px;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-    position: absolute;
-    top: 1.2rem;
-    right: 1.25rem;
-    -webkit-transition: all .2s ease-out;
-    transition: all .2s ease-out;
-}
-
-.sidebar-nav > li.menu {
-	padding-left: 1rem;
-}
-
-.sidebar-nav > li.menu > a {
-	padding-left: 0rem;
-}
 ]]>
 			</style>
-			<div style="height:100%; overflow-y:scroll; overflow-x: clip; margin-bottom: var(--margin-bottom)">
+			<header>
 				<xsl:apply-templates mode="sitemap:header" select="current()"/>
+			</header>
+			<div style="height:100%; overflow-y:scroll; overflow-x: clip; margin-bottom: var(--margin-bottom)">
 				<ul class="sidebar-nav sidebar-dropdown">
 					<xsl:apply-templates mode="sitemap:body" select="ancestor-or-self::*[1]/*"/>
 				</ul>
@@ -250,19 +96,12 @@ li.sidebar-item.menu > a {
 	</xsl:template>
 
 	<xsl:template mode="sitemap:header" match="@*">
-		<span class="sidebar-brand mt-1 d-flex" style="padding-left: 15pt; padding-top: .5rem; padding-bottom: .5rem;">
+		<span class="sidebar-brand mt-1 d-flex filter-white" style="padding-left: 15pt; padding-top: .5rem; padding-bottom: .5rem;">
 			<span class="menu_toggle" style="font-size:30px; color:white;" onclick="toggleSidebar()">
 				&#9776;
 			</span>
 			<a href="javascript:void(0)" onclick="toggleSidebar()" style="margin:0;padding:0;">
-				<picture class="logo">
-					<source media="(min-width: 64em)" src="high-res.jpg"/>
-					<source media="(min-width: 37.5em)" src="med-res.jpg"/>
-					<source src="assets/logo.png"/>
-					<img src="assets/logo.png" height="40.61px">
-						<xsl:apply-templates mode="sitemap:img-attributes" select="."/>
-					</img>
-				</picture>
+				<xsl:apply-templates mode="sitemap:brand" select="."/>
 			</a>
 		</span>
 	</xsl:template>
@@ -279,5 +118,9 @@ li.sidebar-item.menu > a {
 		<xsl:attribute name="href">
 			<xsl:value-of select="@target"/>
 		</xsl:attribute>
+	</xsl:template>
+
+	<xsl:template mode="sitemap:brand" match="@*">
+		<xsl:apply-templates mode="shell:nav-brand" select="."/>
 	</xsl:template>
 </xsl:stylesheet>

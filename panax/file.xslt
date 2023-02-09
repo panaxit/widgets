@@ -44,6 +44,9 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 				<xsl:when test="starts-with(current(),'blob:')">
 					<xsl:apply-templates select="key('display-text',concat(../@xo:id, '::',local-name()))"/>
 				</xsl:when>
+				<xsl:when test="contains(current(),'?name=')">
+					<xsl:value-of select="substring-before(substring-after(.,'?name='),'&amp;')"/>
+				</xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="substring-after-last">
 						<xsl:with-param name="string" select="current()" />
@@ -75,6 +78,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
       .datagrid .file_control .progress {display:none;}
       .datagrid .file_control .validar_documento {background-color: silver;}
       .datagrid td {white-space:unset;}
+	  .card-body { min-height: 120px; }	  
     ]]>
 		</style>
 

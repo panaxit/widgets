@@ -13,6 +13,7 @@
   xmlns:px="http://panax.io/entity"
   xmlns:readonly="http://panax.io/state/readonly"
   xmlns:file="http://panax.io/widget/file"
+  xmlns:fileExplorer="http://panax.io/widget/fileExplorer"
   xmlns:percentage="http://panax.io/widget/percentage"
   xmlns:picture="http://panax.io/widget/picture"
   xmlns:modal="http://panax.io/widget/modal"
@@ -30,7 +31,7 @@
   xmlns:container="http://panax.io/layout/container"
   xmlns:association="http://panax.io/datatypes/association"
   xmlns:cardview="http://panax.io/widget/cardview"
-  exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file percentage picture form widget datagrid combobox comboboxButton autocompleteBox autocompleteBoxButton field container association cardview modal tabPanel groupTabPanel"
+  exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file fileExplorer percentage picture form widget datagrid combobox comboboxButton autocompleteBox autocompleteBoxButton field container association cardview modal tabPanel groupTabPanel"
 >
 	<xsl:import href="values.xslt"/>
 	<xsl:import href="keys.xslt"/>
@@ -41,6 +42,7 @@
 	<xsl:import href="panax/picture.xslt"/>
 	<xsl:import href="panax/cardview.xslt"/>
 	<xsl:import href="panax/file.xslt"/>
+	<xsl:import href="panax/fileExplorer.xslt"/>
 	<xsl:import href="panax/percentage.xslt"/>
 	<xsl:import href="panax/combobox.xslt"/>
 	<xsl:import href="panax/autocompleteBox.xslt"/>
@@ -69,7 +71,7 @@
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
 		<xsl:variable name="schema" select="key('reference',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'::header::field:ref::',name()))/.."/>
-		<input type="text" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name()}" onfocus="this.value=(scope.value || this.value)" autocomplete="off">
+		<input type="text" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name()}" onfocus="this.value=(scope.value || this.value)" autocomplete="off" pattern="yyyy-mm-dd">
 			<xsl:attribute name="maxlength">
 				<xsl:value-of select="$schema/@DataLength"/>
 			</xsl:attribute>
@@ -260,6 +262,17 @@
 		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows/xo:r/@*|ancestor::px:Entity[1]/data:rows/xo:r/xo:f/@Name"/>
 		<xsl:param name="layout" select="../*[local-name()='layout']/*/@xo:id"/>
 		<xsl:apply-templates mode="datagrid:widget" select="current()">
+			<xsl:with-param name="schema" select="$schema"/>
+			<xsl:with-param name="dataset" select="$dataset"/>
+			<xsl:with-param name="layout" select="../*/@Name|../*[not(@Name)]/@xo:id"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="key('layout','fileExplorer')/@*">
+		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
+		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows/xo:r/@*|ancestor::px:Entity[1]/data:rows/xo:r/xo:f/@Name"/>
+		<xsl:param name="layout" select="../*[local-name()='layout']/*/@xo:id"/>
+		<xsl:apply-templates mode="fileExplorer:widget" select="current()">
 			<xsl:with-param name="schema" select="$schema"/>
 			<xsl:with-param name="dataset" select="$dataset"/>
 			<xsl:with-param name="layout" select="../*/@Name|../*[not(@Name)]/@xo:id"/>
