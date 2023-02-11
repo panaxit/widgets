@@ -12,7 +12,7 @@
   xmlns:px="http://panax.io/entity"
   exclude-result-prefixes="xo xsl combobox data px"
 >
-	<xsl:import href="../keys.xslt"/>
+	<xsl:import href="keys.xslt"/>
 
 	<xsl:key name="combobox:widget" match="node-expected" use="@xo:id"/>
 
@@ -38,7 +38,7 @@
 				</svg>
 			</button>
 			<ul class="dropdown-menu">
-				<xsl:apply-templates mode="comboboxButton:widget-options" select=".">
+				<xsl:apply-templates mode="comboboxButton:options" select=".">
 					<xsl:with-param name="selection" select="$selection"/>
 					<xsl:with-param name="items" select="$items"/>
 				</xsl:apply-templates>
@@ -46,104 +46,52 @@
 		</span>
 	</xsl:template>
 
-	<xsl:template mode="combobox:route-widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='add']/@*">
-		<xsl:param name="context" select="node-expected"/>
-		<li>
-			<a class="dropdown-item" href="javascript:void(0)" onclick="px.navigateTo('#{ancestor::px:Entity[1]/@Schema}/{ancestor::px:Entity[1]/@Name}~add','')">
-				<xsl:apply-templates mode="widget" select="."/>
-			</a>
-		</li>
+	<xsl:template mode="widget-attributes" match="px:Association/px:Entity/px:Routes/px:Route/@*">
+		<xsl:attribute name="onclick">Promise.reject('Función no implementada')</xsl:attribute>
 	</xsl:template>
 
-	<xsl:template mode="combobox:route-widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='edit']/@*">
-		<xsl:param name="context" select="node-expected"/>
-		<li>
-			<a class="dropdown-item" href="javascript:void(0)" onclick="px.editSelectedOption(selectSingleNode('ancestor::*[xhtml:select]/xhtml:select'))">
-				<xsl:apply-templates mode="widget" select="."/>
-			</a>
-		</li>
+	<xsl:template mode="widget-attributes" match="px:Association/px:Entity/px:Routes/px:Route[@Method='add']/@*">
+		<!--<xsl:attribute name="onclick">px.navigateTo('#<xsl:value-of select="ancestor::px:Entity[1]/@Schema"/>/<xsl:value-of select="ancestor::px:Entity[1]/@Name"/>~add','')</xsl:attribute>-->
+		<xsl:attribute name="href">
+			<xsl:text/>#<xsl:value-of select="ancestor::px:Entity[1]/@Schema"/>/<xsl:value-of select="ancestor::px:Entity[1]/@Name"/>~add<xsl:text/>
+		</xsl:attribute>
+		<xsl:attribute name="xo-scope">disabled</xsl:attribute>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route/@*">
-		<xsl:text></xsl:text>
+	<xsl:template mode="widget-attributes" match="px:Association/px:Entity/px:Routes/px:Route[@Method='edit']/@*">
+		<xsl:attribute name="onclick">px.editSelectedOption(selectSingleNode('ancestor::*[xhtml:select]/xhtml:select'))</xsl:attribute>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='add']/@*" priority="2">
+	<xsl:template match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='add']/@*">
 		<xsl:text>Crear nuevo</xsl:text>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='edit']/@*" priority="2">
+	<xsl:template match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='delete']/@*">
+		<xsl:text>Borrar registro</xsl:text>
+	</xsl:template>
+
+	<xsl:template match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route[@Method='edit']/@*">
 		<xsl:text>Editar registro</xsl:text>
 	</xsl:template>
 
-	<xsl:template mode="comboboxButton:widget-options" match="@*">
+	<xsl:template mode="comboboxButton:options" match="@*">
 		<xsl:param name="selection" select="node-expected"/>
 		<xsl:param name="items" select="*"/>
 		<xsl:variable name="id" select="ancestor-or-self::*[@xo:id][1]/@xo:id"/>
 		<li onclick="scope.$$('descendant-or-self::data:rows[1]').remove()">
 			<a class="dropdown-item" href="#">Actualizar</a>
 		</li>
-		<xsl:apply-templates mode="combobox:route-widget" select="ancestor::px:Entity[1]/px:Routes/px:Route[@Method='add' or @Method='edit']/@xo:id">
-			<xsl:with-param name="context" select="parent::xo:r"/>
+		<xsl:apply-templates mode="widget" select="key('routes',concat(ancestor::px:Entity[1]/@xo:id,'::',name()))">
+			<xsl:with-param name="selection" select="."/>
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<xsl:key name="referencer" match="px:Association/px:Mappings/px:Mapping/@Referencer" use="concat(ancestor::px:Entity[1]/@xo:id,'::',ancestor::px:Association[1]/@AssociationName)"/>
-	<xsl:key name="referencee" match="px:Association/px:Mappings/px:Mapping/@Referencee" use="concat(ancestor::px:Association[1]/@xo:id,'::',.)"/>
-	<xsl:key name="mapping" match="px:Association/px:Mappings/px:Mapping" use="concat(ancestor::px:Association[1]/@xo:id,'::',@Referencer,'::',@Referencee)"/>
 	<xsl:template mode="combobox:widget" match="@*">
-		<xsl:param name="dataset" select="."/>
+		<xsl:param name="dataset" select="key('dataset', concat(ancestor::px:Entity[1]/@xo:id,'::',name()))"/>
 		<xsl:param name="selection" select="."/>
 		<xsl:param name="target" select="."/>
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
-		<!--<xsl:variable name="referencee_entity" select="$dataset/ancestor::px:Association[1]/px:Entity"/>-->
-		<!--<xsl:variable name="selected_value">
-			<xsl:for-each select="key('referencer',concat(ancestor::px:Entity[1]/@xo:id,'::',local-name()))">
-				<xsl:if test="position()&gt;1">/</xsl:if>
-				<xsl:value-of select="$selection/parent::xo:r/@*[name()=current()]"/>
-			</xsl:for-each>
-		</xsl:variable>
-		<xsl:variable name="selected_id">
-			<xsl:for-each select="$dataset/ancestor::px:Association[1]/px:Mappings/px:Mapping/@Referencer">
-				<xsl:if test="position()&gt;1">/</xsl:if>
-				<xsl:value-of select="$selection/parent::xo:r/@*[name()=current()]"/>
-			</xsl:for-each>
-		</xsl:variable>
-		<xsl:variable name="referencers" select="key('referencer',concat(ancestor::px:Entity[1]/@xo:id,'::',local-name()))"/>
-		<xsl:variable name="referencees" select="$dataset/@*[key('referencee',concat(ancestor::px:Association[1]/@xo:id,'::',local-name()))]"/>
-		<xsl:variable name="selected_values">
-			<xsl:for-each select="$referencees">
-				<xsl:variable name="referencee" select="."/>
-				<xsl:variable name="current_position" select="position()"/>
-				<xsl:for-each select="$referencers[key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',.,'::',name($referencee)))]">
-					<xsl:variable name="referencer" select="."/>
-					<xsl:variable name="mappings" select="key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',$referencer,'::',name($referencee)))"/>
-					<xsl:choose>
-						<xsl:when test="not(key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',$referencer,'::',name($referencee)))/preceding-sibling::*)">|</xsl:when>
-						<xsl:otherwise>/</xsl:otherwise>
-					</xsl:choose>
-					--><!--<xsl:value-of select="name($referencee)"/>: <xsl:value-of select="$referencee"/>--><!--
-					<xsl:if test="$referencee=$selection/parent::xo:r/@*[name()=$referencer]">
-						--><!--<xsl:value-of select="count(key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',$referencer,'::',name($referencee)))/preceding-sibling::*)"/>--><!--
-						<xsl:value-of select="$referencee"/>
-						--><!--<xsl:value-of select="position()"/>: <xsl:value-of select="name($referencee)"/>
-						<xsl:value-of select="$referencee"/>--><!--
-					</xsl:if>
-				</xsl:for-each>
-			</xsl:for-each>
-			<xsl:text>|</xsl:text>
-		</xsl:variable>-->
-		<!--$selection: <xsl:value-of select="count($referencees)"/>-->
-		<!--<xsl:variable name="selected_values" select="($dataset/@meta:value|$dataset/@meta:id)[.=$selected_value]"/>-->
-		<!--selected_values: <xsl:value-of select="$selected_values"/>-->
-		<!--<xsl:variable name="referencers">
-				<xsl:for-each select="$dataset/ancestor::px:Association[1]/px:Mappings/px:Mapping/@Referencer">
-					<xsl:if test="position()&gt;1">/</xsl:if>
-					<xsl:value-of select="current()"/>
-				</xsl:for-each>
-			</xsl:variable>-->
-		<!--<xsl:apply-templates mode="combobox:preceding-siblings" select="."/>-->
 		<select class="form-select" xo-scope="{../@xo:id}" xo-attribute="{name()}">
 			<xsl:attribute name="style">
 				<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
@@ -158,21 +106,11 @@
 					<xsl:apply-templates mode="combobox:previous-options" select=".">
 						<xsl:sort select="../@meta:text"/>
 						<xsl:with-param name="selection" select="$selection"/>
-						<!--<xsl:with-param name="referencees" select="$referencees"/>
-						<xsl:with-param name="selected_value" select="$selected_value"/>
-						<xsl:with-param name="selected_values" select="$selected_values"/>-->
 					</xsl:apply-templates>
-					<xsl:apply-templates mode="combobox:option" select="$dataset/@meta:text">
+					<xsl:apply-templates mode="combobox:option" select="$dataset">
 						<xsl:sort select="../@meta:text"/>
 						<xsl:with-param name="referencer" select="$selection"/>
-						<!--<xsl:with-param name="referencees" select="$referencees"/>
-						<xsl:with-param name="selected_value" select="$selected_value"/>
-						<xsl:with-param name="selected_values" select="$selected_values"/>-->
 					</xsl:apply-templates>
-					<!--<xsl:apply-templates mode="combobox:option" select="($dataset|$selection[not($dataset)])/@meta:id|($dataset|$selection)[not($dataset)]/@meta:value">
-							<xsl:sort select="../@meta:text"/>
-							<xsl:with-param name="value" select="@meta:id|@meta:value"/>
-						</xsl:apply-templates>-->
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:attribute name="style">cursor:wait</xsl:attribute>
@@ -196,28 +134,6 @@
 
 	<xsl:template mode="combobox:option" match="@*">
 		<xsl:param name="referencer" select="node-expected|current()"/>
-		<!--
-		<xsl:param name="selected_value"/>
-		<xsl:param name="selected_values"></xsl:param>
-
-		<xsl:param name="referencee_entity" select="ancestor-or-self::*[@meta:type='entity'][1]"/>
-		<xsl:param name="referencees" select="../@meta:value"/>
-		<xsl:variable name="value">
-			<xsl:for-each select="$referencees[../@xo:id=current()]">
-				<xsl:if test="position()!=1">/</xsl:if>
-				<xsl:value-of select="."/>
-			</xsl:for-each>
-		</xsl:variable>
-		<xsl:variable name="visible">
-			<xsl:choose>
-				<xsl:when test="count($referencees[../@xo:id=current()])=1 or translate($selected_values,'|/','')=''">1</xsl:when>
-				<xsl:otherwise>
-					<xsl:for-each select="$referencees[../@xo:id=current()]">
-						<xsl:if test="contains(translate($selected_values,'|','/'),concat('/',.,'/'))">1</xsl:if>
-					</xsl:for-each>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>-->
 		<option value="{.}" xo-scope="{../@xo:id}">
 			<xsl:variable name="selected">
 				<xsl:choose>

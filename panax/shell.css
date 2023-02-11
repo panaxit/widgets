@@ -65,12 +65,12 @@ aside li {
     transition: 0.3s;
 }
 
-aside .menu li.sidebar-item:before {
+aside .menu li.sidebar-item a:before {
     background: #425668;
     bottom: auto;
     content: "";
     height: 8px;
-    left: -22px;
+    left: .4rem;
     margin-top: 10px;
     position: absolute;
     right: auto;
@@ -79,11 +79,11 @@ aside .menu li.sidebar-item:before {
     border-radius: 50%;
 }
 
-aside .menu li.sidebar-item:after {
+aside .menu li.sidebar-item a:after {
     border-left: 1px solid #425668;
     bottom: 0;
     content: "";
-    left: -18px;
+    left: .6rem;
     position: absolute;
     top: 0;
 }
@@ -99,6 +99,12 @@ aside .menu ul {
 
 aside li.sidebar-item.menu:has(:scope > ul:not(.collapse)) a {
     border-right: 5px solid var(--border-right-sidebar);
+}
+
+aside [aria-expanded=true]:before, aside [data-toggle=collapse]:not(.collapsed):before {
+    -webkit-transform: rotate( -45deg );
+    transform: rotate( -45deg );
+    top: 1.4rem;
 }
 
 aside [data-toggle=collapse]:before {
@@ -121,10 +127,10 @@ aside [data-toggle=collapse]:before {
 }
 
 .sidebar {
-    height: 100%;
+    height: calc(100vh - var(--footer-height, var(--margin-bottom)));
     width: 100%;
     min-width: var(--sitemap-min-width,0px);
-    max-width: var(--sitemap-width);
+    max-width: var(--sitemap-width,33.33%);
     position: fixed;
     z-index: var(--z-index-side-bar) !important;
     top: 0;
@@ -174,6 +180,10 @@ aside [data-toggle=collapse]:before {
     background-color: var(--bg-primary-dark, #2A3F54) !important;
 }
 
+.sidebar a.sidebar-link {
+    display: block;
+}
+
 .sidebar-nav {
     padding-bottom: 3.5rem;
     padding-left: 0;
@@ -205,15 +215,8 @@ li.sidebar-item.menu > a {
     color: #adb5bd;
     background: #313b4c;
     font-weight: 400;
-    margin-right: 15px;
-}
-
-.sidebar-nav > li.menu {
-    padding-left: 1rem;
-}
-
-.sidebar-nav > li.menu > a {
-    padding-left: 0rem;
+    padding-right: 15px;
+    padding-left: 1.5rem;
 }
 
 .breadcrumb {
@@ -238,6 +241,12 @@ li.sidebar-item.menu > a {
 .wrapper > header h1 {
     margin-left: var(--sitemap-width);
 }*/
+#shell > header {
+    border-bottom-color: silver;
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+}
+
 .filter-white {
     filter: brightness(0) invert(1);
 }

@@ -29,8 +29,8 @@
 
 	<xsl:template mode="datagrid:widget" match="@*">
 		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
-		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows/xo:r/@*|ancestor::px:Entity[1]/data:rows/xo:r/xo:f/@Name"/>
-		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/@xo:id"/>
+		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows[not(@xsi:nil)][not(xo:r)]/@xo:id|ancestor::px:Entity[1]/data:rows/xo:r"/>
+		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/*/@Name|ancestor::px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id"/>
 		<div class="">
 			<xsl:apply-templates mode="datagrid:attributes" select="."/>
 			<style>
@@ -53,7 +53,6 @@
 				}]]>
 			</style>
 			<xo-listener attribute="xsi:nil"/>
-			<xsl:variable name="rows" select="$dataset/ancestor-or-self::data:rows[1]/xo:r/@xo:id|$dataset[not(self::*) and namespace-uri()='http://www.w3.org/2001/XMLSchema-instance' and local-name()='nil']"/>
 			<table class="table table-striped table-hover table-sm">
 				<thead class="freeze">
 					<xsl:apply-templates mode="datagrid:header" select="current()">
@@ -61,7 +60,7 @@
 						<xsl:with-param name="layout" select="$layout"/>
 					</xsl:apply-templates>
 				</thead>
-				<xsl:apply-templates mode="datagrid:body" select="$rows[1]">
+				<xsl:apply-templates mode="datagrid:body" select="current()">
 					<xsl:with-param name="dataset" select="$dataset"/>
 					<xsl:with-param name="layout" select="$layout"/>
 				</xsl:apply-templates>
@@ -101,18 +100,18 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
 		<xsl:variable name="scope" select="current()"/>
-		<xsl:variable name="row-content" select="../field:ref|../association:ref|../container:tab|../container:panel|../container:tabPanel|../container:subGroupTabPanel"/>
-		<xsl:variable name="row-elements" select="../*[not(@xo:id=$row-content/@xo:id)]"/>
+		<xsl:variable name="row-content" select="$layout[parent::field:ref]|$layout[parent::association:ref]|$layout[parent::container:tab]|$layout[parent::container:panel]|$layout[parent::container:tabPanel]|$layout[parent::container:subGroupTabPanel]"/>
+		<xsl:variable name="row-elements" select="$layout[not(../@xo:id=$row-content/../@xo:id)]"/>
 		<tr class="freeze">
 			<xsl:apply-templates mode="datagrid:row-header" select="."/>
-			<xsl:apply-templates mode="datagrid:header" select="$row-content/@Name|$row-content[not(@Name)]/@xo:id">
+			<xsl:apply-templates mode="datagrid:header" select="$row-content">
 				<xsl:with-param name="dataset" select="$dataset"/>
 				<xsl:with-param name="context">header</xsl:with-param>
 				<xsl:with-param name="layout" select="current()"/>
 			</xsl:apply-templates>
 			<xsl:apply-templates mode="datagrid:row-footer" select="."/>
 		</tr>
-		<xsl:apply-templates mode="datagrid:header" select="$row-elements/@Name|$row-elements[not(@Name)]/@xo:id">
+		<xsl:apply-templates mode="datagrid:header" select="$row-elements">
 			<xsl:with-param name="dataset" select="$dataset"/>
 			<xsl:with-param name="context">header</xsl:with-param>
 			<xsl:with-param name="layout" select="current()"/>
@@ -181,8 +180,7 @@
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
 		<xsl:variable name="rows" select="$dataset/ancestor-or-self::data:rows[1]/xo:r/@xo:id|$dataset[not(self::*) and namespace-uri()='http://www.w3.org/2001/XMLSchema-instance' and local-name()='nil']"/>
 		<tbody class="table-group-divider">
-			<xsl:apply-templates mode="datagrid:row" select="$rows">
-				<xsl:with-param name="dataset" select="$dataset"/>
+			<xsl:apply-templates mode="datagrid:row" select="$dataset/@xo:id">
 				<xsl:with-param name="context" select="$context"/>
 				<xsl:with-param name="layout" select="$layout"/>
 			</xsl:apply-templates>
@@ -297,6 +295,7 @@
 	<xsl:template mode="datagrid:row-body" match="@*">
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="dataset" select="node-expected"/>
+		<xsl:variable name="row" select="$dataset"/>
 		<xsl:variable name="current" select="current()"/>
 		<xsl:variable name="cell_type">
 			<xsl:choose>
@@ -314,7 +313,7 @@
 			<xsl:apply-templates mode="datagrid:cell-attributes" select="current()"/>
 			<xsl:apply-templates mode="datagrid:cell-content" select="current()">
 				<xsl:with-param name="context" select="$context"/>
-				<xsl:with-param name="dataset" select="$dataset"/>
+				<xsl:with-param name="dataset" select="$row[not(self::*)]|$row/@*|$row/xo:f/@Name|$row/px:Association/@AssociationName"/>
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>

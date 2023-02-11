@@ -51,10 +51,10 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				
 				main { 
 					overflow-y: scroll;
-					height: calc(100vh - var(--header-height,0px) - var(--nav-height,0px) - var(--footer-height, 0px));
+					height: calc(100vh - var(--header-height,0px) - var(--nav-height,0px) - var(--footer-height, 2rem));
 				}
 				
-				nav header h1 {
+				#shell > header h1 {
 					color: var(--color-title-header);
 					margin-bottom: 0;
 					margin-left: 5px;
@@ -64,13 +64,14 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					border-top: 2px solid silver !important;
 					position: fixed;
 					bottom: 0;
-					height: var(--footer-height, 0px);
+					height: var(--footer-height);
 					background-color: var(--bg-white) !important;
 					padding-top: 0 !important;
 					padding-left: 0 !important;
 					z-index: 98;
 					width: 100%;
 					overflow: hidden;
+					transition: 0.5s;
 				}
 				
 				.menu_toggle {

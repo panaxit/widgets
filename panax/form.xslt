@@ -21,15 +21,16 @@
 
 	<xsl:template mode="form:widget" match="@*">
 		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
-		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows/xo:r/@*|ancestor::px:Entity[1]/data:rows/xo:r/xo:f/@Name"/>
-		<xsl:param name="layout" select="parent::*[not(local-name()='layout')]|ancestor::px:Entity[1]/*[local-name()='layout']/*/@xo:id"/>
+		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows[not(@xsi:nil)][not(xo:r)]/@xo:id|ancestor::px:Entity[1]/data:rows/xo:r"/>
+		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/*/@Name|ancestor::px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id"/>
 		<xsl:param name="selection" select="node-expected"/>
-		<xsl:for-each select="$dataset/ancestor-or-self::xo:r[1]/@xo:id">
-			<form class="form-view needs-validation col-12" novalidate="">
+		<xsl:for-each select="$dataset">
+			<xsl:variable name="row" select="current()"/>
+			<form class="form-view needs-validation col-12 g-3 fluid-container" novalidate="">
 				<div class="col-12 g-3">
 					<xsl:apply-templates mode="form:field" select="$layout">
 						<xsl:with-param name="schema" select="$schema"/>
-						<xsl:with-param name="dataset" select="ancestor-or-self::xo:r/@*"/>
+						<xsl:with-param name="dataset" select="$row[not(self::*)]|$row/@*|$row/xo:f/@Name|$row/px:Association/@AssociationName"/>
 					</xsl:apply-templates>
 				</div>
 			</form>
@@ -65,7 +66,7 @@
 	<xsl:template mode="form:field" match="@*">
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="schema" select="node-expected"/>
-		<xsl:variable name="value" select="$dataset/@*[local-name()=current()/@Name]|$schema[self::px:Association[not(@Type='belongsTo')]]/px:Entity"/>
+		<xsl:variable name="value" select="$dataset/parent::xo:r/@*[local-name()=current()/@Name]|$schema[self::px:Association[not(@Type='belongsTo')]]/px:Entity"/>
 		<xsl:variable name="headerText">
 			<xsl:apply-templates mode="form:field-header" select="current()">
 				<xsl:with-param name="schema" select="$schema"/>
@@ -99,7 +100,8 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:variable name="value" select="$dataset/@*[local-name()=current()/@Name]|$schema[../self::px:Association[not(@Type='belongsTo')]]/../px:Entity/@xo:id"/>
-		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$dataset/../px:Association[@AssociationName=current()]/@AssociationName"/>
+		<!--<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$dataset/parent::xo:r/px:Association[@AssociationName=current()]/@AssociationName|$dataset/parent::data:rows/../px:Record/px:Association[@AssociationName=current()]/@AssociationName"/>-->
+		<xsl:variable name="ref_field" select="$dataset[.=current()]/parent::px:Association/px:Entity/@xo:id"/>
 		<xsl:variable name="headerText">
 			<xsl:apply-templates mode="form:field-header" select="current()"/>
 		</xsl:variable>
@@ -111,34 +113,7 @@
 						<xsl:text>: </xsl:text>
 					</legend>
 				</xsl:if>
-				<xsl:apply-templates mode="widget" select="$ref_field">
-					<xsl:with-param name="schema" select="$schema"/>
-					<xsl:with-param name="reference" select="$schema/self::px:Association"/>
-				</xsl:apply-templates>
-			</fieldset>
-		</div>
-	</xsl:template>
-
-	<xsl:template mode="form:field" match="*[key('association',@xo:id)][key('foreignTable',concat(ancestor::px:Entity[1]/@xo:id,'::',@Name))]/@*">
-		<xsl:param name="dataset" select="node-expected"/>
-		<xsl:param name="schema" select="node-expected"/>
-		<xsl:variable name="value" select="$dataset/@*[local-name()=current()/@Name]|$schema[../self::px:Association[not(@Type='belongsTo')]]/../px:Entity/@xo:id"/>
-		<xsl:variable name="ref_field" select="$dataset/parent::*[not(@Name)]/@*[local-name()=current()]|$dataset/../px:Association[@AssociationName=current()]/@AssociationName"/>
-		<xsl:variable name="headerText">
-			<xsl:apply-templates mode="form:field-header" select="current()"/>
-		</xsl:variable>
-		<div class="mb-3 row" xo-sections="{$dataset/@xo:id}">
-			<fieldset>
-				<xsl:if test="$headerText!=''">
-					<legend>
-						<xsl:value-of select="$headerText"/>
-						<xsl:text>: </xsl:text>
-					</legend>
-				</xsl:if>
-				<xsl:apply-templates mode="widget" select="$ref_field">
-					<xsl:with-param name="schema" select="$schema"/>
-					<xsl:with-param name="reference" select="$schema/self::px:Association"/>
-				</xsl:apply-templates>
+				<xsl:apply-templates mode="widget" select="$ref_field"/>
 			</fieldset>
 		</div>
 	</xsl:template>
@@ -156,6 +131,7 @@
 				<xsl:text>form-floating input-group</xsl:text>
 			</xsl:attribute>
 			<xsl:apply-templates mode="widget" select="current()"/>
+			<xsl:apply-templates mode="widget-routes" select="current()"/>
 			<label for="{../@xo:id}" class="floating-label">
 				<xsl:value-of select="$label"/>:
 			</label>

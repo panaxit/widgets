@@ -38,12 +38,22 @@ exclude-result-prefixes="#default session sitemap shell state"
     cursor: pointer
 }
 
+aside.sidebar {
+	max-width: var(--sitemap-width, 33%);
+}
 
 aside.sidebar li {
-    padding: 8px 8px 8px 8px;
     font-size: 1rem;
     display: block;
+}
+
+aside.sidebar a {
+    padding: 8px 8px 8px 8px;
     transition: 0.3s;
+}
+
+aside.sidebar ul {
+	height:100%; overflow-y:scroll; overflow-x: clip;
 }
 
 ]]>
@@ -51,12 +61,10 @@ aside.sidebar li {
 			<header>
 				<xsl:apply-templates mode="sitemap:header" select="current()"/>
 			</header>
-			<div style="height:100%; overflow-y:scroll; overflow-x: clip; margin-bottom: var(--margin-bottom)">
-				<ul class="sidebar-nav sidebar-dropdown">
-					<xsl:apply-templates mode="sitemap:body" select="ancestor-or-self::*[1]/*"/>
-				</ul>
-				<xsl:apply-templates mode="sitemap:footer" select="current()"/>
-			</div>
+			<ul class="sidebar-nav sidebar-dropdown">
+				<xsl:apply-templates mode="sitemap:body" select="ancestor-or-self::*[1]/*"/>
+			</ul>
+			<xsl:apply-templates mode="sitemap:footer" select="current()"/>
 		</aside>
 	</xsl:template>
 
