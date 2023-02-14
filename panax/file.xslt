@@ -45,7 +45,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 					<xsl:apply-templates select="key('display-text',concat(../@xo:id, '::',local-name()))"/>
 				</xsl:when>
 				<xsl:when test="contains(current(),'?name=')">
-					<xsl:value-of select="substring-before(substring-after(.,'?name='),'&amp;')"/>
+					<xsl:value-of select="substring-before(substring-after(concat(.,'&amp;'),'?name='),'&amp;')"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="substring-after-last">

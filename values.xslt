@@ -69,7 +69,7 @@
 	</xsl:template>
 
 	<xsl:template match="*[concat('datagrid:',@Schema,'.',@Name)]/*/@*[key('file',concat(ancestor::px:Entity[1]/@xo:id,'::',name()))]">
-		<xsl:value-of select="substring-before(substring-after(.,'?name='),'&amp;')"/>
+		<xsl:value-of select="substring-before(substring-after(concat(.,'&amp;'),'?name='),'&amp;')"/>
 	</xsl:template>
 
 	<xsl:template match="@*[.='']">

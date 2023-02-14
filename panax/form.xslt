@@ -132,11 +132,22 @@
 			</xsl:attribute>
 			<xsl:apply-templates mode="widget" select="current()"/>
 			<xsl:apply-templates mode="widget-routes" select="current()"/>
-			<label for="{../@xo:id}" class="floating-label">
-				<xsl:value-of select="$label"/>:
-			</label>
+			<xsl:apply-templates mode="form:field-body-append" select="current()">
+				<xsl:with-param name="label" select="$label"/>
+			</xsl:apply-templates>
 		</div>
 	</xsl:template>
+
+	<xsl:template mode="form:field-body-append" match="@*">
+		<xsl:param name="label">
+			<xsl:apply-templates mode="headerText" select="."/>
+		</xsl:param>
+		<label for="{../@xo:id}" class="floating-label">
+			<xsl:value-of select="$label"/>:
+		</label>
+	</xsl:template>
+
+	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('file:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
 
 	<xsl:template mode="form:field-body" match="field:ref/@*">
 		<xsl:param name="dataset" select="node-expected"/>

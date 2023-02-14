@@ -14,6 +14,7 @@
   xmlns:readonly="http://panax.io/state/readonly"
   xmlns:file="http://panax.io/widget/file"
   xmlns:fileExplorer="http://panax.io/widget/fileExplorer"
+  xmlns:calendar="http://panax.io/widget/calendar"
   xmlns:percentage="http://panax.io/widget/percentage"
   xmlns:picture="http://panax.io/widget/picture"
   xmlns:modal="http://panax.io/widget/modal"
@@ -31,7 +32,7 @@
   xmlns:container="http://panax.io/layout/container"
   xmlns:association="http://panax.io/datatypes/association"
   xmlns:cardview="http://panax.io/widget/cardview"
-  exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file fileExplorer percentage picture form widget datagrid combobox comboboxButton autocompleteBox autocompleteBoxButton field container association cardview modal tabPanel groupTabPanel"
+  exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file fileExplorer calendar percentage picture form widget datagrid combobox comboboxButton autocompleteBox autocompleteBoxButton field container association cardview modal tabPanel groupTabPanel"
 >
 	<xsl:import href="values.xslt"/>
 	<xsl:import href="panax/keys.xslt"/>
@@ -43,6 +44,7 @@
 	<xsl:import href="panax/cardview.xslt"/>
 	<xsl:import href="panax/file.xslt"/>
 	<xsl:import href="panax/fileExplorer.xslt"/>
+	<xsl:import href="panax/calendar.xslt"/>
 	<xsl:import href="panax/percentage.xslt"/>
 	<xsl:import href="panax/combobox.xslt"/>
 	<xsl:import href="panax/autocompleteBox.xslt"/>
@@ -70,7 +72,7 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
-		<xsl:variable name="schema" select="key('reference',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'::header::field:ref::',name()))/.."/>
+		<xsl:variable name="schema" select="key('reference',concat(ancestor::px:Entity[1]/@xo:id,'::header::field:ref::',name()))/.."/>
 		<input type="text" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name()}" onfocus="this.value=(scope.value || this.value)" autocomplete="off" pattern="yyyy-mm-dd">
 			<xsl:attribute name="maxlength">
 				<xsl:value-of select="$schema/@DataLength"/>
@@ -172,7 +174,7 @@
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template mode="widget" match="@*[key('widget',concat('combobox:',ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'::',name()))]">
+	<xsl:template mode="widget" match="@*[key('widget',concat('combobox:',ancestor::px:Entity[1]/@xo:id,'::',name()))]">
 		<xsl:apply-templates mode="combobox:widget" select="."/>
 	</xsl:template>
 
@@ -188,21 +190,21 @@
 	
 	<xsl:template mode="widget-routes" match="@*"/>
 	
-	<xsl:template mode="widget-routes" match="@*[key('widget',concat('combobox:',ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'::',name()))]">
+	<xsl:template mode="widget-routes" match="@*[key('widget',concat('combobox:',ancestor::px:Entity[1]/@xo:id,'::',name()))]">
 		<xsl:apply-templates mode="comboboxButton:widget" select="."/>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="@*[key('widget',concat('autocompleteBox:',ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'/',name()))]">
+	<xsl:template mode="widget" match="@*[key('widget',concat('autocompleteBox:',ancestor::px:Entity[1]/@xo:id,'::',name()))]">
 		<xsl:apply-templates mode="autocompleteBox:widget" select=".">
-			<xsl:with-param name="dataset" select="key('dataset',concat(ancestor::px:Entity[1]/@xo:id,'/',name()))"/>
+			<xsl:with-param name="dataset" select="key('dataset',concat(ancestor::px:Entity[1]/@xo:id,'::',name()))"/>
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="@*[key('widget',concat('file:',ancestor::*[@meta:type='entity'][1]/@xo:id,'/',name()))]">
+	<xsl:template mode="widget" match="@*[key('widget',concat('file:',ancestor::px:Entity[1]/@xo:id,'::',name()))]">
 		<xsl:apply-templates mode="file:widget" select="."/>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="@*[key('widget',concat('percentage:',ancestor::*[@meta:type='entity'][1]/@xo:id,'/',name()))]">
+	<xsl:template mode="widget" match="@*[key('widget',concat('percentage:',ancestor::px:Entity[1]/@xo:id,'::',name()))]">
 		<xsl:apply-templates mode="percentage:widget" select="."/>
 	</xsl:template>
 
@@ -217,7 +219,7 @@
 		</input>
 	</xsl:template>
 
-	<!--<xsl:template mode="widget" match="@*[key('widget',concat('datagrid:',ancestor::px:Entity[1]/@xo:id,'/',name()))]">
+	<!--<xsl:template mode="widget" match="@*[key('widget',concat('datagrid:',ancestor::px:Entity[1]/@xo:id,'::',name()))]">
 		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
 		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows/xo:r/@*|ancestor::px:Entity[1]/data:rows/xo:r/xo:f/@Name"/>
 		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/@xo:id"/>
@@ -284,6 +286,17 @@
 		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows[not(@xsi:nil)][not(xo:r)]/@xo:id|ancestor::px:Entity[1]/data:rows/xo:r"/>
 		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/*/@Name|ancestor::px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id"/>
 		<xsl:apply-templates mode="fileExplorer:widget" select="current()">
+			<xsl:with-param name="schema" select="$schema"/>
+			<xsl:with-param name="dataset" select="$dataset"/>
+			<xsl:with-param name="layout" select="$layout"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="@*[key('widget',concat('calendar:',ancestor::px:Entity[1]/@xo:id,'::',parent::px:Entity/@Schema,'/',parent::px:Entity/@Name))]">
+		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
+		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows[not(@xsi:nil)][not(xo:r)]/@xo:id|ancestor::px:Entity[1]/data:rows/xo:r"/>
+		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/*/@Name|ancestor::px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id"/>
+		<xsl:apply-templates mode="calendar:widget" select="current()">
 			<xsl:with-param name="schema" select="$schema"/>
 			<xsl:with-param name="dataset" select="$dataset"/>
 			<xsl:with-param name="layout" select="$layout"/>
@@ -363,7 +376,7 @@
 		<xsl:apply-templates mode="widget" select="../*"/>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="@*[key('widget',concat('picture:',ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'::',name()))]">
+	<xsl:template mode="widget" match="@*[key('widget',concat('picture:',ancestor::px:Entity[1]/@xo:id,'::',name()))]">
 		<xsl:apply-templates mode="file:widget" select="."/>
 	</xsl:template>
 
@@ -386,8 +399,8 @@
 		<div class="skeleton skeleton-text skeleton-text__body">&#160;</div>
 	</xsl:template>
 
-	<xsl:template mode="combobox:following-siblings" match="*[key('form:widget',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'/','xo:id'))]/data:rows/*/@*">
-		<xsl:apply-templates mode="comboboxButton:widget" select="key('entity',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'/',name()))/@xo:id">
+	<xsl:template mode="combobox:following-siblings" match="*[key('form:widget',concat(ancestor::px:Entity[1]/@xo:id,'::','xo:id'))]/data:rows/*/@*">
+		<xsl:apply-templates mode="comboboxButton:widget" select="key('entity',concat(ancestor::px:Entity[1]/@xo:id,'::',name()))/@xo:id">
 			<xsl:with-param name="selection" select="."/>
 		</xsl:apply-templates>
 	</xsl:template>

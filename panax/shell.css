@@ -245,6 +245,7 @@ li.sidebar-item.menu > a {
     border-bottom-color: silver;
     border-bottom-style: solid;
     border-bottom-width: thin;
+    z-index: 1002;
 }
 
 .filter-white {
