@@ -54,9 +54,7 @@ aside.sidebar a {
 
 aside.sidebar ul {
 	height:100%; overflow-y:scroll; overflow-x: clip;
-}
-
-]]>
+}]]>
 			</style>
 			<header>
 				<xsl:apply-templates mode="sitemap:header" select="current()"/>
