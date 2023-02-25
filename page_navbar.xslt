@@ -19,27 +19,31 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 
 	<xsl:template match="/">
 		<nav class="page-menu">
-			<xsl:apply-templates/>
+			<style>
+				<![CDATA[.page-menu {
+			    height: var(--nav-height);
+			}
+			.page-menu > * {
+			    margin-bottom: var(--nav-padding-bottom, .25rem) !important;
+				margin-top: var(--nav-padding-top, .25rem) !important;
+				margin-right: var(--nav-padding-right, 1rem) !important;
+				margin-left: var(--nav-padding-left, 1rem) !important;
+			}
+			]]>
+			</style>
+			<xsl:apply-templates mode="widget"/>
 		</nav>
 	</xsl:template>
 
-	<xsl:template match="px:Entity//*">
+	<xsl:template mode="widget" match="px:Entity">
+		<xsl:apply-templates mode="widget" select="data:rows"/>
 	</xsl:template>
 
-	<xsl:template match="px:Entity[@xsi:type='datagrid:control']/data:rows">
+	<xsl:template mode="widget" match="px:Entity[@xsi:type='datagrid:control']/data:rows">
 		<xsl:apply-templates mode="widget" select="../px:Parameters"/>
 	</xsl:template>
 
 	<xsl:template mode="widget" match="px:Parameters[px:Parameter]">
-		<style>
-			<![CDATA[.page-menu {
-			    height: var(--nav-height,0px);
-				padding-top: var(--nav-padding-top, .5rem) !important;
-				padding-right: var(--nav-padding-right, 1rem) !important;
-				padding-left: var(--nav-padding-left, 1rem) !important;
-			}
-			]]>
-		</style>
 		<style>
 			:root { --nav-height: 46px; }
 		</style>
@@ -91,21 +95,4 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 			<xsl:value-of select="@meta:text"/>
 		</option>
 	</xsl:template>
-
-	<!--<xsl:key name="parameter-options" match="px:Parameter[not(@data:rows)][@parameterName='@Estatus']" use="@parameterName"/>
-	<xsl:template mode="widget:options" match="key('parameter-options','@Estatus')">
-		<xsl:param name="catalog" select="xo:dummy"/>
-		<xsl:variable name="value" select="@value"/>
-		<option value="null">Todos</option>
-		<option>
-			<xsl:if test="$value='Abierto'">
-				<xsl:attribute name="selected"/>
-			</xsl:if> Abierto
-		</option>
-		<option>
-			<xsl:if test="$value='Cerrado'">
-				<xsl:attribute name="selected"/>
-			</xsl:if>Cerrado
-		</option>
-	</xsl:template>-->
 </xsl:stylesheet>

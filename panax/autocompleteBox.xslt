@@ -11,6 +11,7 @@
   xmlns:px="http://panax.io/entity"
   exclude-result-prefixes="xo xsl autocompleteBox data px"
 >
+	<xsl:import href="keys.xslt"/>
 	<xsl:key name="autocompleteBox:widget" match="node-expected" use="@xo:id"/>
 
 	<xsl:template mode="widget-attributes" match="@*" priority="-1"/>
@@ -66,49 +67,11 @@
 	<xsl:key name="referencee" match="px:Association/px:Mappings/px:Mapping/@Referencee" use="concat(ancestor::px:Association[1]/@xo:id,'::',.)"/>
 	<xsl:key name="mapping" match="px:Association/px:Mappings/px:Mapping" use="concat(ancestor::px:Association[1]/@xo:id,'::',@Referencer,'::',@Referencee)"/>
 	<xsl:template mode="autocompleteBox:widget" match="@*">
-		<xsl:param name="dataset" select="."/>
+		<xsl:param name="dataset" select="key('dataset', concat(ancestor::px:Entity[1]/@xo:id,'::',name()))"/>
 		<xsl:param name="selection" select="."/>
 		<xsl:param name="target" select="."/>
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
-		<xsl:variable name="referencee_entity" select="$dataset/ancestor::px:Association[1]/px:Entity"/>
-		<xsl:variable name="selected_value">
-			<xsl:for-each select="key('referencer',concat(ancestor::px:Entity[1]/@xo:id,'::',local-name()))">
-				<xsl:if test="position()&gt;1">/</xsl:if>
-				<xsl:value-of select="$selection/parent::xo:r/@*[name()=current()]"/>
-			</xsl:for-each>
-		</xsl:variable>
-		<xsl:variable name="selected_id">
-			<xsl:for-each select="$dataset/ancestor::px:Association[1]/px:Mappings/px:Mapping/@Referencer">
-				<xsl:if test="position()&gt;1">/</xsl:if>
-				<xsl:value-of select="$selection/parent::xo:r/@*[name()=current()]"/>
-			</xsl:for-each>
-		</xsl:variable>
-		<xsl:variable name="referencers" select="key('referencer',concat(ancestor::px:Entity[1]/@xo:id,'::',local-name()))"/>
-		<xsl:variable name="referencees" select="$dataset/@*[key('referencee',concat(ancestor::px:Association[1]/@xo:id,'::',local-name()))]"/>
-		<xsl:variable name="selected_values">
-			<xsl:for-each select="$referencees">
-				<xsl:variable name="referencee" select="."/>
-				<xsl:variable name="current_position" select="position()"/>
-				<xsl:for-each select="$referencers[key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',.,'::',name($referencee)))]">
-					<xsl:variable name="referencer" select="."/>
-					<xsl:variable name="mappings" select="key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',$referencer,'::',name($referencee)))"/>
-					<xsl:choose>
-						<xsl:when test="not(key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',$referencer,'::',name($referencee)))/preceding-sibling::*)">|</xsl:when>
-						<xsl:otherwise>/</xsl:otherwise>
-					</xsl:choose>
-					<!--<xsl:value-of select="name($referencee)"/>: <xsl:value-of select="$referencee"/>-->
-					<xsl:if test="$referencee=$selection/parent::xo:r/@*[name()=$referencer]">
-						<!--<xsl:value-of select="count(key('mapping',concat(ancestor::px:Association[1]/@xo:id,'::',$referencer,'::',name($referencee)))/preceding-sibling::*)"/>-->
-						<xsl:value-of select="$referencee"/>
-						<!--<xsl:value-of select="position()"/>: <xsl:value-of select="name($referencee)"/>
-						<xsl:value-of select="$referencee"/>-->
-					</xsl:if>
-				</xsl:for-each>
-			</xsl:for-each>
-			<xsl:text>|</xsl:text>
-		</xsl:variable>
-		<xsl:variable name="scope" select="."/>
 		<input type="text" class="form-control dropdown-toggle" xo-scope="{../@xo:id}" xo-attribute="search:{local-name()}" autocomplete="off" onblur="this.value='{.}'; /*nextElementSibling.querySelector('ul').style.display='none';*/" onfocus="px.loadData(scope.parentNode.$(`ancestor-or-self::px:Entity[1]/px:Record/px:Association[@AssociationName='{local-name()}']/px:Entity`)); nextElementSibling.querySelector('ul').classList.toggle('show'); this.value=(this.scope.value || this.value); this.scope.value &amp;&amp; filterOptions(); this.select()" keydown="filterOptions()" style="position: relative" value="{.}">
 			<xsl:attribute name="style">
 				<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
@@ -120,7 +83,7 @@
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
 				<path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
 			</svg>
-			<ul id="datalist_{../@xo:id}_{local-name()}" class="dropdown-menu dropdown-menu-start" aria-labelledby="dropdownMenuLink" data-bs-popper="none">
+			<ul id="datalist_{../@xo:id}_{local-name()}" class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink" data-bs-popper="none">
 				<xsl:choose>
 					<xsl:when test="$dataset[local-name()='nil' and namespace-uri()='http://www.w3.org/2001/XMLSchema-instance'] or not($dataset|$selection[not($dataset)])">
 						<li value="" class="dropdown-item">Sin opciones</li>
@@ -129,21 +92,11 @@
 						<xsl:apply-templates mode="autocompleteBox:previous-options" select=".">
 							<xsl:sort select="../@meta:text"/>
 							<xsl:with-param name="selection" select="$selection"/>
-							<xsl:with-param name="referencees" select="$referencees"/>
-							<xsl:with-param name="selected_value" select="$selected_value"/>
-							<xsl:with-param name="selected_values" select="$selected_values"/>
 						</xsl:apply-templates>
-						<xsl:apply-templates mode="autocompleteBox:option" select="$referencees/../@xo:id">
+						<xsl:apply-templates mode="autocompleteBox:option" select="$dataset">
 							<xsl:sort select="../@meta:text"/>
 							<xsl:with-param name="referencer" select="$selection"/>
-							<xsl:with-param name="referencees" select="$referencees"/>
-							<xsl:with-param name="selected_value" select="$selected_value"/>
-							<xsl:with-param name="selected_values" select="$selected_values"/>
 						</xsl:apply-templates>
-						<!--<xsl:apply-templates mode="autocompleteBox:option" select="($dataset|$selection[not($dataset)])/@meta:id|($dataset|$selection)[not($dataset)]/@meta:value">
-							<xsl:sort select="../@meta:text"/>
-							<xsl:with-param name="value" select="@meta:id|@meta:value"/>
-						</xsl:apply-templates>-->
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:attribute name="style">cursor:wait</xsl:attribute>
@@ -160,7 +113,8 @@
 				<![CDATA[
 		function filterOptions() {
 			let inputField = event.srcElement;
-			let optionsList = inputField.nextElementSibling;
+			let optionsList = inputField.nextElementSibling.querySelector("ul");
+			optionsList.style.width = inputField.parentNode.clientWidth+'px';
 			let options = optionsList.getElementsByTagName("li");
 			filtered_options = []
 			for (let option of options) {
@@ -176,6 +130,7 @@
 
         let optionsList = top.document.getElementById("datalist_]]><xsl:value-of select="concat(../@xo:id,'_',local-name())"/><![CDATA[");
 		let inputField = optionsList.parentNode.previousElementSibling;
+		optionsList.style.width = inputField.parentNode.clientWidth+'px';
         let options = optionsList.getElementsByTagName("li");
 		inputField.addEventListener("keydown", (event) => {
 			if (!['ArrowDown','ArrowUp','Tab','Escape'].includes(event.key)) return null;
@@ -221,50 +176,22 @@
 
 	<xsl:template mode="autocompleteBox:previous-options" match="@*">
 		<li class="dropdown-item disabled" value="">
-			Selecciona...
+			<xsl:text/>Selecciona...<xsl:text/>
 		</li>
 	</xsl:template>
 
 	<xsl:template mode="autocompleteBox:option" match="@*">
 		<xsl:param name="referencer" select="node-expected|current()"/>
-		<xsl:param name="selected_value"/>
-		<xsl:param name="selected_values"></xsl:param>
-
-		<xsl:param name="referencee_entity" select="ancestor-or-self::*[@meta:type='entity'][1]"/>
-		<xsl:param name="referencees" select="../@meta:value"/>
-		<xsl:variable name="value">
-			<xsl:for-each select="$referencees[../@xo:id=current()]">
-				<xsl:if test="position()!=1">/</xsl:if>
-				<xsl:value-of select="."/>
-			</xsl:for-each>
-		</xsl:variable>
-		<xsl:variable name="visible">
-			<xsl:choose>
-				<xsl:when test="count($referencees[../@xo:id=current()])=1 or translate($selected_values,'|/','')=''">1</xsl:when>
-				<xsl:otherwise>
-					<xsl:for-each select="$referencees[../@xo:id=current()]">
-						<xsl:if test="contains(translate($selected_values,'|','/'),concat('/',.,'/'))">1</xsl:if>
-					</xsl:for-each>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:if test="$visible!=''">
-			<li class="dropdown-item" value="{$value}" xo-scope="{../@xo:id}">
-				<xsl:variable name="selected">
-					<xsl:choose>
-						<xsl:when test="current() = $selected_value">true</xsl:when>
-						<xsl:when test="contains($selected_values,concat('|',$value,'|'))">true</xsl:when>
-					</xsl:choose>
-				</xsl:variable>
-				<xsl:if test="$selected = 'true'">
-					<xsl:attribute name="selected"/>
-				</xsl:if>
-				<!--<xsl:value-of select="$value"/>:
-				<xsl:value-of select="$visible"/>:-->
-				<xsl:apply-templates select="current()/../@*[name()=$referencee_entity/@custom:displayText]|../@meta:text[not($referencee_entity/@custom:displayText)]|current()[not(../@meta:text)]">
-					<xsl:with-param name="referencer" select="$referencer"/>
-				</xsl:apply-templates>
-			</li>
-		</xsl:if>
+		<li class="dropdown-item" xo-scope="{../@xo:id}">
+			<xsl:variable name="selected">
+				<xsl:choose>
+					<xsl:when test="current() = $referencer">true</xsl:when>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:if test="$selected = 'true'">
+				<xsl:attribute name="selected"/>
+			</xsl:if>
+			<xsl:apply-templates select="."/>
+		</li>
 	</xsl:template>
 </xsl:stylesheet>

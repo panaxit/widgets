@@ -10,6 +10,7 @@
   xmlns:control="http://www.w3.org/2001/XMLSchema-instance"
   exclude-result-prefixes="px form datagrid combobox control data"
 >
+	<xsl:key name="entity" match="px:Entity" use="@xo:id"/>
 	<xsl:key name="entity" match="px:Entity" use="concat(@Schema,'/',@Name)"/>
 	<xsl:key name="entity" match="px:Entity[@control:type='datagrid:control']" use="concat('datagrid:',@Schema,'/',@Name)"/>
 	<xsl:key name="datagrid:item" match="px:Entity[@controlType='datagridView']/*[local-name()='layout']//*" use="@xo:id"/>

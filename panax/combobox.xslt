@@ -78,7 +78,7 @@
 		<xsl:param name="selection" select="node-expected"/>
 		<xsl:param name="items" select="*"/>
 		<xsl:variable name="id" select="ancestor-or-self::*[@xo:id][1]/@xo:id"/>
-		<li onclick="scope.$$('descendant-or-self::data:rows[1]').remove()">
+		<li onclick="px.refreshCatalog(this)">
 			<a class="dropdown-item" href="#">Actualizar</a>
 		</li>
 		<xsl:apply-templates mode="widget" select="key('routes',concat(ancestor::px:Entity[1]/@xo:id,'::',name()))">

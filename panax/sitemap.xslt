@@ -30,7 +30,7 @@ exclude-result-prefixes="#default session sitemap shell state"
 			        toggleSidebar(false);
 				}
 			})]]>
-			</script>
+			</script>			
 			<style>
 				<![CDATA[
 .menu_toggle {

@@ -19,6 +19,9 @@ exclude-result-prefixes="#default xsl px xo xsi route"
 	<xsl:param name="site:active"/>
 	<xsl:key name="changed" match="@initial:*" use="concat(../@xo:id,'::',local-name())"/>
 
+	<xsl:key name="changed" match="@initial:*" use="../@xo:id"/>
+	<xsl:key name="changed" match="@state:delete" use="../@xo:id"/>
+
 	<xsl:template match="/">
 		<ul id="shell_buttons" class="nav col-md-4 justify-content-end list-unstyled d-flex">
 			<xo-listener attribute="initial:*"/>
@@ -30,8 +33,10 @@ exclude-result-prefixes="#default xsl px xo xsi route"
 
 	<xsl:template match="text()|*[not(*)]" mode="shell:buttons"></xsl:template>
 
+	<xsl:template match="@*" mode="shell:buttons"/>
+
 	<xsl:template match="px:Entity[@xsi:type='form:control']/data:rows/xo:r/@*" mode="shell:buttons">
-		<xsl:if test="../descendant-or-self::xo:r/@*[namespace-uri()=''][.!=key('changed',concat(../@xo:id,'::',local-name()))]">
+		<xsl:if test="../descendant-or-self::xo:r[key('changed',@xo:id)]">
 			<li class="ms-3">
 				<a class="text-muted" href="#" onclick="px.submit(scope)">
 					<button class="btn btn-success">Guardar</button>

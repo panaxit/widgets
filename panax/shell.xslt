@@ -40,7 +40,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 						toggleSidebar(false);
 						event.stopPropagation();
 					}
-				})
+				})				
 				]]>
 			</script>
 			<style>
@@ -51,7 +51,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				
 				main { 
 					overflow-y: scroll;
-					height: calc(100vh - var(--header-height,0px) - var(--nav-height,0px) - var(--footer-height, 2rem));
+					height: calc(100vh - var(--header-height,0px) - var(--nav-height,0px) - var(--footer-height, 0px));
 				}
 				
 				#shell > header h1 {
@@ -111,7 +111,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				</div>
 			</header>
 			<nav class="navbar navbar-expand-md" xo-section="active" xo-stylesheet="page_navbar.xslt"/>
-			<main>
+			<main class="p-3">
 				<xsl:apply-templates mode="shell:body" select="."/>
 			</main>
 			<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 px-3">
