@@ -346,13 +346,8 @@ form.form-view hr {
 
 .skeleton-text {
     width: 100%;
-    height: 3.0rem;
-    margin-bottom: 0.5rem;
+    height: 58px;
     border-radius: 0.25rem;
-}
-
-.skeleton-text__body {
-    width: 75%;
 }
 
 .skeleton-footer {
@@ -474,9 +469,9 @@ form {
     grid-row: 1 / 2;
 }
 
-    form.form-view {
-        flex-direction: column;
-    }
+form.form-view {
+    flex-direction: column;
+}
 
 .text-primary {
     color: #6BA43A;

@@ -62,6 +62,10 @@
 		<xsl:apply-templates mode="widget-attributes" select="."/>
 	</xsl:template>
 
+	<xsl:template mode="widget:attributes" match="@*[key('widget',concat('date:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))]" priority="-1">
+		<xsl:attribute name="pattern">yyyy-mm-dd</xsl:attribute>
+	</xsl:template>
+
 	<xsl:template match="/">
 		<div class="container-fluid p-3" style="margin-top:0px;">
 			<xsl:apply-templates mode="widget" select="px:Entity/@xo:id"/>
@@ -73,7 +77,7 @@
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
 		<xsl:variable name="schema" select="key('reference',concat(ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::header::field:ref::',name()))/.."/>
-		<input type="text" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name()}" onfocus="this.value=(scope.value || this.value)" autocomplete="off" pattern="yyyy-mm-dd">
+		<input type="text" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name()}" onfocus="this.value=(scope.value || this.value)" autocomplete="off">
 			<xsl:attribute name="maxlength">
 				<xsl:value-of select="$schema/@DataLength"/>
 			</xsl:attribute>
@@ -260,11 +264,11 @@
 	</xsl:template>
 
 	<xsl:template mode="widget" match="@*[key('widget',concat('form:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',parent::px:Entity/@Schema,'/',parent::px:Entity/@Name))]">
-		<xsl:param name="schema" select="ancestor::*[key('entity',@xo:id)][1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::*[key('entity',@xo:id)][1]/px:Record/*/@AssociationName"/>
-		<xsl:param name="dataset" select="ancestor::*[key('entity',@xo:id)][1]/data:rows/@xsi:nil|ancestor::*[key('entity',@xo:id)][1]/data:rows[not(@xsi:nil)][not(xo:r)]/@xo:id|ancestor::*[key('entity',@xo:id)][1]/data:rows/xo:r"/>
-		<xsl:param name="layout" select="ancestor::*[key('entity',@xo:id)][1]/*[local-name()='layout']/*/@Name|ancestor::*[key('entity',@xo:id)][1]/*[local-name()='layout']/*[not(@Name)]/@xo:id"/>
+		<xsl:param name="scope" select="ancestor::px:Entity[1]/@xo:id"/>
+		<xsl:param name="dataset" select="key('dataset',concat($scope,'::',.))"/>
+		<xsl:param name="layout" select="key('layout',$scope)"/>
 		<xsl:apply-templates mode="form:widget" select="current()">
-			<xsl:with-param name="schema" select="$schema"/>
+			<xsl:with-param name="scope" select="$scope"/>
 			<xsl:with-param name="dataset" select="$dataset"/>
 			<xsl:with-param name="layout" select="$layout"/>
 		</xsl:apply-templates>
@@ -418,13 +422,10 @@
 	</xsl:template>
 
 	<xsl:template mode="modal:widget-body" match="@*">
-		<xsl:param name="layout" select="node-expected"/>
-		<xsl:param name="schema" select="node-expected"/>
-		<xsl:param name="dataset" select="node-expected"/>
-		<div class="input-group d-flex justify-content-between col-4" xo-scope="{../@xo:id}">
+		<xsl:param name="scope" select="ancestor::px:Entity[1]/@xo:id"/>
+		<xsl:param name="dataset" select="key('dataset',concat($scope,'::',.))"/>
+		<div class="input-group d-flex justify-content-between col-8" xo-scope="{../@xo:id}">
 			<xsl:apply-templates mode="form:widget" select="current()">
-				<xsl:with-param name="layout" select="$layout"/>
-				<xsl:with-param name="schema" select="$schema"/>
 				<xsl:with-param name="dataset" select="$dataset"/>
 			</xsl:apply-templates>
 		</div>
