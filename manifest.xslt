@@ -77,7 +77,7 @@
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
 		<xsl:variable name="schema" select="key('reference',concat(ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::header::field:ref::',name()))/.."/>
-		<input type="text" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name()}" onfocus="this.value=(scope.value || this.value)" autocomplete="off">
+		<input type="text" name="{name()}" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name()}" onfocus="this.value=(scope.value || this.value)" autocomplete="off">
 			<xsl:attribute name="maxlength">
 				<xsl:value-of select="$schema/@DataLength"/>
 			</xsl:attribute>
@@ -183,11 +183,13 @@
 	</xsl:template>
 
 	<xsl:template mode="widget" match="px:Association/px:Entity/px:Routes/px:Route/@*">
-		<xsl:param name="context" select="node-expected"/>
+		<xsl:param name="scope" select="node-expected"/>
 		<li>
-			<a class="dropdown-item" href="javascript:void(0)">
+			<a class="dropdown-item" href="javascript:void(0)" xo-scope="{$scope/ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name($scope)}">
 				<xsl:apply-templates mode="widget-attributes" select="."/>
-				<xsl:apply-templates select="."/>
+				<xsl:apply-templates select=".">
+					<xsl:with-param name="scope" select="$scope"/>				
+				</xsl:apply-templates>
 			</a>
 		</li>
 	</xsl:template>
@@ -212,11 +214,12 @@
 		<xsl:apply-templates mode="percentage:widget" select="."/>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="@*[key('widget',concat('readonly:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))]">
+	<xsl:key name="editable" match="node-expected" use="generate-id()"/>
+	<xsl:template mode="widget" match="@*[key('widget',concat('readonly:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))][not(key('editable',generate-id()))]">
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="current" select="."/>
-		<input class="form-control" type="text" aria-label="Disabled input example" disabled="" readonly="">
+		<input name="{name()}" class="form-control" type="text" aria-label="Disabled input" disabled="" readonly="">
 			<xsl:attribute name="value">
 				<xsl:apply-templates select="."/>
 			</xsl:attribute>

@@ -12,7 +12,6 @@ xmlns:js="http://panax.io/languages/javascript"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 exclude-result-prefixes="#default xo session sitemap login widget state source js meta xsi percentage"
 >
-	<xsl:import href="functions.xslt"/>
 	<xsl:output method="xml"
 	   omit-xml-declaration="yes"
 	   indent="yes"/>

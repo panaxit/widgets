@@ -118,12 +118,12 @@
 			let options = optionsList.getElementsByTagName("li");
 			filtered_options = []
 			for (let option of options) {
-				if (option.textContent.toLowerCase().includes(inputField.value.toLowerCase())) {
+				//if (option.textContent.toLowerCase().includes(inputField.value.toLowerCase())) {
 					option.style.display = "block";
 					filtered_options.push(option);
-				} else {
-					option.style.display = "none";
-				}
+				//} else {
+				//	option.style.display = "none";
+				//}
 			}
 			return filtered_options;
 		}

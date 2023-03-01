@@ -150,6 +150,8 @@
 
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('file:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
 
+	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('percentage:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
+
 	<xsl:template mode="form:field-body" match="field:ref/@*">
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="schema" select="node-expected"/>

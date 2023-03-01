@@ -111,7 +111,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				</div>
 			</header>
 			<nav class="navbar navbar-expand-md" xo-section="active" xo-stylesheet="page_navbar.xslt"/>
-			<main class="p-5">
+			<main class="px-5 py-3">
 				<xsl:apply-templates mode="shell:body" select="."/>
 			</main>
 			<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 px-3">

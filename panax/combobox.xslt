@@ -75,14 +75,14 @@
 	</xsl:template>
 
 	<xsl:template mode="comboboxButton:options" match="@*">
-		<xsl:param name="selection" select="node-expected"/>
+		<xsl:param name="scope" select="node-expected"/>
 		<xsl:param name="items" select="*"/>
 		<xsl:variable name="id" select="ancestor-or-self::*[@xo:id][1]/@xo:id"/>
 		<li onclick="px.refreshCatalog(this)">
 			<a class="dropdown-item" href="#">Actualizar</a>
 		</li>
 		<xsl:apply-templates mode="widget" select="key('routes',concat(ancestor::px:Entity[1]/@xo:id,'::',name()))">
-			<xsl:with-param name="selection" select="."/>
+			<xsl:with-param name="scope" select="."/>
 		</xsl:apply-templates>
 	</xsl:template>
 
@@ -91,6 +91,7 @@
 		<xsl:param name="selection" select="."/>
 		<xsl:param name="target" select="."/>
 		<xsl:param name="class"></xsl:param>
+		<xsl:variable name="schema" select="key('schema',concat(ancestor::px:Entity[1]/@xo:id,'::',name($selection)))/../px:Mappings/px:Mapping/@Referencee"/>
 		<xsl:variable name="current" select="."/>
 		<select class="form-select" xo-scope="{../@xo:id}" xo-attribute="{name()}">
 			<xsl:attribute name="style">
@@ -106,10 +107,12 @@
 					<xsl:apply-templates mode="combobox:previous-options" select=".">
 						<xsl:sort select="../@meta:text"/>
 						<xsl:with-param name="selection" select="$selection"/>
+						<xsl:with-param name="schema" select="$schema"/>
 					</xsl:apply-templates>
 					<xsl:apply-templates mode="combobox:option" select="$dataset">
 						<xsl:sort select="../@meta:text"/>
-						<xsl:with-param name="referencer" select="$selection"/>
+						<xsl:with-param name="selection" select="$selection"/>
+						<xsl:with-param name="schema" select="$schema"/>
 					</xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
@@ -120,7 +123,6 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</select>
-
 		<xsl:apply-templates mode="combobox:following-siblings" select=".">
 			<xsl:with-param name="catalog" select="$dataset"/>
 		</xsl:apply-templates>
@@ -133,14 +135,16 @@
 	</xsl:template>
 
 	<xsl:template mode="combobox:option" match="@*">
-		<xsl:param name="referencer" select="node-expected|current()"/>
+		<xsl:param name="selection" select="node-expected|current()"/>
+		<xsl:param name="schema" select="current()"/>
+		<xsl:variable name="current" select="current()"/>
 		<option value="{.}" xo-scope="{../@xo:id}">
-			<xsl:variable name="selected">
-				<xsl:choose>
-					<xsl:when test="current() = $referencer">true</xsl:when>
-				</xsl:choose>
+			<xsl:variable name="differences">
+				<xsl:for-each select="$schema">
+					<xsl:if test="$current/../@*[name()=current()]!=$selection/../@*[name()=current()/../@Referencer]">1</xsl:if>
+				</xsl:for-each>
 			</xsl:variable>
-			<xsl:if test="$selected = 'true'">
+			<xsl:if test="$differences = ''">
 				<xsl:attribute name="selected"/>
 			</xsl:if>
 			<xsl:apply-templates select="."/>

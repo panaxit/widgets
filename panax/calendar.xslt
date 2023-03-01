@@ -29,7 +29,7 @@ exclude-result-prefixes="#default xsl state data"
 				<![CDATA[
 @media (min-width: 576px) {
 .day {
-	height: 5.2857vw;
+	min-height: 5.2857vw;
 	}
 }
 /*		
@@ -44,7 +44,8 @@ exclude-result-prefixes="#default xsl state data"
 .avatar-calendar {
     width: 40px;
     height: 40px;
-}]]>
+}
+]]>
 			</style>
 			<div class="p-3">
 				<xsl:apply-templates select="." mode="calendar:header">
@@ -255,7 +256,7 @@ exclude-result-prefixes="#default xsl state data"
 						<path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
 						<path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
 					</svg>
-					<xsl:apply-templates select="."/>
+					<xsl:apply-templates mode="calendar:body-reservation-description" select="."/>
 					<br/>
 				</span>
 			</div>
