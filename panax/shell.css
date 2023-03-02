@@ -463,7 +463,6 @@ form {
     display: flex;
     align-items: center;
     justify-content: center;
-    /*padding: 0rem 5rem;*/
     transition: all 0.2s 0.7s;
     grid-column: 1 / 2;
     grid-row: 1 / 2;
