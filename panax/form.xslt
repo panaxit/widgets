@@ -66,6 +66,10 @@
 		<xsl:value-of select="concat('meta:',.)"/>
 	</xsl:template>
 
+	<xsl:template mode="form:field-name" match="container:*/@*">
+		<xsl:text/>xo:id<xsl:text/>
+	</xsl:template>
+
 	<xsl:template mode="form:field" match="@*">
 		<xsl:param name="scope" select="../@xo:id"/>
 		<xsl:param name="field-name">
@@ -114,13 +118,27 @@
 						<xsl:text>: </xsl:text>
 					</legend>
 				</xsl:if>
-				<xsl:apply-templates mode="widget" select="$ref_field|current()[not($ref_field)]"/>
+				<xsl:apply-templates mode="form:field-body" select="$ref_field|current()[not($ref_field)]">
+					<xsl:with-param name="dataset" select="$dataset"/>
+				</xsl:apply-templates>
 			</fieldset>
 		</div>
 	</xsl:template>
 
+	<xsl:template mode="form:field-body-append" match="@*">
+		<xsl:param name="label">
+			<xsl:apply-templates mode="headerText" select="."/>
+		</xsl:param>
+		<label for="{../@xo:id}" class="floating-label">
+			<xsl:value-of select="$label"/>:
+		</label>
+	</xsl:template>
+
+	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('file:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
+
+	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('percentage:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
+
 	<xsl:template mode="form:field-body" match="@*">
-		<xsl:param name="schema" select="node-expected"/>
 		<xsl:variable name="label">
 			<xsl:apply-templates mode="headerText" select="."/>
 		</xsl:variable>
@@ -139,33 +157,21 @@
 		</div>
 	</xsl:template>
 
-	<xsl:template mode="form:field-body-append" match="@*">
-		<xsl:param name="label">
-			<xsl:apply-templates mode="headerText" select="."/>
-		</xsl:param>
-		<label for="{../@xo:id}" class="floating-label">
-			<xsl:value-of select="$label"/>:
-		</label>
+	<xsl:template mode="form:field-body" match="px:Entity/@*">
+		<xsl:apply-templates mode="widget" select="current()"/>
 	</xsl:template>
-
-	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('file:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
-
-	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('percentage:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
 
 	<xsl:template mode="form:field-body" match="field:ref/@*">
 		<xsl:param name="dataset" select="node-expected"/>
-		<xsl:param name="schema" select="node-expected"/>
-		<xsl:variable name="ref_field" select="$dataset[name()=current()]|$dataset[name()=current()]"/>
+		<xsl:variable name="ref_field" select="$dataset[name()=current()]"/>
 		<xsl:choose>
 			<xsl:when test="count($ref_field|current())=1">
 				<xsl:apply-templates mode="widget" select=".">
-					<xsl:with-param name="schema" select="$schema"/>
 					<xsl:with-param name="dataset" select="$dataset"/>
 				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates mode="form:field-body" select="$ref_field">
-					<xsl:with-param name="schema" select="$schema"/>
 				</xsl:apply-templates>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -173,32 +179,27 @@
 
 	<xsl:template mode="form:field-body" match="association:ref/@*">
 		<xsl:param name="dataset" select="node-expected"/>
-		<xsl:param name="schema" select="node-expected"/>
 		<xsl:variable name="ref_field" select="$dataset[name()=current()]|$dataset[name()=concat('meta:',current()[parent::association:ref])]"/>
 		<xsl:choose>
 			<xsl:when test="count($ref_field|current())=1">
 				<xsl:apply-templates mode="widget" select=".">
-					<xsl:with-param name="schema" select="$schema"/>
 					<xsl:with-param name="dataset" select="$dataset"/>
 				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates mode="form:field-body" select="$ref_field">
-					<xsl:with-param name="schema" select="$schema"/>
 				</xsl:apply-templates>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template mode="form:field-body" match="container:*/@*">
-		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="dataset" select="node-expected"/>
 		<div class="input-group d-flex justify-content-between">
 			<xsl:for-each select="../*/@Name">
 				<div class="input-group-append">
 					<xsl:apply-templates mode="form:field-attributes" select="current()"/>
 					<xsl:apply-templates mode="form:field-body" select="current()">
-						<xsl:with-param name="schema" select="$schema"/>
 						<xsl:with-param name="dataset" select="$dataset"/>
 					</xsl:apply-templates>
 				</div>
@@ -207,11 +208,9 @@
 	</xsl:template>
 
 	<xsl:template mode="form:field-body" match="container:modal/@*">
-		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="dataset" select="node-expected"/>
 		<div class="input-group d-flex justify-content-between col-4" xo-scope="{../@xo:id}" xo-attribute="state:active">
 			<xsl:apply-templates mode="widget" select=".">
-				<xsl:with-param name="schema" select="$schema"/>
 				<xsl:with-param name="dataset" select="$dataset"/>
 			</xsl:apply-templates>
 		</div>

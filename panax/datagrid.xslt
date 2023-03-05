@@ -100,7 +100,7 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
 		<xsl:variable name="scope" select="current()"/>
-		<xsl:variable name="row-content" select="$layout[parent::field:ref]|$layout[parent::association:ref]|$layout[parent::container:tab]|$layout[parent::container:panel]|$layout[parent::container:tabPanel]|$layout[parent::container:subGroupTabPanel]"/>
+		<xsl:variable name="row-content" select="$layout[parent::field:ref]|$layout[parent::association:ref]|$layout[parent::container:tab]|$layout[parent::container:panel]|$layout[parent::container:tabPanel]|$layout[parent::container:subGroupTabPanel]|$layout[parent::container:fieldSet]"/>
 		<xsl:variable name="row-elements" select="$layout[not(../@xo:id=$row-content/../@xo:id)]"/>
 		<tr class="freeze">
 			<xsl:apply-templates mode="datagrid:row-header" select="."/>
@@ -118,7 +118,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<xsl:template mode="datagrid:header" match="field:ref/@*|association:ref/@*">
+	<xsl:template mode="datagrid:header" match="field:ref/@*|association:ref/@*|container:*/@*">
 		<th>
 			<xsl:apply-templates mode="headerText" select="."/>
 		</th>

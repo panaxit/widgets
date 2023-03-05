@@ -6,6 +6,7 @@
   xmlns:meta="http://panax.io/metadata"
   xmlns:datagrid="http://panax.io/widget/datagrid"
   xmlns:combobox="http://panax.io/widget/combobox"
+  xmlns:container="http://panax.io/layout/container"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:control="http://www.w3.org/2001/XMLSchema-instance"
   exclude-result-prefixes="px form datagrid combobox control data"
@@ -35,6 +36,7 @@
 	<xsl:key name="dataset" match="data:rows/xo:r/@xo:id" use="concat(../../../@xo:id,'::',../../../@xo:id)"/>
 	<xsl:key name="dataset" match="px:Association/px:Entity/data:rows/xo:r/@meta:text" use="concat(ancestor::px:Entity[2]/@xo:id,'::meta:',ancestor::px:Association[1]/@AssociationName)"/>
 
+	<xsl:key name="dataset" match="xo:r/@*" use="concat(../@xo:id,'::','xo:id')"/>
 	<xsl:key name="dataset" match="xo:r/@*" use="concat(../@xo:id,'::',name())"/>
 	<xsl:key name="dataset" match="xo:r/xo:f/@Name" use="concat(../@xo:id,'::',.)"/>
 	<xsl:key name="dataset" match="xo:r/px:Association/@AssociationName" use="concat(../../@xo:id,'::meta:',.)"/>
@@ -68,6 +70,8 @@
 	<xsl:key name="widget" match="px:Record/px:Association[@mode='readonly']/@AssociationName" use="concat('readonly:',ancestor::px:Entity[1]/@xo:id,'::meta:',.)"/>
 
 	<xsl:key name="widget" match="px:Record/px:Association[@Type='belongsTo']/@AssociationName" use="concat('combobox:',ancestor::px:Entity[1]/@xo:id,'::meta:',.)"/>
+
+	<xsl:key name="widget" match="container:fieldSet/@Name" use="concat('fieldset:',ancestor::px:Entity[1]/@xo:id,'::',.)"/>
 
 	<xsl:key name="widget" match="px:Record/px:Association[@Type='hasMany']/@AssociationName" use="concat('fieldset:',ancestor::px:Entity[1]/@xo:id,'::',.)"/>
 
