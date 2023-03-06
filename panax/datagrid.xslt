@@ -53,7 +53,7 @@
 				}]]>
 			</style>
 			<xo-listener attribute="xsi:nil"/>
-			<table class="table table-striped table-hover table-sm">
+			<table class="table table-striped table-hover table-sm datagrid">
 				<thead class="freeze">
 					<xsl:apply-templates mode="datagrid:header" select="current()">
 						<xsl:with-param name="dataset" select="$schema"/>
@@ -93,6 +93,10 @@
 		</div>
 	</xsl:template>-->
 
+	<xsl:key name="atomic-ref" match="field:ref/@Name" use="generate-id()"/>
+	<xsl:key name="atomic-ref" match="association:ref/@Name" use="generate-id()"/>
+	<xsl:key name="atomic-ref" match="container:fieldContainer/@Name" use="generate-id()"/>
+	<xsl:key name="atomic-ref" match="container:fieldContainer[not(@Name)]/@xo:id" use="generate-id()"/>
 	<xsl:template mode="datagrid:header" match="@*"/>
 
 	<xsl:template mode="datagrid:header" match="@*">
@@ -100,27 +104,47 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
 		<xsl:variable name="scope" select="current()"/>
+		<xsl:variable name="field-typed" select="$layout[parent::field:ref]|$layout[parent::association:ref]|$layout[parent::container:fieldContainer]"/>
 		<xsl:variable name="row-content" select="$layout[parent::field:ref]|$layout[parent::association:ref]|$layout[parent::container:tab]|$layout[parent::container:panel]|$layout[parent::container:tabPanel]|$layout[parent::container:subGroupTabPanel]|$layout[parent::container:fieldSet]"/>
 		<xsl:variable name="row-elements" select="$layout[not(../@xo:id=$row-content/../@xo:id)]"/>
+		<xsl:variable name="next-level" select="$layout/../*/@Name|$layout/../*[not(@Name)]/@xo:id|$layout[parent::*[not(*)]]"/>
 		<tr class="freeze">
 			<xsl:apply-templates mode="datagrid:row-header" select="."/>
 			<xsl:apply-templates mode="datagrid:header" select="$row-content">
 				<xsl:with-param name="dataset" select="$dataset"/>
 				<xsl:with-param name="context">header</xsl:with-param>
-				<xsl:with-param name="layout" select="current()"/>
+				<xsl:with-param name="layout" select="$layout"/>
 			</xsl:apply-templates>
 			<xsl:apply-templates mode="datagrid:row-footer" select="."/>
 		</tr>
-		<xsl:apply-templates mode="datagrid:header" select="$row-elements">
-			<xsl:with-param name="dataset" select="$dataset"/>
-			<xsl:with-param name="context">header</xsl:with-param>
-			<xsl:with-param name="layout" select="current()"/>
-		</xsl:apply-templates>
+		<xsl:if test="count($layout)!=count($next-level)">
+			<xsl:apply-templates mode="datagrid:header" select="current()">
+				<xsl:with-param name="dataset" select="$dataset"/>
+				<xsl:with-param name="context">header</xsl:with-param>
+				<xsl:with-param name="layout" select="$next-level"/>
+			</xsl:apply-templates>
+		</xsl:if>
 	</xsl:template>
 
-	<xsl:template mode="datagrid:header" match="field:ref/@*|association:ref/@*|container:*/@*">
-		<th>
+	<xsl:template mode="datagrid:header" match="container:*/@*">
+		<xsl:param name="layout" select="node-expected"/>
+		<xsl:variable name="colspan">
+			<xsl:value-of select="count(..//field:ref|..//association:ref)"/>
+		</xsl:variable>
+		<th colspan="{$colspan}" class="field-container container-{local-name(..)} container-{translate(../@Name,' ','-')}">
 			<xsl:apply-templates mode="headerText" select="."/>
+		</th>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:header" match="field:ref/@*|association:ref/@*|container:fieldContainer/@*">
+		<xsl:param name="layout" select="node-expected"/>
+		<xsl:variable name="colspan">
+			<xsl:value-of select="count(..//field:ref|..//association:ref)"/>
+		</xsl:variable>
+		<th colspan="{$colspan}" >
+			<xsl:if test="key('atomic-ref',generate-id()) and not($layout[not(key('atomic-ref',generate-id()))]) or not(key('atomic-ref',generate-id()))">
+				<xsl:apply-templates mode="headerText" select="."/>
+			</xsl:if>
 		</th>
 	</xsl:template>
 
@@ -199,7 +223,7 @@
 			</xsl:apply-templates>
 			<xsl:if test="ancestor-or-self::*[@meta:type='entity'][2]">
 				<tr xo-scope="{ancestor-or-self::*[@meta:type='entity'][1]/@xo:id}">
-					<td colspan="{count($layout)+3}" style="text-align:center">
+					<td colspan="{count($layout[key('atomic-ref',generate-id())]|$layout/../*//@*[key('atomic-ref',generate-id())])+3}" style="text-align:center">
 						<xsl:apply-templates mode="datagrid:buttons-new" select="."/>
 					</td>
 				</tr>
@@ -235,7 +259,7 @@
 				<xsl:with-param name="context" select="$context"/>
 				<xsl:with-param name="dataset" select="$fields"/>
 			</xsl:apply-templates>
-			<xsl:apply-templates mode="datagrid:row-body" select="$layout">
+			<xsl:apply-templates mode="datagrid:row-body" select="$layout[key('atomic-ref',generate-id())]|$layout/../*//@*[key('atomic-ref',generate-id())]">
 				<xsl:with-param name="context" select="$context"/>
 				<xsl:with-param name="dataset" select="$fields"/>
 			</xsl:apply-templates>
