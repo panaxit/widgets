@@ -111,7 +111,7 @@
 			<xsl:apply-templates mode="form:field-header" select="current()"/>
 		</xsl:variable>
 		<div class="mb-3 row" xo-sections="{$dataset/@xo:id}">
-			<fieldset>
+			<fieldset class="container-{translate(../@Name,' ','-')}">
 				<xsl:if test="$headerText!=''">
 					<legend>
 						<xsl:value-of select="$headerText"/>
