@@ -13,6 +13,7 @@
   xmlns:px="http://panax.io/entity"
   xmlns:readonly="http://panax.io/state/readonly"
   xmlns:file="http://panax.io/widget/file"
+  xmlns:dropzone="http://panax.io/widget/dropzone"
   xmlns:fileExplorer="http://panax.io/widget/fileExplorer"
   xmlns:calendar="http://panax.io/widget/calendar"
   xmlns:percentage="http://panax.io/widget/percentage"
@@ -32,7 +33,7 @@
   xmlns:container="http://panax.io/layout/container"
   xmlns:association="http://panax.io/datatypes/association"
   xmlns:cardview="http://panax.io/widget/cardview"
-  exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file fileExplorer calendar percentage picture form widget datagrid combobox comboboxButton autocompleteBox autocompleteBoxButton field container association cardview modal tabPanel groupTabPanel"
+  exclude-result-prefixes="xo state xsi control layout meta data height width confirmation px readonly file dropzone fileExplorer calendar percentage picture form widget datagrid combobox comboboxButton autocompleteBox autocompleteBoxButton field container association cardview modal tabPanel groupTabPanel"
 >
 	<xsl:import href="values.xslt"/>
 	<xsl:import href="panax/keys.xslt"/>
@@ -43,6 +44,7 @@
 	<xsl:import href="panax/picture.xslt"/>
 	<xsl:import href="panax/cardview.xslt"/>
 	<xsl:import href="panax/file.xslt"/>
+	<xsl:import href="panax/dropzone.xslt"/>
 	<xsl:import href="panax/fileExplorer.xslt"/>
 	<xsl:import href="panax/calendar.xslt"/>
 	<xsl:import href="panax/percentage.xslt"/>
@@ -208,6 +210,10 @@
 
 	<xsl:template mode="widget" match="@*[key('widget',concat('file:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))]">
 		<xsl:apply-templates mode="file:widget" select="."/>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="@*[key('widget',concat('dropzone:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))]">
+		<xsl:apply-templates mode="dropzone:widget" select="."/>
 	</xsl:template>
 
 	<xsl:template mode="widget" match="@*[key('widget',concat('percentage:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))]">
@@ -377,6 +383,10 @@
 
 	<xsl:template mode="widget" match="key('entity','datagrid:widget')/data:rows/xo:r/@*">
 		<xsl:apply-templates select="."/>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="key('entity','datagrid:widget')/data:rows/xo:r/@*[key('widget',concat('files:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))]">
+		<xsl:apply-templates mode="file:widget" select="."/>
 	</xsl:template>
 
 	<xsl:template mode="widget" match="key('entity','datagrid:widget')/data:rows/xo:r/xo:f/@*">

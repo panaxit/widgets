@@ -60,6 +60,7 @@
 	<xsl:key name="widget" match="*[@DataType][not(@Schema)][not(@AssociationName)]/@Name" use="concat(../@DataType,':',ancestor::px:Entity[1]/@xo:id,'::',.)"/>
 	<xsl:key name="widget" match="*[@DataType][not(@Schema)]/@AssociationName" use="concat(../@DataType,':',ancestor::px:Entity[1]/@xo:id,'::meta:',.)"/>
 	<xsl:key name="widget" match="px:Field[@DataType='filePath']/@Name" use="concat('file',':',ancestor::px:Entity[1]/@xo:id,'::',.)"/>
+	<xsl:key name="widget" match="px:Field[@DataType='files']/@Name" use="concat('dropzone',':',ancestor::px:Entity[1]/@xo:id,'::',.)"/>
 
 	<xsl:key name="widget" match="px:Field[starts-with(@control:type,'string:') and @DataLength&gt;255]/@Name" use="concat('textarea',':',ancestor::px:Entity[1]/@xo:id,'::',.)"/>
 	<xsl:key name="widget" match="px:Field[starts-with(@control:type,'string:') and @DataLength=-1]/@Name" use="concat('textarea',':',ancestor::px:Entity[1]/@xo:id,'::',.)"/>

@@ -437,7 +437,7 @@
 
 	<xsl:template mode="widget:style" match="@*"/>
 	<xsl:template mode="datagrid:field" match="@*">
-		<span>
+		<span class="d-flex flex-wrap">
 			<xsl:attribute name="style">
 				<xsl:apply-templates mode="widget:style" select="."/>
 			</xsl:attribute>
