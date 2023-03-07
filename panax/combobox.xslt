@@ -117,9 +117,7 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:attribute name="style">cursor:wait</xsl:attribute>
-					<option>
-						<xsl:apply-templates select="$selection"/>
-					</option>
+					<xsl:apply-templates mode="combobox:option" select="$selection"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</select>
@@ -132,6 +130,14 @@
 		<option value="">
 			Selecciona...
 		</option>
+	</xsl:template>
+
+	<xsl:template mode="combobox:option-text" match="@*">
+		<xsl:apply-templates select="."/>
+	</xsl:template>
+
+	<xsl:template mode="combobox:option-text" match="@*[.='']">
+		<xsl:text/>Sin opciones...<xsl:text/>
 	</xsl:template>
 
 	<xsl:template mode="combobox:option" match="@*">
@@ -147,7 +153,7 @@
 			<xsl:if test="$differences = ''">
 				<xsl:attribute name="selected"/>
 			</xsl:if>
-			<xsl:apply-templates select="."/>
+			<xsl:apply-templates mode="combobox:option-text" select="."/>
 		</option>
 	</xsl:template>
 </xsl:stylesheet>
