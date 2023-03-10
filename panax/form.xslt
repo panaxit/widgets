@@ -38,14 +38,19 @@
 	</xsl:template>
 
 	<xsl:template mode="form:field-header" match="@*">
+		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="field-name">
+			<xsl:apply-templates mode="form:field-name" select="."/>
+		</xsl:param>
+		<xsl:param name="ref_field" select="key('field-ref',concat($scope,'::',$field-name))"/>
 		<xsl:choose>
-			<xsl:when test="../@headerText">
+			<xsl:when test="count(.|$ref_field)=1">
 				<xsl:value-of select="../@headerText"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:apply-templates mode="headerText" select="key('reference',concat(ancestor-or-self::*[@meta:type='entity'][1]/@xo:id,'::header::',name(..),'::',../@Name))"/>
+				<xsl:apply-templates mode="headerText" select="$ref_field"/>
 			</xsl:otherwise>
-		</xsl:choose>
+		</xsl:choose>!!
 	</xsl:template>
 
 	<xsl:template mode="form:field-header" match="*[@headerText]/@*">
