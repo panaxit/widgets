@@ -50,7 +50,7 @@
 			<xsl:otherwise>
 				<xsl:apply-templates mode="headerText" select="$ref_field"/>
 			</xsl:otherwise>
-		</xsl:choose>!!
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template mode="form:field-header" match="*[@headerText]/@*">
@@ -110,7 +110,9 @@
 	<xsl:template mode="form:field" match="*[key('widget',concat('fieldset:',ancestor::px:Entity[1]/@xo:id,'::',@Name))]/@*">
 		<xsl:param name="scope" select="../@xo:id"/>
 		<xsl:variable name="headerText">
-			<xsl:apply-templates mode="form:field-header" select="current()"/>
+			<xsl:apply-templates mode="form:field-header" select="current()">
+				<xsl:with-param name="scope" select="$scope"/>
+			</xsl:apply-templates>
 		</xsl:variable>
 		<div class="mb-3 row">
 			<fieldset class="container-{translate(../@Name,' ','-')}">
