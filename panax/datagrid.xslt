@@ -350,7 +350,7 @@
 	</xsl:template>
 
 	<xsl:template mode="datagrid:field-append" match="xo:r/@*">
-		<xsl:text>&#160;</xsl:text>
+		<xsl:text></xsl:text>
 	</xsl:template>
 
 	<xsl:template mode="datagrid:field-prepend" match="@*">

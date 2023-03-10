@@ -36,10 +36,11 @@
 	<xsl:key name="dataset" match="data:rows/xo:r/@xo:id" use="concat(../../../@xo:id,'::',../../../@xo:id)"/>
 	<xsl:key name="dataset" match="px:Association/px:Entity/data:rows/xo:r/@meta:text" use="concat(ancestor::px:Entity[2]/@xo:id,'::meta:',ancestor::px:Association[1]/@AssociationName)"/>
 
-	<xsl:key name="dataset" match="xo:r/@*" use="concat(../@xo:id,'::','xo:id')"/>
-	<xsl:key name="dataset" match="xo:r/@*" use="concat(../@xo:id,'::',name())"/>
-	<xsl:key name="dataset" match="xo:r/xo:f/@Name" use="concat(../@xo:id,'::',.)"/>
-	<xsl:key name="dataset" match="xo:r/px:Association/@AssociationName" use="concat(../../@xo:id,'::meta:',.)"/>
+	<xsl:key name="field-ref" match="xo:r/@*" use="concat(../@xo:id,'::','xo:id')"/>
+	<xsl:key name="field-ref" match="xo:r/@*" use="concat(../@xo:id,'::',name())"/>
+	<xsl:key name="field-ref" match="xo:r/xo:f/@Name" use="concat(../@xo:id,'::',.)"/>
+	<!--<xsl:key name="field-ref" match="xo:r/px:Association/@AssociationName" use="concat(../../@xo:id,'::meta:',.)"/>-->
+	<xsl:key name="field-ref" match="xo:r/px:Association/px:Entity/@Name" use="concat(../../../@xo:id,'::meta:',../../@AssociationName)"/>
 	
 	<!--Schema-->
 	<xsl:key name="schema" match="px:Record/px:Field/@Name" use="concat(ancestor::px:Entity[1]/@xo:id,'::',.)"/>

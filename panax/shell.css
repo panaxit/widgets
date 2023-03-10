@@ -367,6 +367,10 @@ form.form-view hr {
     margin: 10px;
 }
 
+.form-group > div {
+    width: 100%;
+}
+
 .input-group-append > button.dropdown-toggle {
     height: 100%;
 }
