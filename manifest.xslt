@@ -192,7 +192,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="px:Association/px:Entity/px:Routes/px:Route/@*">
+	<xsl:template mode="widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route/@*">
 		<xsl:param name="scope" select="node-expected"/>
 		<li>
 			<a class="dropdown-item" href="javascript:void(0)" xo-scope="{$scope/ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name($scope)}">
