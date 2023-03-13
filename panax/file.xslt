@@ -130,6 +130,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 					<xsl:when test=".!=''">
 						<xsl:apply-templates mode="file:widget-actions-remove" select=".">
 							<xsl:with-param name="style" select="$style"/>
+							<xsl:with-param name="file_index" select="$file_index"/>
 						</xsl:apply-templates>
 						<a href="{$file_name}" style="float: left; margin:10px; {$style}" target="_blank">
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">

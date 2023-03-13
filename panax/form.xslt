@@ -138,12 +138,11 @@
 		</label>
 	</xsl:template>
 
+	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('picture:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('file:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
-
+	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('files:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('datagrid:',ancestor::px:Entity[1]/@xo:id,'::',parent::px:Entity/@Schema,'/',parent::px:Entity/@Name))]"/>
-
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('dropzone:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
-
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('percentage:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
 
 	<xsl:template mode="form:field-body-attributes" match="@*"/>
