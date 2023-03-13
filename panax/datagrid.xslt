@@ -474,7 +474,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:apply-templates mode="route:widget" select="ancestor::px:Entity[1]/px:Routes/px:Route[@Method='add']/@xo:id">
-			<xsl:with-param name="context" select=".."/>
+			<xsl:with-param name="scope" select=".."/>
 		</xsl:apply-templates>
 	</xsl:template>
 

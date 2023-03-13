@@ -43,7 +43,7 @@
 		<xsl:param name="field-name">
 			<xsl:apply-templates mode="form:field-name" select="."/>
 		</xsl:param>
-		<xsl:param name="ref_field" select="key('field-ref',concat($scope,'::',$field-name))"/>
+		<xsl:param name="ref_field" select="key('schema',concat($scope,'::',$field-name))"/>
 		
 		<xsl:attribute name="scope">col</xsl:attribute>
 		<xsl:attribute name="ondblclick">this.toggle('contenteditable','')</xsl:attribute>

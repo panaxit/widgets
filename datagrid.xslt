@@ -27,14 +27,17 @@
 	<xsl:param name="data:rows"/>
 
 	<xsl:key name="datagrid:widget" match="node-expected" use="@xo:id"/>
+	<xsl:key name="datagrid:row-header-element" match="px:Route[@Method='addToCart']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
+	<xsl:key name="datagrid:row-header-element" match="px:Route[@Method='select']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
+	<xsl:key name="datagrid:row-header-element" match="px:Route[@Method='edit']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
 
 	<xsl:template mode="datagrid:row-header" match="@*">
 		<!--<th scope="row">
 			<xsl:value-of select="../@meta:position"/>
 		</th>-->
 		<th>
-			<xsl:apply-templates mode="route:widget" select="ancestor::px:Entity[1]/px:Routes/px:Route[@Method='edit']/@xo:id">
-				<xsl:with-param name="context" select="parent::xo:r"/>
+			<xsl:apply-templates mode="widget" select="key('datagrid:row-header-element',ancestor::px:Entity[1]/@xo:id)">
+				<xsl:with-param name="scope" select="parent::xo:r"/>
 			</xsl:apply-templates>
 		</th>
 	</xsl:template>
@@ -53,7 +56,7 @@
 	<xsl:template mode="datagrid:row-header" match="*[key('datagrid:header-node', @xo:id)][not(ancestor::px:Association)]/@*">
 		<th>
 			<xsl:apply-templates mode="route:widget" select="current()">
-				<xsl:with-param name="context" select="parent::xo:r"/>
+				<xsl:with-param name="scope" select="parent::xo:r"/>
 			</xsl:apply-templates>
 		</th>
 	</xsl:template>
@@ -61,7 +64,7 @@
 	<xsl:template mode="datagrid:row-footer" match="@*">
 		<th style="text-align: right;">
 			<xsl:apply-templates mode="route:widget" select="ancestor::px:Entity[1]/px:Routes/px:Route[@Method='delete']/@xo:id">
-				<xsl:with-param name="context" select="parent::xo:r"/>
+				<xsl:with-param name="scope" select="parent::xo:r"/>
 			</xsl:apply-templates>
 		</th>
 	</xsl:template>
@@ -71,12 +74,12 @@
 	<xsl:key name="reference" match="px:Association/px:Entity[1]/data:rows/xo:r/@xo:id" use="concat(.,'::body::association:ref::',ancestor::px:Association[1]/@AssociationName)"/>
 
 	<!--<xsl:template mode="datagrid:cell-content" match="@*">
-		<xsl:param name="context">body</xsl:param>
+		<xsl:param name="scope">body</xsl:param>
 		<xsl:param name="dataset" select="node-expected"/>
 		-->
 	<!--<xsl:apply-templates mode="widget" select="."/>-->
 	<!--
-		<xsl:apply-templates mode="datagrid:cell-content" select="key('reference',concat($dataset,'::',$context,'::',name(..),'::',../@Name))"/>
+		<xsl:apply-templates mode="datagrid:cell-content" select="key('reference',concat($dataset,'::',$scope,'::',name(..),'::',../@Name))"/>
 	</xsl:template>-->
 
 	<xsl:template mode="datagrid:cell-content" match="*[key('datagrid:header-node',@xo:id)]/@*">

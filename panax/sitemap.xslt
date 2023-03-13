@@ -34,7 +34,7 @@ exclude-result-prefixes="#default session sitemap shell state"
 			<style>
 				<![CDATA[
 .menu_toggle {
-    color: var(--menu-toggler);
+    color: var(--menu-toggler,currentColor) !important;
     cursor: pointer
 }
 

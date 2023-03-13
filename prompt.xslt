@@ -57,7 +57,7 @@
 				<xsl:apply-templates select="."/>
 			</xsl:attribute>
 			<xsl:apply-templates mode="widget:attributes" select="."/>
-		</input>
+		</input>		
 	</xsl:template>
 
 	<xsl:template mode="widget" match="parameter[@controlType='combobox']/@value">

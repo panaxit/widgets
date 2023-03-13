@@ -158,7 +158,7 @@ exclude-result-prefixes="#default xsl state data"
 		<xsl:variable name="bg-color">
 			<xsl:choose>
 				<xsl:when test="count(../preceding-sibling::*) mod 2 = 1">--bg-primary</xsl:when>
-				<xsl:otherwise>--bg-primary-second</xsl:otherwise>
+				<xsl:otherwise>--bg-primary-second) !important; mix-blend-mode: var(--txt-primary-second, difference</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<h3 class="col-sm p-1 text-center text-white" style="position:relative; background-color: var({$bg-color}) !important;">

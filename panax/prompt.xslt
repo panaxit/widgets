@@ -30,6 +30,13 @@
 		<xsl:text>`</xsl:text>
 	</xsl:template>
 
+	<xsl:template mode="prepare_value" match="@*[key('widget',concat('datetime:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',../@name))]">
+		<xsl:text>`</xsl:text>
+		<xsl:apply-templates select="."/>
+		<xsl:text>:00</xsl:text>
+		<xsl:text>`</xsl:text>
+	</xsl:template>
+
 	<xsl:template mode="prepare_value" match="@value[.='DEFAULT' or .='NULL' or number(.)=.]">
 		<xsl:value-of select="."/>
 	</xsl:template>
@@ -39,12 +46,14 @@
 	</xsl:template>
 
 	<xsl:template match="parameter/@name[contains(.,'@Id')]" mode="headerText">
-		<xsl:value-of select="substring(.,3)"/>
+		<xsl:value-of select="substring(.,4)"/>
 	</xsl:template>
 
 	<xsl:template match="parameter/@value" mode="headerText">
 		<xsl:apply-templates mode="headerText" select="../@name"/>
 	</xsl:template>
+
+	<xsl:template mode="widget:options" match="parameter/@value"/>
 
 	<xsl:template mode="widget:options" match="parameter[data:rows]/@value">
 		<xsl:param name="catalog" select="xo:dummy"/>
@@ -69,7 +78,6 @@
 				</div>
 			</div>
 		</div>
-		<!--<br/>-->
 	</xsl:template>
 
 	<xsl:template match="*[parameter[not(key('hidden',generate-id()))]]/parameter[key('hidden',generate-id())]/@*" mode="widget"/>
@@ -104,7 +112,7 @@
 				<xsl:choose>
 					<xsl:when test="not(key('invalid',generate-id())[not(key('optional',generate-id()))])">
 						<xsl:attribute name="onclick">
-							<xsl:text/>xo.server.request({command:`[<xsl:value-of select="@Schema"/>].[<xsl:value-of select="@Name"/>]`<xsl:text/>
+							<xsl:text/>const NULL = null; const DEFAULT = 'DEFAULT'; xo.server.request({command:`[<xsl:value-of select="@Schema"/>].[<xsl:value-of select="@Name"/>]`<xsl:text/>
 							<xsl:for-each select="*">
 								<xsl:text>,</xsl:text>
 								<xsl:text>"</xsl:text>
@@ -122,7 +130,7 @@
 									</xsl:otherwise>
 								</xsl:choose>
 							</xsl:for-each>
-							<xsl:text>})/*.then(_ => this.closest('[role="alertdialog"]').remove())*/;</xsl:text>
+							<xsl:text>}).then(_ => this.closest('[role="alertdialog"]').remove());</xsl:text>
 						</xsl:attribute>
 					</xsl:when>
 					<xsl:otherwise>

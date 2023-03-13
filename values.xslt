@@ -35,7 +35,7 @@
 			<xsl:when test="$text">
 				<xsl:value-of select="$text"/>
 			</xsl:when>
-			<xsl:when test="substring(.,1,1)!='0' and number(.)=.">
+			<xsl:when test="substring(.,1,1)!='0' and number(.)=. and string-length(.)&lt;=9">
 				<xsl:value-of select="number(.)"/>
 			</xsl:when>
 			<xsl:otherwise>

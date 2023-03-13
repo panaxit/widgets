@@ -83,7 +83,7 @@
 		<xsl:param name="dataset" select="key('dataset',concat($scope,'::',$field-name))"/>
 		<xsl:variable name="headerText">
 			<xsl:apply-templates mode="form:field-header" select="current()">
-				<xsl:with-param name="dataset" select="$dataset"/>
+				<xsl:with-param name="scope" select="$scope/ancestor::px:Entity[1]/@xo:id"/>
 			</xsl:apply-templates>
 		</xsl:variable>
 		<xsl:variable name="colspan">
@@ -111,7 +111,7 @@
 		<xsl:param name="scope" select="../@xo:id"/>
 		<xsl:variable name="headerText">
 			<xsl:apply-templates mode="form:field-header" select="current()">
-				<xsl:with-param name="scope" select="$scope"/>
+				<xsl:with-param name="scope" select="$scope/ancestor::px:Entity[1]/@xo:id"/>
 			</xsl:apply-templates>
 		</xsl:variable>
 		<div class="mb-3 row">

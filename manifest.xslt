@@ -20,6 +20,7 @@
   xmlns:picture="http://panax.io/widget/picture"
   xmlns:modal="http://panax.io/widget/modal"
   xmlns:tabPanel="http://panax.io/widget/tabPanel"
+  xmlns:route="http://panax.io/routes"
   xmlns:groupTabPanel="http://panax.io/widget/groupTabPanel"
 
   xmlns:form="http://panax.io/widget/form"
@@ -182,6 +183,13 @@
 	
 	<xsl:template mode="widget" match="@*[key('widget',concat('combobox:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))]">
 		<xsl:apply-templates mode="combobox:widget" select="."/>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="px:Entity/px:Routes/px:Route/@*">
+		<xsl:param name="scope" select="node-expected"/>
+		<xsl:apply-templates mode="route:widget" select=".">
+			<xsl:with-param name="scope" select="$scope"/>
+		</xsl:apply-templates>
 	</xsl:template>
 
 	<xsl:template mode="widget" match="px:Association/px:Entity/px:Routes/px:Route/@*">
@@ -414,6 +422,10 @@
 
 	<xsl:template mode="widget" match="field:ref/@*|association:ref/@*">
 		<div class="skeleton skeleton-text skeleton-text__body">&#160;</div>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="field:ref/@*[key('widget',concat('textarea:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',../@Name))]">
+		<div class="skeleton skeleton-textarea skeleton-text__body">&#160;</div>
 	</xsl:template>
 
 	<xsl:template mode="combobox:following-siblings" match="*[key('form:widget',concat(ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::','xo:id'))]/data:rows/*/@*">

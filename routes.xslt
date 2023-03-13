@@ -14,53 +14,77 @@
   exclude-result-prefixes="xo state xsl meta custom data route"
 >
 	<xsl:template mode="route:widget" match="*/@*">
-		<xsl:param name="context" select="node-expected"/>
+		<xsl:param name="scope" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:variable name="identity" select="$context/@meta:id"/>
+		<xsl:variable name="identity" select="$scope/@meta:id"/>
 		<xsl:variable name="reference">
 			<xsl:choose>
 				<xsl:when test="$identity">
 					<xsl:value-of select="concat(':',$identity)"/>
 				</xsl:when>
-				<xsl:when test="$context/@meta:value">
-					<xsl:value-of select="concat('/',$context/@meta:value)"/>
+				<xsl:when test="$scope/@meta:value">
+					<xsl:value-of select="concat('/',$scope/@meta:value)"/>
 				</xsl:when>
-				<xsl:when test="$context/self::xo:r">
-					<xsl:value-of select="concat('@',$context/self::xo:r/@xo:id)"/>
+				<xsl:when test="$scope/self::xo:r">
+					<xsl:value-of select="concat('@',$scope/self::xo:r/@xo:id)"/>
 				</xsl:when>
-				<xsl:when test="$context/parent::px:Association">
-					<xsl:value-of select="concat('@',$context/data:rows/@xo:id)"/>
+				<xsl:when test="$scope/parent::px:Association">
+					<xsl:value-of select="concat('@',$scope/data:rows/@xo:id)"/>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:for-each select="$context">
+		<xsl:for-each select="$scope">
 			<a href="#{ancestor-or-self::px:Entity[1]/@Schema}/{ancestor-or-self::px:Entity[1]/@Name}{$reference}~{$route/../@Method}">
 				<xsl:apply-templates mode="route:widget-attributes" select="."/>
 				<xsl:apply-templates mode="route:widget-button" select="$route">
-					<xsl:with-param name="context" select="$context"/>
+					<xsl:with-param name="scope" select="$scope"/>
 				</xsl:apply-templates>
 			</a>
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="route:widget-button" match="px:Route[@Method='edit']/@*" priority="-1">
-		<xsl:param name="context" select="node-expected"/>
+	<xsl:template mode="route:widget-button" match="px:Route[@Method='addToCart']/@*" priority="-1">
+		<xsl:param name="scope" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:variable name="identity" select="$context/@meta:id"/>
+		<xsl:variable name="identity" select="$scope/@meta:id"/>
 		<xsl:variable name="reference">
 			<xsl:choose>
 				<xsl:when test="$identity">
 					<xsl:value-of select="concat(':',$identity)"/>
 				</xsl:when>
-				<xsl:when test="$context/@meta:value">
-					<xsl:value-of select="concat('/',$context/@meta:value)"/>
+				<xsl:when test="$scope/@meta:value">
+					<xsl:value-of select="concat('/',$scope/@meta:value)"/>
 				</xsl:when>
-				<xsl:when test="$context/self::xo:r">
-					<xsl:value-of select="concat('@',$context/self::xo:r/@xo:id)"/>
+				<xsl:when test="$scope/self::xo:r">
+					<xsl:value-of select="concat('@',$scope/self::xo:r/@xo:id)"/>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:for-each select="$context[self::px:Entity or self::data:rows or self::xo:r]">
+		<button class="btn btn-sm btn-primary" onclick="event.preventDefault(); cart.add(scope)" xo-scope="inherit">
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+				<path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+			</svg>
+		</button>
+	</xsl:template>
+
+	<xsl:template mode="route:widget-button" match="px:Route[@Method='edit']/@*" priority="-1">
+		<xsl:param name="scope" select="node-expected"/>
+		<xsl:variable name="route" select="current()"/>
+		<xsl:variable name="identity" select="$scope/@meta:id"/>
+		<xsl:variable name="reference">
+			<xsl:choose>
+				<xsl:when test="$identity">
+					<xsl:value-of select="concat(':',$identity)"/>
+				</xsl:when>
+				<xsl:when test="$scope/@meta:value">
+					<xsl:value-of select="concat('/',$scope/@meta:value)"/>
+				</xsl:when>
+				<xsl:when test="$scope/self::xo:r">
+					<xsl:value-of select="concat('@',$scope/self::xo:r/@xo:id)"/>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
 			<button class="btn btn-sm btn-primary" onclick="event.preventDefault(); px.navigateTo(parentNode.getAttribute('href'),'{ancestor-or-self::*[self::data:rows or self::xo:r][1]/@xo:id}');">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
 					<path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
@@ -71,9 +95,9 @@
 	</xsl:template>
 
 	<xsl:template mode="route:widget-button" match="px:Route[@Method='delete']/@*" priority="-1">
-		<xsl:param name="context" select="node-expected"/>
+		<xsl:param name="scope" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:for-each select="$context[self::px:Entity or self::data:rows or self::xo:r]">
+		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
 			<xo-listener attribute="state:delete"/>
 			<button class="btn btn-sm btn-danger" onclick="scope.remove(); event.preventDefault();">
 				<!--<xsl:if test="not($identity!='')">
@@ -88,9 +112,9 @@
 	</xsl:template>
 
 	<xsl:template mode="route:widget-button" match="px:Route[@Method='add']/@*" priority="-1">
-		<xsl:param name="context" select="node-expected"/>
+		<xsl:param name="scope" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:for-each select="$context[self::px:Entity or self::data:rows or self::xo:r]">
+		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
 			<xsl:choose>
 				<xsl:when test="parent::px:Association">
 					<button type="button" class="btn btn-success btn-sm" onclick="event.preventDefault(); px.navigateTo(parentNode.getAttribute('href'),'{ancestor-or-self::*[@meta:type='entity'][1]/data:rows/@xo:id}')" xo-scope="{data:rows/@xo:id}">Agregar registro</button>
