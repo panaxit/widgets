@@ -32,10 +32,11 @@ exclude-result-prefixes="#default xsl state data"
 	min-height: 5.2857vw;
 	}
 }
-/*		
-.sidebar-aval-calendar:hover {
-    background: var(--bg-primary-second) !important;
-}*/
+
+.highlight-enabled .sidebar-aval-calendar:hover {
+    background: var(--hover-highlight)  !important;
+	cursor: pointer;
+}
 
 .fc-time svg {
 	margin-right: 5px;
@@ -226,7 +227,7 @@ exclude-result-prefixes="#default xsl state data"
 	<xsl:template match="@*" mode="calendar:body-days">
 		<xsl:param name="table" select="ancestor-or-self::*[key('data_table',generate-id())][1]"/>
 		<xsl:param name="parent_record"/>
-		<div  class="day col-sm p-2 border border-left-0 border-top-0 text-truncate sidebar-aval-calendar" data-date="{@value}" style="cursor: pointer;">
+		<div  class="day col-sm p-2 border border-left-0 border-top-0 text-truncate sidebar-aval-calendar" data-date="{translate(.,' ','T')}">
 			<xsl:apply-templates select="." mode="calendar:body-day"/>
 		</div>
 	</xsl:template>
