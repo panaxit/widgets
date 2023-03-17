@@ -18,10 +18,26 @@
 	<xsl:import href="panax/autocompleteBox.xslt"/>
 
 	<xsl:key name="entity" match="Routine" use="@xo:id"/>
+	<xsl:key name="hidden" match="parameter[starts-with(@name,'@@')]" use="generate-id()"/>
+	<xsl:key name="hidden" match="parameter[text()[not(.='DEFAULT')]]" use="generate-id()"/>
+	<xsl:key name="hidden" match="parameter[@isOutput='1']" use="generate-id()"/>
+
 	<xsl:key name="widget" match="Routine/parameter[@controlType]/@name" use="concat(../@controlType,':',ancestor::Routine[1]/@xo:id,'::',.)"/>
+	<xsl:key name="widget" match="parameter[translate(@dataType,'[]','')='datetime']/@value" use="concat('datetime:',ancestor::Routine[1]/@xo:id,'::',../@name)"/>
+	<xsl:key name="widget" match="parameter[translate(@dataType,'[]','')='date']/@value" use="concat('date:',ancestor::Routine[1]/@xo:id,'::',../@name)"/>
 
 	<xsl:template match="@*" mode="widget:attributes"/>
-	
+
+	<xsl:template mode="headerText" match="parameter/@name[starts-with(.,'@Fecha')]">
+		<xsl:text>Fecha de </xsl:text>
+		<xsl:value-of select="substring(.,7)"/>
+	</xsl:template>
+
+	<xsl:template mode="headerText" match="parameter/@name[starts-with(.,'@Tipo')]">
+		<xsl:text>Tipo de </xsl:text>
+		<xsl:value-of select="substring(.,6)"/>
+	</xsl:template>
+
 	<xsl:template mode="widget" match="@*">
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="class"></xsl:param>
