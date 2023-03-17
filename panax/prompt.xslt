@@ -86,25 +86,25 @@
 		<xsl:apply-templates mode="modal:widget" select="xo:prompt/Routine/@xo:id"/>
 	</xsl:template>
 
-	<xsl:template mode="modal:widget-body" match="@*">
+	<xsl:template mode="modal:body" match="@*">
 		<div class="col-12 g-3">
 			<xsl:apply-templates mode="widget" select="../parameter/@xo:id"/>
 		</div>
 	</xsl:template>
 
-	<xsl:template match="xo:prompt" mode="modal:widget-body">
+	<xsl:template match="xo:prompt" mode="modal:body">
 		<xsl:apply-templates mode="widget" select="current()"/>
 	</xsl:template>
 
-	<xsl:template match="Routine/@*" mode="modal:widget-header-title-label">
+	<xsl:template match="Routine/@*" mode="modal:header-title-label">
 		<xsl:apply-templates mode="headerText" select="../@Name"/>
 	</xsl:template>
 
-	<xsl:template match="Routine/@*" mode="modal:widget-footer">
+	<xsl:template match="Routine/@*" mode="modal:footer">
 		<xsl:for-each select="ancestor-or-self::*[1]">
 			<button type="button" class="btn btn_outline_information__data" data-dismiss="modal">
 				<xsl:attribute name="onclick">
-					<xsl:apply-templates mode="modal:widget-buttons-close-attributes-onclick" select="."/>
+					<xsl:apply-templates mode="modal:buttons-close-attributes-onclick" select="."/>
 				</xsl:attribute>
 				Cancelar
 			</button>
@@ -142,6 +142,6 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template match="*" mode="modal:widget-attributes-class">modal-prompt</xsl:template>
+	<xsl:template match="*" mode="modal:attributes-class">modal-prompt</xsl:template>
 
 </xsl:stylesheet>

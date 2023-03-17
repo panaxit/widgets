@@ -15,12 +15,12 @@
 	</xsl:template>
 
 	<xsl:template match="text()" mode="modal:widget"/>
-	<xsl:template match="text()" mode="modal:widget-header"/>
-	<xsl:template match="text()" mode="modal:widget-header-title-label"/>
-	<xsl:template match="text()" mode="modal:widget-body"/>
-	<xsl:template match="text()" mode="modal:widget-footer"/>
+	<xsl:template match="text()" mode="modal:header"/>
+	<xsl:template match="text()" mode="modal:header-title-label"/>
+	<xsl:template match="text()" mode="modal:body"/>
+	<xsl:template match="text()" mode="modal:footer"/>
 
-	<xsl:template match="*" mode="modal:widget-attributes-class" priority="-1">
+	<xsl:template match="*" mode="modal:attributes-class" priority="-1">
 		<xsl:text/>modal-dialog-centered<xsl:text/>
 	</xsl:template>
 
@@ -35,27 +35,27 @@
 				<xsl:attribute name="style">display: block;</xsl:attribute>
 				<xsl:attribute name="aria-modal">true</xsl:attribute>
 				<xsl:variable name="class">
-					<xsl:apply-templates mode="modal:widget-attributes-class" select="."/>
+					<xsl:apply-templates mode="modal:attributes-class" select="."/>
 				</xsl:variable>
 				<div class="modal-dialog {$class}">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="staticBackdropLabel_{@xo:id}">
-								<xsl:apply-templates mode="modal:widget-header-title-label" select="."/>
+								<xsl:apply-templates mode="modal:header-title-label" select="."/>
 							</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-bs-target="#modal_{@xo:id}">
-								<xsl:apply-templates mode="modal:widget-buttons-close-attributes" select="."/>
+								<xsl:apply-templates mode="modal:buttons-close-attributes" select="."/>
 								<span aria-hidden="true">&#215;</span>
 							</button>
 						</div>
 						<div class="modal-body">
-							<xsl:apply-templates mode="modal:widget-body" select=".">
+							<xsl:apply-templates mode="modal:body" select=".">
 								<xsl:with-param name="layout" select="$layout"/>
 								<xsl:with-param name="dataset" select="$dataset"/>
 							</xsl:apply-templates>
 						</div>
 						<div class="modal-footer">
-							<xsl:apply-templates mode="modal:widget-footer" select=".">
+							<xsl:apply-templates mode="modal:footer" select=".">
 								<xsl:with-param name="layout" select="$layout"/>
 								<xsl:with-param name="dataset" select="$dataset"/>
 							</xsl:apply-templates>
@@ -67,18 +67,18 @@
 		</div>
 	</xsl:template>
 
-	<xsl:template match="@*" mode="modal:widget-buttons-close-attributes-onclick" priority="-10">
+	<xsl:template match="@*" mode="modal:buttons-close-attributes-onclick" priority="-10">
 		<xsl:text/>closest(`[role='alertdialog']`).remove()<xsl:text/>
 	</xsl:template>
 
-	<xsl:template match="@*" mode="modal:widget-buttons-close-attributes" priority="-10">
+	<xsl:template match="@*" mode="modal:buttons-close-attributes" priority="-10">
 		<xsl:attribute name="onclick">
-			<xsl:apply-templates mode="modal:widget-buttons-close-attributes-onclick" select="."/>
+			<xsl:apply-templates mode="modal:buttons-close-attributes-onclick" select="."/>
 		</xsl:attribute>
 	</xsl:template>
 
-	<xsl:template match="@*|*[not(descendant::*)]" mode="modal:widget-header-title-label" priority="-10">modal:widget-header-title-label</xsl:template>
-	<xsl:template match="@*|*[not(descendant::*)]" mode="modal:widget-body" priority="-10">modal:widget-body</xsl:template>
-	<xsl:template match="@*|*[not(descendant::*)]" mode="modal:widget-footer" priority="-10">modal:widget-footer</xsl:template>
+	<xsl:template match="@*|*[not(descendant::*)]" mode="modal:header-title-label" priority="-10">modal:header-title-label</xsl:template>
+	<xsl:template match="@*|*[not(descendant::*)]" mode="modal:body" priority="-10">modal:body</xsl:template>
+	<xsl:template match="@*|*[not(descendant::*)]" mode="modal:footer" priority="-10">modal:footer</xsl:template>
 
 </xsl:stylesheet>

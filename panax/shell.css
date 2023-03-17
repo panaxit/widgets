@@ -241,6 +241,10 @@ li.sidebar-item.menu > a {
 .spinning {
     animation: fa-spin 2s linear infinite;
 }
+
+.working svg, .working i {
+    animation: fa-spin 2s linear infinite;
+}
 /*
 .wrapper > header h1 {
     margin-left: var(--sitemap-width);
@@ -387,16 +391,16 @@ form.form-view hr {
     border-color: var(--bg-primary) !important;
 }
 
-.btn-outline-info {
+/*.btn-outline-info {
     color: var(--bg-primary) !important;
     border-color: var(--bg-primary) !important;
 }
 
-    .btn-outline-info:hover {
-        color: var(--bg-white) !important;
-        background-color: var(--bg-primary-ps) !important;
-        border-color: var(--bg-primary-ps) !important;
-    }
+.btn-outline-info:hover {
+    color: var(--bg-white) !important;
+    background-color: var(--bg-primary-ps) !important;
+    border-color: var(--bg-primary-ps) !important;
+}*/
 
 .navbar {
     background-color: var(--navbar-bg-color);
