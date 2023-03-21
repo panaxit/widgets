@@ -17,6 +17,8 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 	<xsl:param name="site:seed">''</xsl:param>
 	<xsl:param name="appendTo-data:rows"/>
 
+	<xsl:key name="start-node" match="/*" use="'*'"/>
+
 	<xsl:template match="/">
 		<nav class="page-menu">
 			<style>
@@ -31,7 +33,7 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 			}
 			]]>
 			</style>
-			<xsl:apply-templates mode="widget"/>
+			<xsl:apply-templates mode="widget" select="key('start-node','*')"/>
 		</nav>
 	</xsl:template>
 

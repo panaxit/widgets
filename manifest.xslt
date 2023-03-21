@@ -434,11 +434,11 @@
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<xsl:template mode="modal:widget-header-title-label" match="@*">
+	<xsl:template mode="modal:header-title-label" match="@*">
 		<xsl:value-of select="../@headerText"/>
 	</xsl:template>
 
-	<xsl:template mode="modal:widget-footer" match="@*">
+	<xsl:template mode="modal:footer" match="@*">
 		<xsl:for-each select="../data:rows[not(xo:r[2])]/xo:r">
 			<a class="text-muted" href="#" xo-scope="{@xo:id}" onclick="px.submit(scope)">
 				<button class="btn btn-success">Guardar</button>
@@ -446,7 +446,7 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="modal:widget-body" match="@*">
+	<xsl:template mode="modal:body" match="@*">
 		<xsl:param name="scope" select="ancestor::px:Entity[1]/@xo:id"/>
 		<xsl:param name="dataset" select="key('dataset',concat($scope,'::',.))"/>
 		<div class="input-group d-flex justify-content-between col-8" xo-scope="{../@xo:id}">

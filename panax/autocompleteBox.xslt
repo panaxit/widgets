@@ -72,7 +72,7 @@
 		<xsl:param name="target" select="."/>
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
-		<input type="text" class="form-control dropdown-toggle" xo-scope="{../@xo:id}" xo-attribute="search:{local-name()}" autocomplete="off" onblur="this.value='{.}'; /*nextElementSibling.querySelector('ul').style.display='none';*/" onfocus="px.loadData(scope.parentNode.$(`ancestor-or-self::px:Entity[1]/px:Record/px:Association[@AssociationName='{local-name()}']/px:Entity`)); nextElementSibling.querySelector('ul').classList.toggle('show'); this.value=(this.scope.value || this.value); this.scope.value &amp;&amp; filterOptions(); this.select()" keydown="filterOptions()" style="position: relative" value="{.}">
+		<input type="text" class="form-control dropdown-toggle" xo-scope="{../@xo:id}" xo-attribute="search:{local-name()}" autocomplete="off" onblur="this.value='{.}'; /*nextElementSibling.querySelector('ul').style.display='none';*/" onfocus="px.loadData(scope.parentNode.$(`ancestor-or-self::px:Entity[1]/px:Record/px:Association[@AssociationName='{local-name()}']/px:Entity`)); nextElementSibling.querySelector('ul').classList.toggle('show'); this.value=(this.scope.value || this.value); this.scope.value &amp;&amp; filterOptions(); this.select()" oninput="filterOptions()" style="position: relative" value="{.}">
 			<xsl:attribute name="style">
 				<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
 			</xsl:attribute>
@@ -112,6 +112,7 @@
 			<script>
 				<![CDATA[
 		function filterOptions() {
+			//	console.assert(false)
 			let inputField = event.srcElement;
 			let optionsList = inputField.nextElementSibling.querySelector("ul");
 			optionsList.style.width = inputField.parentNode.clientWidth+'px';

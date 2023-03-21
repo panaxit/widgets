@@ -58,6 +58,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					color: var(--color-title-header);
 					margin-bottom: 0;
 					margin-left: 5px;
+					text-transform: capitalize;
 				}
 				
 				footer {
