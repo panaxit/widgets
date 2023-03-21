@@ -54,6 +54,13 @@
 			</style>
 			<xo-listener attribute="xsi:nil"/>
 			<table class="table table-striped table-hover table-sm datagrid">
+				<colgroup>
+					<col style="width:40px"/>
+					<xsl:for-each select="$layout">
+						<col style="min-width: 300px"/>
+					</xsl:for-each>
+					<col style="width:40px"/>
+				</colgroup>
 				<thead class="freeze">
 					<xsl:apply-templates mode="datagrid:header" select="current()">
 						<xsl:with-param name="dataset" select="$schema"/>
@@ -101,8 +108,7 @@
 
 	<xsl:template mode="datagrid:header" match="@*">
 		<xsl:param name="context">header</xsl:param>
-		<xsl:param name="dataset" select="node-expected"/>
-		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
+		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/*/@Name|ancestor::px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id"/>
 		<xsl:variable name="scope" select="current()"/>
 		<xsl:variable name="field-typed" select="$layout[parent::field:ref]|$layout[parent::association:ref]|$layout[parent::container:fieldContainer]"/>
 		<xsl:variable name="row-content" select="$layout[parent::field:ref]|$layout[parent::association:ref]|$layout[parent::container:tab]|$layout[parent::container:panel]|$layout[parent::container:tabPanel]|$layout[parent::container:subGroupTabPanel]|$layout[parent::container:fieldSet]"/>
@@ -111,7 +117,6 @@
 		<tr class="freeze">
 			<xsl:apply-templates mode="datagrid:row-header" select="."/>
 			<xsl:apply-templates mode="datagrid:header" select="$row-content">
-				<xsl:with-param name="dataset" select="$dataset"/>
 				<xsl:with-param name="context">header</xsl:with-param>
 				<xsl:with-param name="layout" select="$layout"/>
 			</xsl:apply-templates>
@@ -119,7 +124,6 @@
 		</tr>
 		<xsl:if test="count($layout)!=count($next-level)">
 			<xsl:apply-templates mode="datagrid:header" select="current()">
-				<xsl:with-param name="dataset" select="$dataset"/>
 				<xsl:with-param name="context">header</xsl:with-param>
 				<xsl:with-param name="layout" select="$next-level"/>
 			</xsl:apply-templates>
@@ -141,9 +145,32 @@
 		<xsl:variable name="colspan">
 			<xsl:value-of select="count(..//field:ref|..//association:ref)"/>
 		</xsl:variable>
-		<th colspan="{$colspan}" >
+		<xsl:variable name="fk_layout" select="ancestor::px:Entity[1]/px:Record/px:Association[not(@Type='belongsTo')][@AssociationName=current()]/px:Entity/*[local-name()='layout']/*/@Name"/>
+		<th colspan="{$colspan}">
 			<xsl:if test="key('atomic-ref',generate-id()) and not($layout[not(key('atomic-ref',generate-id()))]) or not(key('atomic-ref',generate-id()))">
-				<xsl:apply-templates mode="headerText" select="."/>
+				<xsl:choose>
+					<xsl:when test="$fk_layout">
+						<table>
+							<colgroup>
+								<col style="width:40px"/>
+								<xsl:for-each select="$fk_layout">
+									<col style="min-width: 300px"/>
+								</xsl:for-each>
+								<col style="width:40px"/>
+							</colgroup>
+							<tr>
+								<th colspan="{count($fk_layout)}">
+									<xsl:apply-templates mode="headerText" select="."/>
+								</th>
+							</tr>
+							<xsl:apply-templates mode="datagrid:header" select="$fk_layout/ancestor::px:Entity[1]/@xo:id">
+							</xsl:apply-templates>
+						</table>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates mode="headerText" select="."/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:if>
 		</th>
 	</xsl:template>
@@ -360,7 +387,7 @@
 	<xsl:template mode="datagrid:cell-content" match="@*">
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="dataset" select="."/>
-		<xsl:variable name="ref_field" select="$dataset[parent::xo:r][name()=current()[parent::field:ref]]|$dataset[parent::xo:f][.=current()[parent::field:ref]]|$dataset[name()=concat('meta:',current()[parent::association:ref])]|$dataset/../px:Association[@AssociationName=current()]/@xo:id"/>
+		<xsl:variable name="ref_field" select="$dataset[parent::xo:r][name()=current()[parent::field:ref]]|$dataset[parent::xo:f][.=current()[parent::field:ref]]|$dataset[name()=concat('meta:',current()[parent::association:ref])]|$dataset/../px:Association[@AssociationName=current()]/@AssociationName"/>
 		<span>
 			<xsl:choose>
 				<xsl:when test="$context='header'">

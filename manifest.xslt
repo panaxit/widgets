@@ -409,7 +409,7 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<span>
 			<xsl:apply-templates mode="widget" select="../px:Entity/@xo:id">
-				<xsl:with-param name="dataset" select="$dataset"/>
+				<!--<xsl:with-param name="dataset" select="$dataset"/>-->
 			</xsl:apply-templates>
 		</span>
 	</xsl:template>
