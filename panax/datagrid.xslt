@@ -57,7 +57,7 @@
 				<colgroup>
 					<col style="width:40px"/>
 					<xsl:for-each select="$layout">
-						<col style="min-width: 300px"/>
+						<col style="min-width: 150px"/>
 					</xsl:for-each>
 					<col style="width:40px"/>
 				</colgroup>
@@ -154,7 +154,7 @@
 							<colgroup>
 								<col style="width:40px"/>
 								<xsl:for-each select="$fk_layout">
-									<col style="min-width: 300px"/>
+									<col style="min-width: 150px"/>
 								</xsl:for-each>
 								<col style="width:40px"/>
 							</colgroup>
