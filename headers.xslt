@@ -14,7 +14,7 @@
 >
 
 	<xsl:template mode="headerText" match="@*">
-		<xsl:param name="dataset" select="ancestor::px:Entity[1]/px:Record/*/@Name"/>
+		<xsl:param name="dataset" select="ancestor::px:Entity[1]/px:Record/px:Field/@Name|ancestor::px:Entity[1]/px:Record/px:Association/@AssociationName"/>
 		<xsl:variable name="ref_field" select="$dataset[.=current()]|$dataset[name()=current()[parent::field:ref]]|$dataset[name()=concat('meta:',current()[parent::association:ref])]"/>
 		<xsl:choose>
 			<xsl:when test="count($ref_field|current())=1">

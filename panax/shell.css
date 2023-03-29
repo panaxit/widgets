@@ -126,6 +126,10 @@ aside [data-toggle=collapse]:before {
     transition: all .2s ease-out;
 }
 
+table.datagrid tbody table.datagrid thead {
+    display: none
+}
+
 .sitemap_collapsed .sidebar {
     width: 0%
 }
@@ -340,6 +344,7 @@ form.form-view hr {
 
 .skeleton {
     animation: skeleton-loading 1s linear infinite alternate;
+    min-width: 200px;
 }
 
 @keyframes skeleton-loading {
