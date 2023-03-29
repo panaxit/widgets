@@ -28,6 +28,7 @@
 
 	<xsl:key name="datagrid:widget" match="node-expected" use="@xo:id"/>
 	<xsl:key name="datagrid:row-header-element" match="px:Route[@Method='addToCart']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
+	<xsl:key name="datagrid:row-header-element" match="px:Route[@Method='facturar']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
 	<xsl:key name="datagrid:row-header-element" match="px:Route[@Method='select']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
 	<xsl:key name="datagrid:row-header-element" match="px:Route[@Method='edit']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
 
