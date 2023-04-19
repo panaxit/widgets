@@ -412,6 +412,13 @@ form.form-view hr {
     position: unset; /*Se agrega para que no se encime en otros elementos con diferente z-index, como los men�s*/
 }
 
+tr a {
+    text-decoration:none
+}
+
+tr > th {
+    white-space: nowrap;
+}
 /*floating headers*/
 main table > thead.freeze > tr > td, table > thead.freeze > tr > th {
     position: sticky;

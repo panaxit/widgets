@@ -248,7 +248,7 @@
 				<xsl:with-param name="context">footer</xsl:with-param>
 				<xsl:with-param name="layout" select="$layout"/>
 			</xsl:apply-templates>
-			<xsl:if test="ancestor-or-self::*[@meta:type='entity'][2]">
+			<xsl:if test="ancestor-or-self::*[@meta:type='entity'][2] and not(ancestor::px:Association[1][@DataType='junctionTable'])">
 				<tr xo-scope="{ancestor-or-self::*[@meta:type='entity'][1]/@xo:id}">
 					<td colspan="{count($layout[key('atomic-ref',generate-id())]|$layout/../*//@*[key('atomic-ref',generate-id())])+3}" style="text-align:center">
 						<xsl:apply-templates mode="datagrid:buttons-new" select="."/>
@@ -264,7 +264,7 @@
 		<xsl:comment>No more attributes</xsl:comment>
 	</xsl:template>
 
-	<xsl:template mode="datagrid:row-attributes" match="xo:r[@state:delete]/@xo:id">
+	<xsl:template mode="datagrid:row-attributes" match="xo:r[not(ancestor::px:Association[1][@DataType='junctionTable'])][@state:delete]/@xo:id">
 		<xsl:attribute name="style">height:15px !important; background-color: #dc3545 !important;</xsl:attribute>
 	</xsl:template>
 
@@ -314,7 +314,7 @@
 
 	<xsl:template match="@xsi:nil">No hay registros</xsl:template>
 
-	<xsl:template mode="datagrid:row" match="xo:r[@state:delete]/@xo:id">
+	<xsl:template mode="datagrid:row" match="xo:r[not(ancestor::px:Association[1][@DataType='junctionTable'])][@state:delete]/@xo:id">
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="dataset" select="../@*"/>
 		<xsl:param name="layout" select="node-expected"/>

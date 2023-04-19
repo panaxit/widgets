@@ -31,6 +31,13 @@
 	<xsl:key name="datagrid:row-header-element" match="px:Route[@Method='select']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
 	<xsl:key name="datagrid:row-header-element" match="px:Route[@Method='edit']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
 
+	<xsl:key name="datagrid:row-footer-element" match="px:Route[@Method='delete'][not(ancestor::px:Association[1][@DataType='junctionTable'])]/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
+
+	<xsl:key name="datagrid:row-header-element" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='add']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
+	<xsl:key name="datagrid:row-header-element" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='delete']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
+	
+	<xsl:key name="hidden" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='edit']" use="@xo:id"/>
+
 	<xsl:template mode="datagrid:row-header" match="@*">
 		<!--<th scope="row">
 			<xsl:value-of select="../@meta:position"/>
@@ -63,7 +70,7 @@
 
 	<xsl:template mode="datagrid:row-footer" match="@*">
 		<th style="text-align: right;">
-			<xsl:apply-templates mode="route:widget" select="ancestor::px:Entity[1]/px:Routes/px:Route[@Method='delete']/@xo:id">
+			<xsl:apply-templates mode="route:widget" select="key('datagrid:row-footer-element',ancestor::px:Entity[1]/@xo:id)">
 				<xsl:with-param name="scope" select="parent::xo:r"/>
 			</xsl:apply-templates>
 		</th>

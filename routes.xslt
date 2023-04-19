@@ -13,6 +13,8 @@
   xmlns:route="http://panax.io/routes"
   exclude-result-prefixes="xo state xsl meta custom data route"
 >
+	<xsl:key name="hidden" match="node-expected" use="@xo:id"/>
+
 	<xsl:template mode="route:widget" match="*/@*">
 		<xsl:param name="scope" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
@@ -100,14 +102,39 @@
 		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
 			<xo-listener attribute="state:delete"/>
 			<button class="btn btn-sm btn-danger" onclick="scope.remove(); event.preventDefault();">
-				<!--<xsl:if test="not($identity!='')">
-						<xsl:attribute name="onclick">scope.remove()</xsl:attribute>
-					</xsl:if>-->
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
 					<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
 					<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
 				</svg>
 			</button>
+		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template mode="route:widget-button" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='delete']/@*" priority="-1">
+		<xsl:param name="scope" select="node-expected"/>
+		<xsl:variable name="route" select="current()"/>
+		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
+			<xsl:if test="@meta:id!=''">
+				<xo-listener attribute="state:delete"/>
+				<button class="btn btn-sm btn-primary">
+					<xsl:choose>
+						<xsl:when test="@state:delete='true'">
+							<xsl:attribute name="onclick">scope.removeAttribute('state:delete'); event.preventDefault();</xsl:attribute>
+							<xsl:attribute name="class">btn btn-sm btn-outline-primary</xsl:attribute>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+								<path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+							</svg>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="onclick">scope.setAttribute('state:delete',true); event.preventDefault();</xsl:attribute>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
+								<path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+								<path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+							</svg>
+						</xsl:otherwise>
+					</xsl:choose>
+				</button>
+			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
 
@@ -126,7 +153,38 @@
 		</xsl:for-each>
 	</xsl:template>
 
+	<xsl:template mode="route:widget-button" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='add']/@*" priority="-1">
+		<xsl:param name="scope" select="node-expected"/>
+		<xsl:variable name="route" select="current()"/>
+		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
+			<xsl:if test="not(@meta:id!='')">
+				<button class="btn btn-sm btn-primary" xo-attribute="state:checked" onclick="scope.set(true); event.preventDefault();">
+					<xsl:choose>
+						<xsl:when test="@state:checked='true'">
+							<xsl:attribute name="onclick">scope.remove(); event.preventDefault();</xsl:attribute>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
+								<path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+								<path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+							</svg>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="class">btn btn-sm btn-outline-primary</xsl:attribute>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
+								<path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+							</svg>
+						</xsl:otherwise>
+					</xsl:choose>
+				</button>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template mode="route:widget-button" match="px:Route[key('hidden',@xo:id)]/@*" priority="-1">
+	</xsl:template>
+
 	<xsl:template mode="route:widget-button" match="px:Route[ancestor-or-self::*/@mode='readonly']/@*" priority="-1">
-		<xsl:comment>La ruta <xsl:value-of select="../@Method"/> no está disponible</xsl:comment>
+		<xsl:comment>
+			La ruta <xsl:value-of select="../@Method"/> no está disponible
+		</xsl:comment>
 	</xsl:template>
 </xsl:stylesheet>
