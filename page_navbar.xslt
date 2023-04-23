@@ -51,7 +51,7 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 		</style>
 		<form action="javascript:void(0);">
 			<xsl:apply-templates mode="widget" select="px:Parameter"/>
-			<button type="submit" class="btn btn-success" onclick="px.applyFilters(scope)" xo-scope="{parent::px:Entity/@xo:id}" xo-attribute="data:rows">
+			<button type="submit" class="btn btn-success" onclick="px.applyFilters(scope)" xo-scope="{parent::px:Entity/data:rows/@xo:id}" xo-attribute="command">
 				<xsl:text>Filtrar</xsl:text>
 			</button>
 		</form>
