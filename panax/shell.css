@@ -246,7 +246,7 @@ li.sidebar-item.menu > a {
     animation: fa-spin 2s linear infinite;
 }
 
-.working svg, .working i {
+.working svg, .working i, svg.working, i.working {
     animation: fa-spin 2s linear infinite;
 }
 /*
