@@ -30,35 +30,36 @@ exclude-result-prefixes="#default xsl px xsi xo data site"
 
 	<xsl:template match="px:Entity[@controlType='datagridView']/data:rows/@*">
 		<xsl:for-each select="..">
+			<xsl:variable name="scope" select="."/>
 			<nav aria-label="Page navigation">
 				<ul class="pagination justify-content-center">
 					<xsl:variable name="pageIndex" select="@meta:pageIndex"/>
 					<xsl:variable name="pageSize" select="@meta:pageSize"/>
 					<xsl:variable name="totalRows" select="*/@meta:totalCount"/>
 					<xsl:if test="$totalRows &gt; $pageSize or $pageIndex &gt; 1">
-						<li class="page-item">
+						<li class="page-item" xo-scope="{$scope/@xo:id}" xo-attribute="meta:pageIndex">
 							<xsl:if test="$pageIndex = 1">
 								<xsl:attribute name="class">page-item disabled</xsl:attribute>
 							</xsl:if>
-							<a class="page-link" href="#" onclick="scope.parentNode.getAttributeNode('data:rows').set(value=> value.replace(/pageIndex=\d+/g,'pageIndex={$pageIndex - 1}'))">
+							<a class="page-link" href="#" onclick="scope.set({$pageIndex - 1})">
 								Anterior
 							</a>
 						</li>
 						<xsl:for-each select="(//*)[position() &lt;= ceiling($totalRows div $pageSize) and position()&lt;10]">
-							<li class="page-item">
+							<li class="page-item" xo-scope="{$scope/@xo:id}" xo-attribute="meta:pageIndex">
 								<xsl:if test="$pageIndex = position()">
 									<xsl:attribute name="class">page-item active</xsl:attribute>
 								</xsl:if>
-								<a class="page-link" href="#" onclick="scope.parentNode.getAttributeNode('data:rows').set(value=> value.replace(/pageIndex=\d+/g,'pageIndex={position()}'))">
+								<a class="page-link" href="#" onclick="scope.set({position()})">
 									<xsl:value-of select="position()"/>
 								</a>
 							</li>
 						</xsl:for-each>
-						<li class="page-item">
+						<li class="page-item" xo-scope="{$scope/@xo:id}" xo-attribute="meta:pageIndex">
 							<xsl:if test="$pageIndex + 1 &gt; ceiling($totalRows div $pageSize)">
 								<xsl:attribute name="class">page-item disabled</xsl:attribute>
 							</xsl:if>
-							<a class="page-link" href="#" onclick="scope.parentNode.getAttributeNode('data:rows').set(value=> value.replace(/pageIndex=\d+/g,'pageIndex={$pageIndex + 1}'))">
+							<a class="page-link" href="#" onclick="scope.set({$pageIndex + 1})">
 								Siguiente
 							</a>
 						</li>
