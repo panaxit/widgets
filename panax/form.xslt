@@ -21,10 +21,8 @@
 
 	<xsl:template mode="form:widget" match="@*">
 		<xsl:param name="scope" select="ancestor::px:Entity[1]/@xo:id"/>
-		<xsl:param name="dataset" select="key('dataset',concat($scope,'::',.))"/>
-		<xsl:param name="layout" select="key('layout',$scope)"/>
-		<xsl:param name="selection" select="node-expected"/>
-		<xsl:for-each select="$dataset">
+		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:for-each select="$scope">
 			<xsl:variable name="row" select="current()"/>
 			<form class="form-view needs-validation col-12 g-3 fluid-container" novalidate="">
 				<div class="col-12 g-3">
@@ -80,7 +78,6 @@
 		<xsl:param name="field-name">
 			<xsl:apply-templates mode="form:field-name" select="."/>
 		</xsl:param>
-		<xsl:param name="dataset" select="key('dataset',concat($scope,'::',$field-name))"/>
 		<xsl:variable name="headerText">
 			<xsl:apply-templates mode="form:field-header" select="current()">
 				<xsl:with-param name="scope" select="$scope/ancestor::px:Entity[1]/@xo:id"/>
@@ -141,6 +138,7 @@
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('picture:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('file:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('files:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
+	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('form:',ancestor::px:Entity[1]/@xo:id,'::',parent::px:Entity/@Schema,'/',parent::px:Entity/@Name))]"/>
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('datagrid:',ancestor::px:Entity[1]/@xo:id,'::',parent::px:Entity/@Schema,'/',parent::px:Entity/@Name))]"/>
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('dropzone:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
 	<xsl:template mode="form:field-body-append" match="@*[key('widget',concat('percentage:',ancestor::px:Entity[1]/@xo:id,'::',name()))]"/>
@@ -174,6 +172,7 @@
 			<xsl:apply-templates mode="form:field-name" select="."/>
 		</xsl:param>
 		<xsl:param name="ref_field" select="key('field-ref',concat($scope,'::',$field-name))"/>
+		<xsl:comment>debug:info</xsl:comment>
 		<xsl:choose>
 			<xsl:when test="count($ref_field|current())=1">
 				<xsl:apply-templates mode="widget" select="."/>
@@ -199,13 +198,18 @@
 		</div>
 	</xsl:template>
 
-	<xsl:template mode="form:field-body" match="container:modal/@*">
+	<xsl:template mode="form:field-body" match="container:modal/@*|container:tabPanel/@*">
 		<xsl:param name="scope" select="../@xo:id"/>
-		<div class="input-group d-flex justify-content-between col-4" xo-scope="{../@xo:id}" xo-attribute="state:active">
+		<div class="" xo-scope="{../@xo:id}" xo-attribute="state:active">
 			<xsl:apply-templates mode="widget" select=".">
 				<xsl:with-param name="scope" select="$scope"/>
 			</xsl:apply-templates>
 		</div>
 	</xsl:template>
 
+	<xsl:template mode="form:field" match="*[key('hidden',@xo:id)]/@*|*[key('hidden',concat(ancestor::px:Entity[1]/@xo:id,'::',@Name))]/@*">
+		<xsl:comment>
+			<xsl:text/>hidden <xsl:value-of select="../@xo:id"/>: <xsl:value-of select="."/>
+		</xsl:comment>
+	</xsl:template>
 </xsl:stylesheet>

@@ -313,6 +313,10 @@ form.form-view hr {
     margin-bottom: 3rem !important;
 }
 
+form.form-view fieldset form {
+    display: contents;
+}
+
 .cu-skeleton-subcategory__item:after {
     position: absolute;
     top: 0;
