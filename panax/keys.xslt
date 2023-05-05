@@ -39,10 +39,10 @@
 	<xsl:key name="dataset" match="px:Association/px:Entity/data:rows/xo:r/@meta:text" use="concat(ancestor::px:Entity[2]/@xo:id,'::meta:',ancestor::px:Association[1]/@AssociationName)"/>
 
 	<xsl:key name="dataset" match="xo:r/@xo:id" use="."/>
-	<xsl:key name="dataset" match="px:Entity[not(data:rows)]/@xo:id" use="../@xo:id"/>
-	<xsl:key name="dataset" match="data:rows[not(@xsi:nil) and not(xo:r)]/@xo:id" use="../@xo:id"/>
-	<xsl:key name="dataset" match="data:rows/@xsi:nil" use="../@xo:id"/>
-	<xsl:key name="dataset" match="data:rows/xo:r/@xo:id" use="../../../@xo:id"/>
+	<xsl:key name="dataset" match="px:Entity[not(data:rows)]/@xo:id" use="ancestor::px:Entity[1]/@xo:id"/>
+	<xsl:key name="dataset" match="data:rows[not(@xsi:nil) and not(xo:r)]/@xo:id" use="ancestor::px:Entity[1]/@xo:id"/>
+	<xsl:key name="dataset" match="data:rows/@xsi:nil" use="ancestor::px:Entity[1]/@xo:id"/>
+	<xsl:key name="dataset" match="data:rows/xo:r/@xo:id" use="ancestor::px:Entity[1]/@xo:id"/>
 	<xsl:key name="dataset" match="px:Association/px:Entity/data:rows/xo:r/@meta:text" use="concat(ancestor::px:Entity[2]/@xo:id,'::meta:',ancestor::px:Association[1]/@AssociationName)"/>
 
 	<xsl:key name="field-ref" match="xo:r/@*" use="concat(../@xo:id,'::','xo:id')"/>

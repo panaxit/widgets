@@ -285,6 +285,7 @@
 		<!--<xsl:param name="scope" select="ancestor::px:Entity[1]/@xo:id"/>
 		<xsl:param name="dataset" select="key('dataset',concat($scope,'::',.))"/>-->
 		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
+
 		<xsl:apply-templates mode="form:widget" select="current()">
 			<xsl:with-param name="scope" select="$scope"/>
 			<xsl:with-param name="layout" select="$layout"/>
