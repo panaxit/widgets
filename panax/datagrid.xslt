@@ -56,7 +56,7 @@
 			<table class="table table-striped table-hover table-sm datagrid">
 				<colgroup>
 					<col style="width:40px"/>
-					<xsl:for-each select="$layout">
+					<xsl:for-each select="$layout/ancestor-or-self::*[1]/descendant-or-self::*[self::field:ref or self::association:ref]">
 						<col style="min-width: 150px"/>
 					</xsl:for-each>
 					<col style="width:40px"/>
@@ -110,7 +110,7 @@
 		<xsl:param name="context">header</xsl:param>
 		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/*/@Name|ancestor::px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id"/>
 		<xsl:variable name="scope" select="current()"/>
-		<xsl:variable name="field-typed" select="$layout[parent::field:ref]|$layout[parent::association:ref]|$layout[parent::container:fieldContainer]"/>
+		<!--<xsl:variable name="field-typed" select="$layout[parent::field:ref]|$layout[parent::association:ref]|$layout[parent::container:fieldContainer]"/>-->
 		<xsl:variable name="row-content" select="$layout[parent::field:ref]|$layout[parent::association:ref]|$layout[parent::container:tab]|$layout[parent::container:panel]|$layout[parent::container:tabPanel]|$layout[parent::container:subGroupTabPanel]|$layout[parent::container:fieldSet]"/>
 		<xsl:variable name="row-elements" select="$layout[not(../@xo:id=$row-content/../@xo:id)]"/>
 		<xsl:variable name="next-level" select="$layout/../*/@Name|$layout/../*[not(@Name)]/@xo:id|$layout[parent::*[not(*)]]"/>
@@ -126,6 +126,31 @@
 			<xsl:apply-templates mode="datagrid:header" select="current()">
 				<xsl:with-param name="context">header</xsl:with-param>
 				<xsl:with-param name="layout" select="$next-level"/>
+			</xsl:apply-templates>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:key name="active" match="node-expected" use="@xo:id"/>
+	
+	<xsl:template mode="datagrid:header" match="@*">
+		<xsl:param name="context">header</xsl:param>
+		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/*"/>
+		<xsl:variable name="scope" select="current()"/>
+		<xsl:variable name="row-content" select="$layout/ancestor-or-self::*[1]/self::field:ref|$layout/ancestor-or-self::*[1]/self::association:ref|$layout/ancestor-or-self::*[1]/self::container:fieldContainer|$layout/ancestor-or-self::*[1]/self::container:tab[key('active', @xo:id)]|$layout/ancestor-or-self::*[1]/self::container:panel/*|$layout/ancestor-or-self::*[1]/self::container:tabPanel/container:tab[key('active', @xo:id)]|$layout/ancestor-or-self::*[1]/self::container:subGroupTabPanel|$layout/ancestor-or-self::*[1]/self::container:fieldSet"/>
+		<xsl:variable name="row-elements" select="$layout[not(../@xo:id=$row-content/../@xo:id)]"/>
+		<xsl:variable name="next-level" select="$row-content/*"/>
+		<tr class="freeze">
+			<xsl:apply-templates mode="datagrid:row-header" select="."/>
+			<xsl:apply-templates mode="datagrid:header" select="$row-content/@Name|$row-content[not(@Name)]/@xo:id">
+				<xsl:with-param name="context">header</xsl:with-param>
+				<xsl:with-param name="layout" select="$layout"/>
+			</xsl:apply-templates>
+			<xsl:apply-templates mode="datagrid:row-footer" select="."/>
+		</tr>
+		<xsl:if test="$next-level">
+			<xsl:apply-templates mode="datagrid:header" select="current()">
+				<xsl:with-param name="context">header</xsl:with-param>
+				<xsl:with-param name="layout" select="$next-level/@Name|$next-level[not(@Name)]/@xo:id"/>
 			</xsl:apply-templates>
 		</xsl:if>
 	</xsl:template>
@@ -147,7 +172,7 @@
 		</xsl:variable>
 		<xsl:variable name="fk_layout" select="ancestor::px:Entity[1]/px:Record/px:Association[not(@Type='belongsTo')][@AssociationName=current()]/px:Entity/*[local-name()='layout']/*/@Name"/>
 		<th colspan="{$colspan}">
-			<xsl:if test="key('atomic-ref',generate-id()) and not($layout[not(key('atomic-ref',generate-id()))]) or not(key('atomic-ref',generate-id()))">
+			<!--<xsl:if test="key('atomic-ref',generate-id()) and not($layout[not(key('atomic-ref',generate-id()))]) or not(key('atomic-ref',generate-id()))">
 				<xsl:choose>
 					<xsl:when test="$fk_layout">
 						<table>
@@ -171,11 +196,12 @@
 						<xsl:apply-templates mode="headerText" select="."/>
 					</xsl:otherwise>
 				</xsl:choose>
-			</xsl:if>
+			</xsl:if>-->
+			<xsl:apply-templates mode="headerText" select="."/>
 		</th>
 	</xsl:template>
 
-	<xsl:template mode="datagrid:header" match="container:subGroupTabPanel/@*|container:tab/@*">
+	<!--<xsl:template mode="datagrid:header" match="container:subGroupTabPanel/@*|container:tab/@*">
 		<xsl:param name="context">header</xsl:param>
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
@@ -187,31 +213,59 @@
 				<xsl:apply-templates mode="headerText" select="."/>
 			</a>
 		</li>
-	</xsl:template>
+	</xsl:template>-->
 
-	<xsl:template mode="datagrid:header" match="container:groupTabPanel/@*|container:tabPanel/@*">
+	<xsl:template mode="datagrid:header" match="container:groupTabPanel/@*|container:subGroupTabPanel/@*|container:tab/@*"><!--container:tab[not(parent::container:tabPanel)]/@*-->
 		<xsl:param name="context">header</xsl:param>
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
+		<xsl:variable name="colspan">
+			<xsl:value-of select="count(..//field:ref|..//association:ref)"/>
+		</xsl:variable>
+		<xsl:variable name="scope" select="current()"/>
+		<xsl:variable name="row-content" select="../*"/>
+		<xsl:variable name="row-elements" select="../*[not(@xo:id=$row-content/@xo:id)]"/>
+		<th colspan="{$colspan}">
+			<ul class="nav nav-tabs">
+				<li class="nav-item">
+					<a class="nav-link active" href="#" xo-attribute="state:selected" onclick="scope.set('1')">
+						<xsl:value-of select="."/>
+					</a>
+				</li>
+			</ul>
+		</th>
+	</xsl:template>
+
+	<!--<xsl:template mode="datagrid:header" match="container:groupTabPanel/@*|container:tabPanel/@*">
+		<xsl:param name="context">header</xsl:param>
+		<xsl:param name="dataset" select="node-expected"/>
+		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
+		<xsl:variable name="colspan">
+			<xsl:value-of select="count(..//field:ref|..//association:ref)"/>
+		</xsl:variable>
 		<xsl:variable name="scope" select="current()"/>
 		<xsl:variable name="row-content" select="../container:tab|../container:subGroupTabPanel"/>
 		<xsl:variable name="row-elements" select="../*[not(@xo:id=$row-content/@xo:id)]"/>
-		<ul class="nav nav-tabs">
-			<xsl:apply-templates mode="datagrid:header" select="$row-content/@Name|$row-content[not(@Name)]/@xo:id">
-				<xsl:with-param name="dataset" select="$dataset"/>
-				<xsl:with-param name="context">header</xsl:with-param>
-				<xsl:with-param name="layout" select="current()"/>
-			</xsl:apply-templates>
-			<li>
-				<xsl:value-of select="."/>
-			</li>
-		</ul>
+		<th colspan="{$colspan}">
+			<ul class="nav nav-tabs">
+				<xsl:apply-templates mode="datagrid:header" select="$row-content/@Name|$row-content[not(@Name)]/@xo:id">
+					<xsl:with-param name="dataset" select="$dataset"/>
+					<xsl:with-param name="context">header</xsl:with-param>
+					<xsl:with-param name="layout" select="current()"/>
+				</xsl:apply-templates>
+				<li class="nav-item">
+					<a class="nav-link active" href="#" xo-attribute="state:selected" onclick="scope.set('1')">
+						<xsl:value-of select="."/>
+					</a>
+				</li>
+			</ul>
+		</th>
 		<xsl:apply-templates mode="datagrid:header" select="$row-elements/@Name|$row-elements[not(@Name)]/@xo:id">
 			<xsl:with-param name="dataset" select="$dataset"/>
 			<xsl:with-param name="context">header</xsl:with-param>
 			<xsl:with-param name="layout" select="current()"/>
 		</xsl:apply-templates>
-	</xsl:template>
+	</xsl:template>-->
 
 	<!--<xsl:template mode="datagrid:header" match="*[local-name()='layout']/@*">
 		<xsl:param name="context">header</xsl:param>

@@ -16,6 +16,7 @@
   xmlns:layout="http://panax.io/layout/view/form"
   exclude-result-prefixes="xo state xsl CardView data height width data story temp px layout"
 >
+	<xsl:import href="functions.xslt"/>
 	<xsl:key name="value" match="xo:r/@*" use="concat(../@xo:id,'::',name())"/>
 	<xsl:key name="display-text" match="xo:r/@text:*" use="concat(../@xo:id, '::',local-name())" />
 	<xsl:key name="money" match="px:Field[@DataType='money']" use="concat(ancestor::px:Entity[1]/@xo:id,'::',@Name)"/>
@@ -69,6 +70,13 @@
 	</xsl:template>
 
 	<xsl:template match="*[concat('datagrid:',@Schema,'.',@Name)]/*/@*[key('file',concat(ancestor::px:Entity[1]/@xo:id,'::',name()))]">
+		<xsl:call-template name="substring-after-last">
+			<xsl:with-param name="string" select="." />
+			<xsl:with-param name="delimiter" select="'\'" />
+		</xsl:call-template>
+	</xsl:template>
+
+	<xsl:template match="*[concat('datagrid:',@Schema,'.',@Name)]/*/@*[contains(.,'?name=')][key('file',concat(ancestor::px:Entity[1]/@xo:id,'::',name()))]">
 		<xsl:value-of select="substring-before(substring-after(concat(.,'&amp;'),'?name='),'&amp;')"/>
 	</xsl:template>
 

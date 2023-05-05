@@ -17,7 +17,7 @@ xmlns:js="http://panax.io/languages/javascript"
 exclude-result-prefixes="#default xo session sitemap login widget state source js meta xsi"
 >
 	<xsl:import href="keys.xslt"/>
-	<xsl:import href="functions.xslt"/>
+	<xsl:import href="../functions.xslt"/>
 	<xsl:output method="xml"
 	   omit-xml-declaration="yes"
 	   indent="yes"/>

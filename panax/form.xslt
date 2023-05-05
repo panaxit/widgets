@@ -20,7 +20,7 @@
 	<xsl:key name="foreignTable" match="key-expected" use="@xo:id"/>
 
 	<xsl:template mode="form:widget" match="@*">
-		<xsl:param name="scope" select="ancestor::px:Entity[1]/@xo:id"/>
+		<xsl:param name="scope" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
 		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
 		<xsl:for-each select="$scope">
 			<xsl:variable name="row" select="current()"/>
@@ -198,7 +198,7 @@
 		</div>
 	</xsl:template>
 
-	<xsl:template mode="form:field-body" match="container:modal/@*|container:tabPanel/@*">
+	<xsl:template mode="form:field-body" match="container:modal/@*|container:tabPanel/@*|container:tab[not(parent::container:tabPanel)]/@*">
 		<xsl:param name="scope" select="../@xo:id"/>
 		<div class="" xo-scope="{../@xo:id}" xo-attribute="state:active">
 			<xsl:apply-templates mode="widget" select=".">

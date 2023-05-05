@@ -399,6 +399,10 @@
 		<xsl:apply-templates mode="file:widget" select="."/>
 	</xsl:template>
 
+	<xsl:template mode="widget" match="key('entity','datagrid:widget')/data:rows/xo:r/@*[key('widget',concat('file:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))]">
+		<xsl:apply-templates mode="file:widget" select="."/>
+	</xsl:template>
+
 	<xsl:template mode="widget" match="key('entity','datagrid:widget')/data:rows/xo:r/xo:f/@*">
 		<xsl:apply-templates mode="widget" select="../*"/>
 	</xsl:template>
@@ -511,7 +515,7 @@
 	</xsl:template>
 
 	<xsl:template mode="widget" match="container:panel/@*">
-		panel
+		<xsl:comment>panel goes here!</xsl:comment>
 	</xsl:template>
 
 	<xsl:template mode="widget" match="container:panel[key('form:item', @xo:id)]/@*">
@@ -537,6 +541,19 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:apply-templates mode="tabPanel:widget" select="."></xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="container:tab[not(parent::container:tabPanel)]/@*">
+		<xsl:param name="schema" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
+		<xsl:variable name="active">
+			<xsl:choose>
+				<xsl:when test="key('active', ../@xo:id)">active</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:apply-templates mode="tabPanel:widget" select=".">
+			<xsl:with-param name="items" select="."/>
+		</xsl:apply-templates>
 	</xsl:template>
 
 	<xsl:template mode="widget" match="*[key('hidden',@xo:id)]/@*|*[key('hidden',concat(ancestor::px:Entity[1]/@xo:id,'::',@Name))]/@*">

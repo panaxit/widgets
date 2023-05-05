@@ -22,16 +22,17 @@
 
 	<xsl:key name="active" match="node-expected" use="@xo:id"/>
 	<xsl:key name="active" match="*[not(@state:active)]/container:tab[1]" use="@xo:id"/>
+	<xsl:key name="active" match="container:tab[not(parent::container:tabPanel)]" use="@xo:id"/>
 	<xsl:key name="active" match="container:tab[@xo:id=../@state:active]" use="@xo:id"/>
 
 	<xsl:template match="@*" mode="tabPanel:widget" priority="-1">
-		<xsl:variable name="items" select="../container:tab"/>
+		<xsl:param name="items" select="../container:tab/@Name|../container:tab[not(@Name)]/@xo:id"/>
 		<div class="tab-pane fade show active" role="tabpanel" aria-labelledby="v-pills-profile-tab">
 			<ul class="nav nav-tabs">
-				<xsl:apply-templates mode="tabPanel:nav-item" select="$items/@Name|$items[not(@Name)]/@xo:id"/>
+				<xsl:apply-templates mode="tabPanel:nav-item" select="$items"/>
 			</ul>
-			<xsl:variable name="current_panel" select="../container:tab[key('active', @xo:id)]/container:panel"/>
-			<div class="tab-content p-3" id="container_px_tabPanel_id187" xo-scope="{$current_panel/@xo:id}">
+			<xsl:variable name="current_panel" select="$items[key('active', ../@xo:id)]/../container:panel"/>
+			<div class="tab-content p-3" xo-scope="{$current_panel/@xo:id}">
 				<xsl:apply-templates mode="widget" select="$current_panel/@Name|$current_panel[not(@Name)]/@xo:id"/>
 			</div>
 		</div>
