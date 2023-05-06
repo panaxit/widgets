@@ -186,19 +186,19 @@
 	</xsl:template>
 
 	<xsl:template mode="widget" match="px:Entity/px:Routes/px:Route/@*">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:apply-templates mode="route:widget" select=".">
-			<xsl:with-param name="scope" select="$scope"/>
+			<xsl:with-param name="dataset" select="$dataset"/>
 		</xsl:apply-templates>
 	</xsl:template>
 
 	<xsl:template mode="widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route/@*">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<li>
-			<a class="dropdown-item" href="javascript:void(0)" xo-scope="{$scope/ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name($scope)}">
+			<a class="dropdown-item" href="javascript:void(0)" xo-scope="{$dataset/ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name($dataset)}">
 				<xsl:apply-templates mode="widget-attributes" select="."/>
 				<xsl:apply-templates select=".">
-					<xsl:with-param name="scope" select="$scope"/>
+					<xsl:with-param name="dataset" select="$dataset"/>
 				</xsl:apply-templates>
 			</a>
 		</li>
@@ -281,23 +281,18 @@
 	</xsl:template>
 
 	<xsl:template mode="widget" match="@*[key('widget',concat('form:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',parent::px:Entity/@Schema,'/',parent::px:Entity/@Name))]">
-		<xsl:param name="scope" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
-		<!--<xsl:param name="scope" select="ancestor::px:Entity[1]/@xo:id"/>
-		<xsl:param name="dataset" select="key('dataset',concat($scope,'::',.))"/>-->
+		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
 		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
-
 		<xsl:apply-templates mode="form:widget" select="current()">
-			<xsl:with-param name="scope" select="$scope"/>
+			<xsl:with-param name="dataset" select="$dataset"/>
 			<xsl:with-param name="layout" select="$layout"/>
 		</xsl:apply-templates>
 	</xsl:template>
 
 	<xsl:template mode="widget" match="@*[key('widget',concat('datagrid:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',parent::px:Entity/@Schema,'/',parent::px:Entity/@Name))]">
-		<xsl:param name="schema" select="ancestor::*[key('entity',@xo:id)][1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::*[key('entity',@xo:id)][1]/px:Record/*/@AssociationName"/>
-		<xsl:param name="dataset" select="ancestor::*[key('entity',@xo:id)][1]/data:rows/@xsi:nil|ancestor::*[key('entity',@xo:id)][1]/data:rows[not(@xsi:nil)][not(xo:r)]/@xo:id|ancestor::*[key('entity',@xo:id)][1]/data:rows/xo:r"/>
-		<xsl:param name="layout" select="ancestor::*[key('entity',@xo:id)][1]/*[local-name()='layout']/*/@Name|ancestor::*[key('entity',@xo:id)][1]/*[local-name()='layout']/*[not(@Name)]/@xo:id"/>
+		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
 		<xsl:apply-templates mode="datagrid:widget" select="current()">
-			<xsl:with-param name="schema" select="$schema"/>
 			<xsl:with-param name="dataset" select="$dataset"/>
 			<xsl:with-param name="layout" select="$layout"/>
 		</xsl:apply-templates>
@@ -454,8 +449,7 @@
 	</xsl:template>
 
 	<xsl:template mode="modal:body" match="@*">
-		<xsl:param name="scope" select="ancestor::px:Entity[1]/@xo:id"/>
-		<xsl:param name="dataset" select="key('dataset',concat($scope,'::',.))"/>
+		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
 		<div class="input-group d-flex justify-content-between col-8" xo-scope="{../@xo:id}">
 			<xsl:apply-templates mode="form:widget" select="current()">
 				<xsl:with-param name="dataset" select="$dataset"/>
@@ -520,9 +514,9 @@
 	</xsl:template>
 
 	<xsl:template mode="widget" match="container:panel[key('form:item', @xo:id)]/@*">
-		<xsl:param name="scope" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
 		<xsl:apply-templates mode="form:widget" select=".">
-			<xsl:with-param name="scope" select="$scope"/>
+			<xsl:with-param name="dataset" select="$dataset"/>
 			<xsl:with-param name="layout" select="../*/@Name|../*[not(@Name)]/@xo:id"/>
 		</xsl:apply-templates>
 	</xsl:template>

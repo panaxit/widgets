@@ -20,14 +20,14 @@
 	<xsl:key name="foreignTable" match="key-expected" use="@xo:id"/>
 
 	<xsl:template mode="form:widget" match="@*">
-		<xsl:param name="scope" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
 		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
-		<xsl:for-each select="$scope">
+		<xsl:for-each select="$dataset">
 			<xsl:variable name="row" select="current()"/>
 			<form class="form-view needs-validation col-12 g-3 fluid-container" novalidate="">
 				<div class="col-12 g-3">
 					<xsl:apply-templates mode="form:field" select="$layout">
-						<xsl:with-param name="scope" select="$row"/>
+						<xsl:with-param name="dataset" select="$row"/>
 					</xsl:apply-templates>
 				</div>
 			</form>
@@ -36,11 +36,11 @@
 	</xsl:template>
 
 	<xsl:template mode="form:field-header" match="@*">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="field-name">
 			<xsl:apply-templates mode="form:field-name" select="."/>
 		</xsl:param>
-		<xsl:param name="ref_field" select="key('field-ref',concat($scope,'::',$field-name))"/>
+		<xsl:param name="ref_field" select="key('field-ref',concat($dataset,'::',$field-name))"/>
 		<xsl:choose>
 			<xsl:when test="count(.|$ref_field)=1">
 				<xsl:value-of select="../@headerText"/>
@@ -74,13 +74,13 @@
 	</xsl:template>
 
 	<xsl:template mode="form:field" match="@*">
-		<xsl:param name="scope" select="../@xo:id"/>
+		<xsl:param name="dataset" select="../@xo:id"/>
 		<xsl:param name="field-name">
 			<xsl:apply-templates mode="form:field-name" select="."/>
 		</xsl:param>
 		<xsl:variable name="headerText">
 			<xsl:apply-templates mode="form:field-header" select="current()">
-				<xsl:with-param name="scope" select="$scope/ancestor::px:Entity[1]/@xo:id"/>
+				<xsl:with-param name="dataset" select="$dataset/ancestor::px:Entity[1]/@xo:id"/>
 			</xsl:apply-templates>
 		</xsl:variable>
 		<xsl:variable name="colspan">
@@ -98,17 +98,17 @@
 			</xsl:if>
 			<div class="col-sm-{$colspan}">
 				<xsl:apply-templates mode="form:field-body" select="current()">
-					<xsl:with-param name="scope" select="$scope"/>
+					<xsl:with-param name="dataset" select="$dataset"/>
 				</xsl:apply-templates>
 			</div>
 		</div>
 	</xsl:template>
 
 	<xsl:template mode="form:field" match="*[key('widget',concat('fieldset:',ancestor::px:Entity[1]/@xo:id,'::',@Name))]/@*">
-		<xsl:param name="scope" select="../@xo:id"/>
+		<xsl:param name="dataset" select="../@xo:id"/>
 		<xsl:variable name="headerText">
 			<xsl:apply-templates mode="form:field-header" select="current()">
-				<xsl:with-param name="scope" select="$scope/ancestor::px:Entity[1]/@xo:id"/>
+				<xsl:with-param name="dataset" select="$dataset/ancestor::px:Entity[1]/@xo:id"/>
 			</xsl:apply-templates>
 		</xsl:variable>
 		<div class="mb-3 row">
@@ -120,7 +120,7 @@
 					</legend>
 				</xsl:if>
 				<xsl:apply-templates mode="form:field-body" select="current()">
-					<xsl:with-param name="scope" select="$scope"/>
+					<xsl:with-param name="dataset" select="$dataset"/>
 				</xsl:apply-templates>
 			</fieldset>
 		</div>
@@ -167,11 +167,11 @@
 	</xsl:template>
 
 	<xsl:template mode="form:field-body" match="field:ref/@*|association:ref/@*">
-		<xsl:param name="scope" select="../@xo:id"/>
+		<xsl:param name="dataset" select="../@xo:id"/>
 		<xsl:param name="field-name">
 			<xsl:apply-templates mode="form:field-name" select="."/>
 		</xsl:param>
-		<xsl:param name="ref_field" select="key('field-ref',concat($scope,'::',$field-name))"/>
+		<xsl:param name="ref_field" select="key('field-ref',concat($dataset,'::',$field-name))"/>
 		<xsl:comment>debug:info</xsl:comment>
 		<xsl:choose>
 			<xsl:when test="count($ref_field|current())=1">
@@ -185,13 +185,13 @@
 	</xsl:template>
 
 	<xsl:template mode="form:field-body" match="container:*/@*">
-		<xsl:param name="scope" select="../@xo:id"/>
+		<xsl:param name="dataset" select="../@xo:id"/>
 		<div class="input-group d-flex justify-content-between">
 			<xsl:for-each select="../*/@Name">
 				<div class="input-group-append">
 					<xsl:apply-templates mode="form:field-attributes" select="current()"/>
 					<xsl:apply-templates mode="form:field-body" select="current()">
-						<xsl:with-param name="scope" select="$scope"/>
+						<xsl:with-param name="dataset" select="$dataset"/>
 					</xsl:apply-templates>
 				</div>
 			</xsl:for-each>
@@ -199,10 +199,10 @@
 	</xsl:template>
 
 	<xsl:template mode="form:field-body" match="container:modal/@*|container:tabPanel/@*|container:tab[not(parent::container:tabPanel)]/@*">
-		<xsl:param name="scope" select="../@xo:id"/>
+		<xsl:param name="dataset" select="../@xo:id"/>
 		<div class="" xo-scope="{../@xo:id}" xo-attribute="state:active">
 			<xsl:apply-templates mode="widget" select=".">
-				<xsl:with-param name="scope" select="$scope"/>
+				<xsl:with-param name="dataset" select="$dataset"/>
 			</xsl:apply-templates>
 		</div>
 	</xsl:template>

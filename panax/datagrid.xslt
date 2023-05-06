@@ -14,6 +14,7 @@
   xmlns:route="http://panax.io/routes"
   exclude-result-prefixes="xo state xsl datagrid data px meta route"
 >
+	<xsl:import href="keys.xslt"/>
 	<!--<xsl:import href="../keys.xslt"/>
 	<xsl:import href="../values.xslt"/>
 	<xsl:import href="../headers.xslt"/>-->
@@ -29,8 +30,8 @@
 
 	<xsl:template mode="datagrid:widget" match="@*">
 		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
-		<xsl:param name="dataset" select="ancestor::px:Entity[1]/data:rows/@xsi:nil|ancestor::px:Entity[1]/data:rows[not(@xsi:nil)][not(xo:r)]/@xo:id|ancestor::px:Entity[1]/data:rows/xo:r"/>
-		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/*/@Name|ancestor::px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id"/>
+		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
 		<div class="">
 			<xsl:apply-templates mode="datagrid:attributes" select="."/>
 			<style>
@@ -63,7 +64,6 @@
 				</colgroup>
 				<thead class="freeze">
 					<xsl:apply-templates mode="datagrid:header" select="current()">
-						<xsl:with-param name="dataset" select="$schema"/>
 						<xsl:with-param name="layout" select="$layout"/>
 					</xsl:apply-templates>
 				</thead>
@@ -285,7 +285,7 @@
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
 		<xsl:variable name="rows" select="$dataset/ancestor-or-self::data:rows[1]/xo:r/@xo:id|$dataset[not(self::*) and namespace-uri()='http://www.w3.org/2001/XMLSchema-instance' and local-name()='nil']"/>
 		<tbody class="table-group-divider">
-			<xsl:apply-templates mode="datagrid:row" select="$dataset/@xo:id">
+			<xsl:apply-templates mode="datagrid:row" select="$dataset">
 				<xsl:with-param name="context" select="$context"/>
 				<xsl:with-param name="layout" select="$layout"/>
 			</xsl:apply-templates>
@@ -320,6 +320,10 @@
 
 	<xsl:template mode="datagrid:row-attributes" match="xo:r[not(ancestor::px:Association[1][@DataType='junctionTable'])][@state:delete]/@xo:id">
 		<xsl:attribute name="style">height:15px !important; background-color: #dc3545 !important;</xsl:attribute>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:row-attributes" match="data:rows/@xo:id">
+		<xsl:attribute name="class">skeleton skeleton-text</xsl:attribute>
 	</xsl:template>
 
 	<xsl:template mode="datagrid:row-style" match="@*" priority="-1"/>
@@ -366,7 +370,16 @@
 		</tr>
 	</xsl:template>
 
+	<xsl:template mode="datagrid:row" match="data:rows[@xsi:type='mock']/@xsi:nil|data:rows[../data:rows/*]/@xsi:nil">
+		<xsl:param name="context">body</xsl:param>
+		<xsl:param name="dataset" select="node-expected"/>
+		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
+		<xsl:comment>No records</xsl:comment>
+	</xsl:template>
+
 	<xsl:template match="@xsi:nil">No hay registros</xsl:template>
+
+	<xsl:template match="data:rows[../data:rows/*]/@xsi:nil"></xsl:template>
 
 	<xsl:template mode="datagrid:row" match="xo:r[not(ancestor::px:Association[1][@DataType='junctionTable'])][@state:delete]/@xo:id">
 		<xsl:param name="context">body</xsl:param>
@@ -488,7 +501,6 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:apply-templates mode="datagrid:cell-content" select="../*[$context='header']/@Name|../*[$context!='header']/@Name|../*[$context='header'][not(@Name)]/@xo:id|../*[$context!='header'][not(@Name)]/@xo:id">
 			<xsl:with-param name="context" select="$context"/>
-			<xsl:with-param name="schema" select="$schema"/>
 			<xsl:with-param name="dataset" select="$dataset"/>
 		</xsl:apply-templates>
 	</xsl:template>
@@ -555,7 +567,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:apply-templates mode="route:widget" select="ancestor::px:Entity[1]/px:Routes/px:Route[@Method='add']/@xo:id">
-			<xsl:with-param name="scope" select=".."/>
+			<xsl:with-param name="dataset" select=".."/>
 		</xsl:apply-templates>
 	</xsl:template>
 

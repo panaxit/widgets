@@ -25,9 +25,8 @@
 	</xsl:template>
 
 	<xsl:template match="@*" mode="modal:widget" priority="-1">
-		<xsl:param name="scope" select="ancestor::px:Entity[1]/@xo:id"/>
-		<xsl:param name="dataset" select="key('dataset',concat($scope,'::',.))"/>
-		<xsl:param name="layout" select="key('layout',$scope)"/>
+		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
 		<div role="alertdialog">
 			<div class="modal fade" id="modal_{@xo:id}" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel_{@xo:id}" aria-hidden="true">
 				<!--data-bs-backdrop="static" data-bs-keyboard="false" -->

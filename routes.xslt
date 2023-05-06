@@ -16,49 +16,49 @@
 	<xsl:key name="hidden" match="node-expected" use="@xo:id"/>
 
 	<xsl:template mode="route:widget" match="*/@*">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:variable name="identity" select="$scope/@meta:id"/>
+		<xsl:variable name="identity" select="$dataset/@meta:id"/>
 		<xsl:variable name="reference">
 			<xsl:choose>
 				<xsl:when test="$identity">
 					<xsl:value-of select="concat(':',$identity)"/>
 				</xsl:when>
-				<xsl:when test="$scope/@meta:value">
-					<xsl:value-of select="concat('/',$scope/@meta:value)"/>
+				<xsl:when test="$dataset/@meta:value">
+					<xsl:value-of select="concat('/',$dataset/@meta:value)"/>
 				</xsl:when>
-				<xsl:when test="$scope/self::xo:r">
-					<xsl:value-of select="concat('@',$scope/self::xo:r/@xo:id)"/>
+				<xsl:when test="$dataset/self::xo:r">
+					<xsl:value-of select="concat('@',$dataset/self::xo:r/@xo:id)"/>
 				</xsl:when>
-				<xsl:when test="$scope/parent::px:Association">
-					<xsl:value-of select="concat('@',$scope/data:rows/@xo:id)"/>
+				<xsl:when test="$dataset/parent::px:Association">
+					<xsl:value-of select="concat('@',$dataset/data:rows/@xo:id)"/>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:for-each select="$scope">
+		<xsl:for-each select="$dataset">
 			<a href="#{ancestor-or-self::px:Entity[1]/@Schema}/{ancestor-or-self::px:Entity[1]/@Name}{$reference}~{$route/../@Method}">
 				<xsl:apply-templates mode="route:widget-attributes" select="."/>
 				<xsl:apply-templates mode="route:widget-button" select="$route">
-					<xsl:with-param name="scope" select="$scope"/>
+					<xsl:with-param name="dataset" select="$dataset"/>
 				</xsl:apply-templates>
 			</a>
 		</xsl:for-each>
 	</xsl:template>
 
 	<xsl:template mode="route:widget-button" match="px:Route[@Method='addToCart']/@*" priority="-1">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:variable name="identity" select="$scope/@meta:id"/>
+		<xsl:variable name="identity" select="$dataset/@meta:id"/>
 		<xsl:variable name="reference">
 			<xsl:choose>
 				<xsl:when test="$identity">
 					<xsl:value-of select="concat(':',$identity)"/>
 				</xsl:when>
-				<xsl:when test="$scope/@meta:value">
-					<xsl:value-of select="concat('/',$scope/@meta:value)"/>
+				<xsl:when test="$dataset/@meta:value">
+					<xsl:value-of select="concat('/',$dataset/@meta:value)"/>
 				</xsl:when>
-				<xsl:when test="$scope/self::xo:r">
-					<xsl:value-of select="concat('@',$scope/self::xo:r/@xo:id)"/>
+				<xsl:when test="$dataset/self::xo:r">
+					<xsl:value-of select="concat('@',$dataset/self::xo:r/@xo:id)"/>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
@@ -70,19 +70,19 @@
 	</xsl:template>
 
 	<xsl:template mode="route:widget-button" match="px:Route[@Method='facturar']/@*" priority="-1">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:variable name="identity" select="$scope/@meta:id"/>
+		<xsl:variable name="identity" select="$dataset/@meta:id"/>
 		<xsl:variable name="reference">
 			<xsl:choose>
 				<xsl:when test="$identity">
 					<xsl:value-of select="concat(':',$identity)"/>
 				</xsl:when>
-				<xsl:when test="$scope/@meta:value">
-					<xsl:value-of select="concat('/',$scope/@meta:value)"/>
+				<xsl:when test="$dataset/@meta:value">
+					<xsl:value-of select="concat('/',$dataset/@meta:value)"/>
 				</xsl:when>
-				<xsl:when test="$scope/self::xo:r">
-					<xsl:value-of select="concat('@',$scope/self::xo:r/@xo:id)"/>
+				<xsl:when test="$dataset/self::xo:r">
+					<xsl:value-of select="concat('@',$dataset/self::xo:r/@xo:id)"/>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
@@ -94,23 +94,23 @@
 	</xsl:template>
 
 	<xsl:template mode="route:widget-button" match="px:Route[@Method='edit']/@*" priority="-1">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:variable name="identity" select="$scope/@meta:id"/>
+		<xsl:variable name="identity" select="$dataset/@meta:id"/>
 		<xsl:variable name="reference">
 			<xsl:choose>
 				<xsl:when test="$identity">
 					<xsl:value-of select="concat(':',$identity)"/>
 				</xsl:when>
-				<xsl:when test="$scope/@meta:value">
-					<xsl:value-of select="concat('/',$scope/@meta:value)"/>
+				<xsl:when test="$dataset/@meta:value">
+					<xsl:value-of select="concat('/',$dataset/@meta:value)"/>
 				</xsl:when>
-				<xsl:when test="$scope/self::xo:r">
-					<xsl:value-of select="concat('@',$scope/self::xo:r/@xo:id)"/>
+				<xsl:when test="$dataset/self::xo:r">
+					<xsl:value-of select="concat('@',$dataset/self::xo:r/@xo:id)"/>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
+		<xsl:for-each select="$dataset[self::px:Entity or self::data:rows or self::xo:r]">
 			<button class="btn btn-sm btn-primary" onclick="event.preventDefault(); px.navigateTo(parentNode.getAttribute('href'),'{ancestor-or-self::*[self::data:rows or self::xo:r][1]/@xo:id}');">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
 					<path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
@@ -121,9 +121,9 @@
 	</xsl:template>
 
 	<xsl:template mode="route:widget-button" match="px:Route[@Method='delete']/@*" priority="-1">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
+		<xsl:for-each select="$dataset[self::px:Entity or self::data:rows or self::xo:r]">
 			<xo-listener attribute="state:delete"/>
 			<button class="btn btn-sm btn-danger" onclick="scope.remove(); event.preventDefault();">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -135,9 +135,9 @@
 	</xsl:template>
 
 	<xsl:template mode="route:widget-button" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='delete']/@*" priority="-1">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
+		<xsl:for-each select="$dataset[self::px:Entity or self::data:rows or self::xo:r]">
 			<xsl:if test="@meta:id!=''">
 				<xo-listener attribute="state:delete"/>
 				<button class="btn btn-sm btn-primary">
@@ -163,9 +163,9 @@
 	</xsl:template>
 
 	<xsl:template mode="route:widget-button" match="px:Route[@Method='add']/@*" priority="-1">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
+		<xsl:for-each select="$dataset[self::px:Entity or self::data:rows or self::xo:r]">
 			<xsl:choose>
 				<xsl:when test="parent::px:Association">
 					<button type="button" class="btn btn-success btn-sm" onclick="event.preventDefault(); px.navigateTo(parentNode.getAttribute('href'),'{ancestor-or-self::*[@meta:type='entity'][1]/data:rows/@xo:id}')" xo-scope="{data:rows/@xo:id}">Agregar registro</button>
@@ -178,9 +178,9 @@
 	</xsl:template>
 
 	<xsl:template mode="route:widget-button" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='add']/@*" priority="-1">
-		<xsl:param name="scope" select="node-expected"/>
+		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="route" select="current()"/>
-		<xsl:for-each select="$scope[self::px:Entity or self::data:rows or self::xo:r]">
+		<xsl:for-each select="$dataset[self::px:Entity or self::data:rows or self::xo:r]">
 			<xsl:if test="not(@meta:id!='')">
 				<button class="btn btn-sm btn-primary" xo-attribute="state:checked" onclick="scope.set(true); event.preventDefault();">
 					<xsl:choose>
