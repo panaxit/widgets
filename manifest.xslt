@@ -25,6 +25,7 @@
 
   xmlns:form="http://panax.io/widget/form"
   xmlns:widget="http://panax.io/widget"
+  xmlns:wizard="http://panax.io/widget/wizard"
   xmlns:datagrid="http://panax.io/widget/datagrid"
   xmlns:combobox="http://panax.io/widget/combobox"
   xmlns:comboboxButton="http://panax.io/widget/combobox-button"
@@ -42,18 +43,16 @@
 	<xsl:import href="panax/modal.xslt"/>
 	<xsl:import href="panax/tabPanel.xslt"/>
 	<xsl:import href="panax/groupTabPanel.xslt"/>
-	<xsl:import href="panax/picture.xslt"/>
 	<xsl:import href="panax/cardview.xslt"/>
-	<xsl:import href="panax/file.xslt"/>
 	<xsl:import href="panax/dropzone.xslt"/>
-	<xsl:import href="panax/fileExplorer.xslt"/>
+	<xsl:import href="panax/wizard.xslt"/>
 	<xsl:import href="panax/calendar.xslt"/>
 	<xsl:import href="panax/percentage.xslt"/>
 	<xsl:import href="panax/combobox.xslt"/>
 	<xsl:import href="panax/autocompleteBox.xslt"/>
 	<xsl:import href="form.xslt"/>
 	<xsl:import href="datagrid.xslt"/>
-	
+
 	<xsl:key name="styles" match="@height:*" use="concat(../@xo:id,'::',local-name())"/>
 	<xsl:key name="styles" match="@width:*" use="concat(../@xo:id,'::',local-name())"/>
 
@@ -72,6 +71,7 @@
 	<xsl:template match="/">
 		<div class="container-fluid p-3" style="margin-top:0px;">
 			<xsl:apply-templates mode="widget" select="px:Entity/@xo:id"/>
+			<xsl:comment>debug:info</xsl:comment>
 		</div>
 	</xsl:template>
 
@@ -293,6 +293,15 @@
 		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
 		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
 		<xsl:apply-templates mode="datagrid:widget" select="current()">
+			<xsl:with-param name="dataset" select="$dataset"/>
+			<xsl:with-param name="layout" select="$layout"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="@*[key('widget',concat('wizard:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',parent::px:Entity/@Schema,'/',parent::px:Entity/@Name))]">
+		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:apply-templates mode="wizard:widget" select="current()">
 			<xsl:with-param name="dataset" select="$dataset"/>
 			<xsl:with-param name="layout" select="$layout"/>
 		</xsl:apply-templates>
@@ -552,6 +561,8 @@
 	</xsl:template>
 
 	<xsl:template mode="widget" match="*[key('hidden',@xo:id)]/@*|*[key('hidden',concat(ancestor::px:Entity[1]/@xo:id,'::',@Name))]/@*">
-		<xsl:comment>hidden <xsl:value-of select="../@xo:id"/>: <xsl:value-of select="."/></xsl:comment>
+		<xsl:comment>
+			hidden <xsl:value-of select="../@xo:id"/>: <xsl:value-of select="."/>
+		</xsl:comment>
 	</xsl:template>
 </xsl:stylesheet>
