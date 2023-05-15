@@ -1,82 +1,113 @@
 ﻿<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xo="http://panax.io/xover"
+  xmlns:form="http://panax.io/widget/form"
+  xmlns:field="http://panax.io/layout/fieldref"
+  xmlns:association="http://panax.io/datatypes/association"
   xmlns:state="http://panax.io/state"
   xmlns:source="http://panax.io/xdom/binding/source"
+  xmlns:container="http://panax.io/layout/container"
   xmlns:wizard="http://panax.io/widget/wizard"
   xmlns:px="http://panax.io/entity"
-  exclude-result-prefixes="px state xo source"
+  exclude-result-prefixes="px form state xo source container wizard field association"
   xmlns="http://www.w3.org/1999/xhtml"
 >
+	<xsl:import href="keys.xslt"/>
 	<xsl:key name="wizard:section" match="xo:dummy" use="concat(1,'::',ancestor::px:Entity[1]/@xo:id)"/>
+	<xsl:key name="wizard:steps" match="//@xo:id" use="'counter'"/>
 	<xsl:key name="optional" match="xo:dummy" use="generate-id()"/>
 	<xsl:key name="invalid" match="xo:dummy" use="generate-id()"/>
 
 	<xsl:template match="@*" mode="wizard:styles" priority="-10"/>
 
-	<!--<xsl:template match="@*" mode="wizard:step-title-legend" priority="-10">
+	<!--<xsl:template match="@*" mode="wizard:step-legend" priority="-10">
     <xsl:value-of select="@shortTitle|self::*[not(@shortTitle)]/@title"/>
   </xsl:template>-->
 
-	<xsl:template match="@*" mode="wizard:step-title-legend" priority="-10"/>
+	<xsl:template match="@*" mode="wizard:step-legend" priority="-10"/>
+	<xsl:template match="*[@headerText]/@*" mode="wizard:step-legend">
+		<xsl:apply-templates select="." mode="headerText"/>
+	</xsl:template>
 
 	<xsl:template match="@*" mode="wizard:step-panel-legend" priority="-10">
-		<xsl:param name="step" select="count(preceding-sibling::*|self::*)"/>
-		<xsl:apply-templates mode="wizard:step-title-legend" select=".">
+		<xsl:param name="step" select="position()"/>
+		<xsl:apply-templates mode="wizard:step-legend" select=".">
 			<xsl:with-param name="step" select="$step"/>
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<!--<xsl:template match="@*" mode="wizard:step-title-legend" priority="-10">
+	<xsl:template match="@*" mode="wizard:active-step" priority="-10">
+		<xsl:choose>
+			<xsl:when test="ancestor-or-self::*[@state:active]">
+				<xsl:value-of select="ancestor-or-self::*[@state:active]/@state:active"/>
+			</xsl:when>
+			<xsl:when test="string(ancestor-or-self::*[1]/@first_name)=''">1</xsl:when>
+			<xsl:when test="string(ancestor-or-self::*[1]/@last_name)=''">2</xsl:when>
+			<xsl:otherwise>1</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<!--<xsl:template match="@*" mode="wizard:step-legend" priority="-10">
     <xsl:param name="step" select="count(preceding-sibling::*|self::*)"/>
     <xsl:text/>Paso <xsl:value-of select="$step"/><xsl:text/>
   </xsl:template>-->
 
 	<xsl:template match="@*" mode="wizard:widget" priority="-1">
-		<xsl:variable name="current" select="current()"/>
-		<xsl:variable name="active">
-			<xsl:choose>
-				<xsl:when test="ancestor-or-self::*[1]/@state:active">
-					<xsl:value-of select="ancestor-or-self::*[1]/@state:active"/>
-				</xsl:when>
-				<xsl:when test="string(ancestor-or-self::*[1]/@first_name)=''">1</xsl:when>
-				<xsl:when test="string(ancestor-or-self::*[1]/@last_name)=''">2</xsl:when>
-				<xsl:otherwise>1</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
+		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
+		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:param name="items" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:param name="active">
+			<xsl:apply-templates mode="wizard:active-step" select="$items[1]"/>
+		</xsl:param>
 
-		<div class="fluid-container">
+		<xsl:variable name="current" select="current()"/>
+		<xsl:variable name="steps" select="key('wizard:steps', 'counter')[key('wizard:section',concat(position(),'::',current()/ancestor::px:Entity[1]/@xo:id))]"/>
+		<div id="wizard" class="wizard" style="display: block;">
 			<xsl:apply-templates mode="wizard:styles" select="."/>
-			<div id="wizard" class="wizard" style="display: block;">
-				<div class="wizard-progress-buttons-wrapper row" style="display: block;">
-					<hr style="border-width: 4px; border-color: silver;"/>
-					<div class="col-md-12">
-						<ul class="nav nav-pills nav-justified wizard-progress-buttons-placeholder">
-							<xsl:for-each select="(//*/@*)[position()&lt;20]">
-								<xsl:variable name="current-step" select="position()"/>
-								<xsl:variable name="items" select="key('wizard:section',concat($current-step,'::',ancestor::px:Entity[1]/@xo:id))"/>
-								<xsl:apply-templates mode="wizard:step-title" select="$items[1]">
-									<xsl:with-param name="active" select="$active"/>
-									<xsl:with-param name="step" select="position()"/>
-								</xsl:apply-templates>
-							</xsl:for-each>
-						</ul>
-					</div>
-					<hr style="border-width: 4px; border-color: silver;"/>
-				</div>
-				<div class="wizard-steps-wrapper row" style="position: relative; width: 100%; min-height: 500px; height: 500px;">
-					<xsl:apply-templates mode="wizard:step-panel" select="key('wizard:section',concat($active,'::',ancestor::px:Entity[1]/@xo:id))[1]">
+			<div class="wizard-progress-buttons-wrapper row" style="display: block;">
+				<hr style="border-width: 4px; border-color: silver;"/>
+				<div class="col-md-12">
+					<xsl:apply-templates mode="wizard:nav" select=".">
+						<xsl:with-param name="steps" select="$steps"/>
 						<xsl:with-param name="active" select="$active"/>
-						<xsl:with-param name="step" select="$active"/>
-						<xsl:with-param name="layout" select="key('wizard:section',concat($active,'::',ancestor::px:Entity[1]/@xo:id))"/>
+						<xsl:with-param name="dataset" select="$dataset"/>
 					</xsl:apply-templates>
 				</div>
+				<hr style="border-width: 4px; border-color: silver;"/>
+			</div>
+			<div class="wizard-steps-wrapper row" style="position: relative; width: 100%; min-height: 500px; height: 500px;">
+				<xsl:apply-templates mode="wizard:step-panel" select="$steps[position()=$active]">
+					<xsl:with-param name="active" select="$active"/>
+					<xsl:with-param name="step" select="$active"/>
+					<xsl:with-param name="dataset" select="$dataset"/>
+				</xsl:apply-templates>
 			</div>
 		</div>
 	</xsl:template>
 
-	<xsl:template match="@*" mode="wizard:step-title" priority="-1">
+	<xsl:template match="@*" mode="wizard:nav" priority="-1">
 		<xsl:param name="active">1</xsl:param>
-		<xsl:param name="step" select="count(preceding-sibling::*|self::*)"/>
+		<xsl:param name="steps" select="(//*/@*)[position()&lt;20]"/>
+		<ul class="nav nav-pills nav-justified wizard-progress-buttons-placeholder">
+			<xsl:for-each select="$steps">
+				<xsl:variable name="current-step" select="position()"/>
+				<xsl:variable name="items" select="key('wizard:section',concat($current-step,'::',ancestor::px:Entity[1]/@xo:id))"/>
+				<xsl:apply-templates mode="wizard:step" select="$items[1]">
+					<xsl:with-param name="active" select="$active"/>
+					<xsl:with-param name="step" select="position()"/>
+				</xsl:apply-templates>
+			</xsl:for-each>
+		</ul>
+	</xsl:template>
+
+	<xsl:template match="@*" mode="wizard:nav-panel-stepper" priority="-1">
+	</xsl:template>
+
+	<xsl:template match="@*" mode="wizard:step" priority="-1">
+	</xsl:template>
+
+	<xsl:template match="@*" mode="wizard:step" priority="-1">
+		<xsl:param name="active">1</xsl:param>
+		<xsl:param name="step" select="position()"/>
 		<li data-position="{$step}" class="inactive" style="padding: 0px 43px;" xo-attribute="state:active" onclick="scope.set('{$step}')">
 			<xsl:variable name="completed" select="not(key('wizard:section',concat(number($step),'::',ancestor::px:Entity[1]/@xo:id))[not(key('optional',concat(ancestor::px:Entity[1]/@xo:id,'::',.))) and key('invalid',concat(ancestor::px:Entity[1]/@xo:id,'::',.))])"/>
 			<xsl:choose>
@@ -91,14 +122,19 @@
 				<h1>
 					<xsl:value-of select="concat($step,'.')"/>
 				</h1>
-				<xsl:apply-templates mode="wizard:step-title-legend" select=".">
+				<xsl:apply-templates mode="wizard:step-legend" select=".">
 					<xsl:with-param name="step" select="$step"/>
 				</xsl:apply-templates>
-				<xsl:if test="$completed">
+				<!--<xsl:if test="$completed">
 					<span class="fas fa-check-circle wizard-icon-step-completed"></span>
-				</xsl:if>
+				</xsl:if>-->
 			</a>
 		</li>
+	</xsl:template>
+
+	<xsl:template match="@*" mode="wizard:step-title" priority="-1">
+		<xsl:param name="step" select="position()"/>
+		<xsl:param name="active">1</xsl:param>
 	</xsl:template>
 
 	<xsl:template match="@*" mode="wizard:buttons-back-attributes" priority="-1">
@@ -194,12 +230,14 @@
 	</xsl:template>
 
 	<xsl:template match="@*" mode="wizard:step-panel-content" priority="-1">
-		<p>No hay nada que hacer aún en este paso.</p>
+		<p>No hay nada que hacer aún en este paso. <xsl:value-of select="name(..)"/>: <xsl:value-of select="."/>
+	</p>
 	</xsl:template>
 
 	<xsl:template match="@*" mode="wizard:step-panel" priority="-1">
-		<xsl:param name="step">1</xsl:param>
-		<xsl:param name="layout" select="key('wizard:section',concat($step,'::',ancestor::px:Entity[1]/@xo:id))"/>
+		<xsl:param name="step" select="position()"/>
+		<xsl:param name="items" select="key('wizard:section',concat($step,'::',ancestor::px:Entity[1]/@xo:id))"/>
+		<xsl:param name="dataset" select="set-expected"/>
 		<xsl:variable name="step-class">wizard-step</xsl:variable>
 		<div id="container_{@xo:id}" class="{$step-class}" data-position="{count(preceding-sibling::*|self::*)}" style="min-height: 400px; width: 100%; margin-left: 0px;" xo-scope="inherit">
 			<xsl:choose>
@@ -217,16 +255,17 @@
 			<div class="row wizard-step-title">
 				<div class="col-md-12">
 					<h2 class="wizard-step-title-text">
-						<xsl:apply-templates mode="wizard:step-panel-legend" select=".">
+						<xsl:apply-templates mode="wizard:step-panel-legend" select="$items[1]">
 							<xsl:with-param name="step" select="$step"/>
 						</xsl:apply-templates>
 					</h2>
 				</div>
 			</div>
 			<div class="step-content">
-				<xsl:apply-templates mode="wizard:step-panel-content" select=".">
+				<xsl:apply-templates mode="wizard:step-panel-content" select="$items[1]">
 					<xsl:with-param name="step" select="$step"/>
-					<xsl:with-param name="layout" select="$layout"/>
+					<xsl:with-param name="items" select="$items"/>
+					<xsl:with-param name="dataset" select="$dataset"/>
 				</xsl:apply-templates>
 			</div>
 			<div class="wizard-buttons-wrapper row" style="display: block;">
@@ -260,8 +299,16 @@
 		</div>
 	</xsl:template>
 
-	<xsl:template match="/*" priority="-1">
-		<xsl:apply-templates mode="wizard:widget" select="."/>
+	<xsl:template mode="wizard:step-panel-content" match="@*">
+		<xsl:param name="step" select="0"/>
+		<xsl:param name="items" select="nodes-expected"/>
+		<div class="wizard-steps-wrapper row" style="position: relative; width: 100%; min-height: 500px;">
+			<xsl:apply-templates mode="form:widget" select="ancestor::px:Entity[1]/@xo:id">
+				<xsl:with-param name="layout" select="$items[parent::field:ref or parent::association:ref]|$items/ancestor-or-self::*[1]/container:panel/*/@Name|$items/ancestor-or-self::*[1]/container:panel/*[not(@Name)]/@xo:id"/>
+			</xsl:apply-templates>
+		</div>
+		<!--<xsl:for-each select="key('wizard:section',concat($step,'::',ancestor::px:Entity[1]/@xo:id))">
+				<xsl:apply-templates mode="form.body.field" select="."/>
+		</xsl:for-each>-->
 	</xsl:template>
-
 </xsl:stylesheet>

@@ -286,6 +286,7 @@
 		<xsl:variable name="rows" select="$dataset/ancestor-or-self::data:rows[1]/xo:r/@xo:id|$dataset[not(self::*) and namespace-uri()='http://www.w3.org/2001/XMLSchema-instance' and local-name()='nil']"/>
 		<tbody class="table-group-divider">
 			<xsl:apply-templates mode="datagrid:row" select="$dataset">
+				<xsl:sort data-type="number" select="../@meta:position"/>
 				<xsl:with-param name="context" select="$context"/>
 				<xsl:with-param name="layout" select="$layout"/>
 			</xsl:apply-templates>

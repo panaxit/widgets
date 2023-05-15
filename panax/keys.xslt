@@ -4,12 +4,13 @@
   xmlns:form="http://panax.io/widget/form"
   xmlns:data="http://panax.io/source"
   xmlns:meta="http://panax.io/metadata"
+  xmlns:wizard="http://panax.io/widget/wizard"
   xmlns:datagrid="http://panax.io/widget/datagrid"
   xmlns:combobox="http://panax.io/widget/combobox"
   xmlns:container="http://panax.io/layout/container"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:control="http://www.w3.org/2001/XMLSchema-instance"
-  exclude-result-prefixes="px form datagrid combobox control data"
+  exclude-result-prefixes="px form datagrid wizard combobox control data"
 >
 	<xsl:key name="hidden" match="node-expected" use="@xo:id"/>
 
@@ -30,6 +31,8 @@
 	
 	<!--Layout-->
 	<xsl:key name="layout" match="px:Entity/*[local-name()='layout']/*/@Name|px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id" use="ancestor::px:Entity[1]/@xo:id"/>
+	<xsl:key name="wizard:section" match="px:Entity/*[local-name()='layout']/*/@Name|px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id" use="concat(count(../preceding-sibling::*|..),'::',ancestor::px:Entity[1]/@xo:id)"/>
+	<!--<xsl:key name="wizard:section" match="px:Entity/*[local-name()='layout']//*/@Name|px:Entity[1]/*[local-name()='layout']//*[not(@Name)]/@xo:id" use="concat(count(ancestor::*[local-name(parent::*)='layout'][1]/preceding-sibling::*|.),'::',ancestor::px:Entity[1]/@xo:id)"/>-->
 
 	<!--Datasets-->
 	<xsl:key name="dataset" match="px:Entity[not(data:rows)]/@xo:id" use="concat(../@xo:id,'::',../@xo:id)"/>
