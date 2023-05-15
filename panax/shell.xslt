@@ -112,7 +112,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				</div>
 			</header>
 			<nav class="navbar navbar-expand-md" xo-store="active" xo-stylesheet="page_navbar.xslt"/>
-			<main class="px-5">
+			<main>
 				<xsl:apply-templates mode="shell:body" select="."/>
 			</main>
 			<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 px-3">
@@ -122,7 +122,13 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 		</div>
 	</xsl:template>
 
-	<xsl:template mode="shell:body" match="*|@*"/>
+	<xsl:template mode="shell:body" match="*|@*">
+		<div class="welcome" style="flex-direction: column;">
+			<h1>SISTEMA DIGITAL CORPORATIVO</h1>
+			<br/>
+			<img src="./assets/logo.png" style="background-color: #f5f5f5;" alt="" width="300" class="mx-auto" xo-scope="xo_login_37b0e97f_0381_4df0_9ddb_e543b592bcab"/>
+		</div>
+	</xsl:template>
 
 	<xsl:template mode="shell:extra-content" match="*|@*"/>
 
