@@ -87,7 +87,7 @@
 	<xsl:template match="@*" mode="wizard:nav" priority="-1">
 		<xsl:param name="active">1</xsl:param>
 		<xsl:param name="steps" select="(//*/@*)[position()&lt;20]"/>
-		<ul class="nav nav-pills nav-justified wizard-progress-buttons-placeholder">
+		<ul class="nav nav-pills nav-justified wizard-progress-buttons-placeholder" style="justify-content: space-around;">
 			<xsl:for-each select="$steps">
 				<xsl:variable name="current-step" select="position()"/>
 				<xsl:variable name="items" select="key('wizard:section',concat($current-step,'::',ancestor::px:Entity[1]/@xo:id))"/>

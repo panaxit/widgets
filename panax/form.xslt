@@ -25,15 +25,20 @@
 		<xsl:for-each select="$dataset">
 			<xsl:variable name="row" select="current()"/>
 			<form class="form-view needs-validation col-12 g-3 fluid-container" novalidate="">
+				<xsl:apply-templates mode="form:header" select="."/>
 				<div class="col-12 g-3">
 					<xsl:apply-templates mode="form:field" select="$layout">
 						<xsl:with-param name="dataset" select="$row"/>
 					</xsl:apply-templates>
 				</div>
+				<xsl:apply-templates mode="form:footer" select="."/>
 			</form>
 			<hr/>
 		</xsl:for-each>
 	</xsl:template>
+
+	<xsl:template mode="form:header" match="@*"/>
+	<xsl:template mode="form:footer" match="@*"/>
 
 	<xsl:template mode="form:field-header" match="@*">
 		<xsl:param name="dataset" select="node-expected"/>

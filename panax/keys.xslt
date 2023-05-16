@@ -4,6 +4,7 @@
   xmlns:form="http://panax.io/widget/form"
   xmlns:data="http://panax.io/source"
   xmlns:meta="http://panax.io/metadata"
+  xmlns:state="http://panax.io/state"
   xmlns:wizard="http://panax.io/widget/wizard"
   xmlns:datagrid="http://panax.io/widget/datagrid"
   xmlns:combobox="http://panax.io/widget/combobox"
@@ -14,6 +15,8 @@
 >
 	<xsl:key name="hidden" match="node-expected" use="@xo:id"/>
 
+	<xsl:key name="changed" match="xo:r[@state:dirty='1']" use="@xo:id"/>
+	
 	<xsl:key name="entity" match="px:Entity" use="@xo:id"/>
 	<xsl:key name="entity" match="px:Entity" use="concat(@Schema,'/',@Name)"/>
 	<xsl:key name="entity" match="px:Entity[@control:type='datagrid:control']" use="concat('datagrid:',@Schema,'/',@Name)"/>

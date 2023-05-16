@@ -31,6 +31,9 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 				margin-right: var(--nav-padding-right, 1rem) !important;
 				margin-left: var(--nav-padding-left, 1rem) !important;
 			}
+			.page-menu {
+				padding: .5rem;
+			}
 			]]>
 			</style>
 			<xsl:apply-templates mode="widget" select="key('start-node','*')"/>

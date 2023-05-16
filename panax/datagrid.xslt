@@ -131,7 +131,7 @@
 	</xsl:template>
 
 	<xsl:key name="active" match="node-expected" use="@xo:id"/>
-	
+
 	<xsl:template mode="datagrid:header" match="@*">
 		<xsl:param name="context">header</xsl:param>
 		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/*"/>
@@ -215,7 +215,8 @@
 		</li>
 	</xsl:template>-->
 
-	<xsl:template mode="datagrid:header" match="container:groupTabPanel/@*|container:subGroupTabPanel/@*|container:tab/@*"><!--container:tab[not(parent::container:tabPanel)]/@*-->
+	<xsl:template mode="datagrid:header" match="container:groupTabPanel/@*|container:subGroupTabPanel/@*|container:tab/@*">
+		<!--container:tab[not(parent::container:tabPanel)]/@*-->
 		<xsl:param name="context">header</xsl:param>
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
@@ -303,14 +304,21 @@
 				<xsl:with-param name="context">footer</xsl:with-param>
 				<xsl:with-param name="layout" select="$layout"/>
 			</xsl:apply-templates>
-			<xsl:if test="ancestor-or-self::*[@meta:type='entity'][2] and not(ancestor::px:Association[1][@DataType='junctionTable'])">
-				<tr xo-scope="{ancestor-or-self::*[@meta:type='entity'][1]/@xo:id}">
-					<td colspan="{count($layout[key('atomic-ref',generate-id())]|$layout/../*//@*[key('atomic-ref',generate-id())])+3}" style="text-align:center">
-						<xsl:apply-templates mode="datagrid:buttons-new" select="."/>
-					</td>
-				</tr>
-			</xsl:if>
+			<tr xo-scope="{ancestor-or-self::*[@meta:type='entity'][1]/@xo:id}">
+				<td colspan="{count($layout[key('atomic-ref',generate-id())]|$layout/../*//@*[key('atomic-ref',generate-id())])+3}" style="text-align:center">
+					<xsl:apply-templates mode="datagrid:footer-row" select=".">
+					</xsl:apply-templates>
+				</td>
+			</tr>
 		</tfoot>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:footer-row" match="@*">
+		<xsl:comment>No footer</xsl:comment>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:footer-row" match="@*[ancestor-or-self::*[@meta:type='entity'][2] and not(ancestor::px:Association[1][@DataType='junctionTable'])]">
+		<xsl:apply-templates mode="datagrid:buttons-new" select="."/>
 	</xsl:template>
 
 	<xsl:template mode="datagrid:footer" match="xo:f/@xo:id"/>
