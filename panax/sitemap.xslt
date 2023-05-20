@@ -40,6 +40,7 @@ exclude-result-prefixes="#default session sitemap shell state"
 
 aside.sidebar {
 	max-width: var(--sitemap-width, 33%);
+	padding-bottom: 2rem;
 }
 
 aside.sidebar li {
@@ -53,7 +54,9 @@ aside.sidebar a {
 }
 
 aside.sidebar ul {
-	height:100%; overflow-y:scroll; overflow-x: clip;
+	height:100%; 
+	overflow-y:scroll;
+	overflow-x: clip;
 }]]>
 			</style>
 			<header>
