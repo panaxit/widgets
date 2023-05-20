@@ -29,7 +29,6 @@
 	<xsl:template match="@*" mode="datagrid:attributes"/>
 
 	<xsl:template mode="datagrid:widget" match="@*">
-		<xsl:param name="schema" select="ancestor::px:Entity[1]/px:Record/*[not(@AssociationName)]/@Name|ancestor::px:Entity[1]/px:Record/*/@AssociationName"/>
 		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
 		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
 		<div class="">
@@ -55,13 +54,9 @@
 			</style>
 			<xo-listener attribute="xsi:nil"/>
 			<table class="table table-striped table-hover table-sm datagrid">
-				<colgroup>
-					<col style="width:40px"/>
-					<xsl:for-each select="$layout/ancestor-or-self::*[1]/descendant-or-self::*[self::field:ref or self::association:ref]">
-						<col style="min-width: 150px"/>
-					</xsl:for-each>
-					<col style="width:40px"/>
-				</colgroup>
+				<xsl:apply-templates mode="datagrid:header-colgroup" select="current()">
+					<xsl:with-param name="layout" select="$layout"/>
+				</xsl:apply-templates>
 				<thead class="freeze">
 					<xsl:apply-templates mode="datagrid:header" select="current()">
 						<xsl:with-param name="layout" select="$layout"/>
@@ -104,6 +99,54 @@
 	<xsl:key name="atomic-ref" match="association:ref/@Name" use="generate-id()"/>
 	<xsl:key name="atomic-ref" match="container:fieldContainer/@Name" use="generate-id()"/>
 	<xsl:key name="atomic-ref" match="container:fieldContainer[not(@Name)]/@xo:id" use="generate-id()"/>
+
+	<xsl:template mode="datagrid:header-colgroup" match="@*">
+		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
+		<colgroup>
+			<xsl:apply-templates mode="datagrid:header-colgroup-head" select="."/>
+			<xsl:apply-templates mode="datagrid:header-colgroup-column" select="$layout"/>
+			<xsl:apply-templates mode="datagrid:header-colgroup-foot" select="."/>
+		</colgroup>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:header-colgroup-head" match="@*">
+		<col width="40px"/>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:header-colgroup-column--style" match="@*">
+		<xsl:text>max-width: max-content</xsl:text>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:header-colgroup-column-attributes" match="@*"/>
+
+	<xsl:template mode="datagrid:header-colgroup-column-attributes" match="*[@DataLength]/@*">
+		<xsl:attribute name="width">
+			<xsl:value-of select="concat(../@DataLength,'px')"/>
+		</xsl:attribute>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:header-colgroup-column" match="@*">
+		<xsl:variable name="schema" select="key('schema',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name))"/>
+		<xsl:choose>
+			<xsl:when test="count($schema|.)=1">
+				<col width="150px">
+					<xsl:apply-templates mode="datagrid:header-colgroup-column-attributes" select="."/>
+					<xsl:attribute name="style">
+						<xsl:text></xsl:text><xsl:apply-templates mode="datagrid:header-colgroup-column--style" select="."/>
+					</xsl:attribute>
+				</col>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:comment>debug:info</xsl:comment>
+				<xsl:apply-templates mode="datagrid:header-colgroup-column" select="$schema"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:header-colgroup-foot" match="@*">
+		<col width="40px"/>
+	</xsl:template>
+
 	<xsl:template mode="datagrid:header" match="@*"/>
 
 	<xsl:template mode="datagrid:header" match="@*">
@@ -136,7 +179,7 @@
 		<xsl:param name="context">header</xsl:param>
 		<xsl:param name="layout" select="ancestor::px:Entity[1]/*[local-name()='layout']/*"/>
 		<xsl:variable name="scope" select="current()"/>
-		<xsl:variable name="row-content" select="$layout/ancestor-or-self::*[1]/self::field:ref|$layout/ancestor-or-self::*[1]/self::association:ref|$layout/ancestor-or-self::*[1]/self::container:fieldContainer|$layout/ancestor-or-self::*[1]/self::container:tab[key('active', @xo:id)]|$layout/ancestor-or-self::*[1]/self::container:panel/*|$layout/ancestor-or-self::*[1]/self::container:tabPanel/container:tab[key('active', @xo:id)]|$layout/ancestor-or-self::*[1]/self::container:subGroupTabPanel|$layout/ancestor-or-self::*[1]/self::container:fieldSet"/>
+		<xsl:variable name="row-content" select="$layout/ancestor-or-self::*[1]/self::field:ref|$layout/ancestor-or-self::*[1]/self::association:ref|$layout/ancestor-or-self::*[1]/self::container:fieldContainer|$layout/ancestor-or-self::*[1]/self::container:tab[key('active', @xo:id)]|$layout/ancestor-or-self::*[1]/self::container:panel/*|$layout/ancestor-or-self::*[1]/self::container:tabPanel/container:tab[key('active', @xo:id)]|$layout/ancestor-or-self::*[1]/self::container:subGroupTabPanel|$layout/ancestor-or-self::*[1]/self::container:fieldSet|$layout/ancestor-or-self::*[1]/self::px:Field|$layout/ancestor-or-self::*[1]/self::px:Association"/>
 		<xsl:variable name="row-elements" select="$layout[not(../@xo:id=$row-content/../@xo:id)]"/>
 		<xsl:variable name="next-level" select="$row-content/*"/>
 		<tr class="freeze">
@@ -155,6 +198,12 @@
 		</xsl:if>
 	</xsl:template>
 
+	<xsl:template mode="datagrid:header" match="px:Record/px:*/@*">
+		<th>
+			<xsl:apply-templates mode="headerText" select="."/>
+		</th>
+	</xsl:template>
+
 	<xsl:template mode="datagrid:header" match="container:*/@*">
 		<xsl:param name="layout" select="node-expected"/>
 		<xsl:variable name="colspan">
@@ -165,11 +214,34 @@
 		</th>
 	</xsl:template>
 
+	<xsl:template mode="datagrid:header-actions" match="@*">
+		<xsl:apply-templates mode="datagrid:header-sorter" select="."/>
+		<xsl:apply-templates mode="datagrid:header-filters" select="."/>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:header-filters" match="@*">
+	</xsl:template>
+
+	<xsl:key name="datagrid:filters-enabled" match="path-to-attribute/@*" use="concat('entity/@xo:id','::',../@Name)"/>
+	<xsl:key name="datagrid:filters-disabled" match="path-to-attribute/@*" use="concat('entity/@xo:id','::',../@Name)"/>
+	<xsl:template mode="datagrid:header-filters" match="@*[key('datagrid:filters-enabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)) or not(key('datagrid:filters-disabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)))]">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16" xo-scope="{../@xo:id}" xo-attribute="state:filter" onclick="scope.dispatch('filter')">
+			<xsl:if test="not(parent::*[@state:filter])">
+				<xsl:attribute name="style">
+					<xsl:text>color: gray;</xsl:text>
+				</xsl:attribute>
+			</xsl:if>
+			<path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z"/>
+		</svg>
+	</xsl:template>
+
 	<xsl:template mode="datagrid:header-sorter" match="@*">
 	</xsl:template>
 
-	<xsl:template mode="datagrid:header-sorter" match="px:Field/@*">
-		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down-alt" viewBox="0 0 16 16" xo-scope="{../@xo:id}" xo-attribute="sortDirection" onclick="scope.set('DESC')">
+	<xsl:key name="datagrid:sort-enabled" match="path-to-attribute/@*" use="concat('entity/@xo:id','::',../@Name)"/>
+	<xsl:key name="datagrid:sort-disabled" match="path-to-attribute/@*" use="concat('entity/@xo:id','::',../@Name)"/>
+	<xsl:template mode="datagrid:header-sorter" match="@*[key('datagrid:sort-enabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)) or not(key('datagrid:sort-disabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)))]">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down-alt" viewBox="0 0 16 16" xo-scope="{../@xo:id}" xo-attribute="sortDirection" onclick="scope.toggle('DESC','ASC')">
 			<xsl:if test="not(parent::*[@sortOrder])">
 				<xsl:attribute name="style">
 					<xsl:text>color: gray;</xsl:text>
@@ -182,7 +254,7 @@
 		</svg>
 	</xsl:template>
 
-	<xsl:template mode="datagrid:header-sorter" match="px:Field[@sortOrder][@sortDirection='DESC']/@*">
+	<xsl:template mode="datagrid:header-sorter" match="*[@sortOrder][@sortDirection='DESC']/@*[key('datagrid:sort-enabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)) or not(key('datagrid:sort-disabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)))]">
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down" viewBox="0 0 16 16" xo-scope="{../@xo:id}" xo-attribute="sortDirection" onclick="scope.set('ASC')">
 			<path d="M3.5 2.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 11.293V2.5zm3.5 1a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zM7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z"/>
 		</svg>
@@ -190,7 +262,7 @@
 
 	<xsl:template mode="datagrid:header" match="field:ref/@*|association:ref/@*|container:fieldContainer/@*">
 		<xsl:param name="layout" select="node-expected"/>
-		<xsl:variable name="schema" select="key('schema',concat(ancestor::px:Entity/@xo:id,'::',../@Name))"/>
+		<xsl:variable name="schema" select="key('schema',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name))"/>
 		<xsl:variable name="colspan">
 			<xsl:value-of select="count(..//field:ref|..//association:ref)"/>
 		</xsl:variable>
@@ -224,7 +296,7 @@
 			<label xo-scope="{$schema/../@xo:id}">
 				<xsl:apply-templates mode="headerText" select="."/>
 			</label>
-			<xsl:apply-templates mode="datagrid:header-sorter" select="$schema"/>
+			<xsl:apply-templates mode="datagrid:header-actions" select="$schema"/>
 		</th>
 	</xsl:template>
 

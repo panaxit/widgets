@@ -33,7 +33,7 @@
 	<xsl:key name="data-rows" match="data:rows/xo:r/@xo:id" use="ancestor::px:Entity[1]/@xo:id"/>
 	
 	<!--Layout-->
-	<xsl:key name="layout" match="px:Entity/*[local-name()='layout']/*/@Name|px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id" use="ancestor::px:Entity[1]/@xo:id"/>
+	<xsl:key name="layout" match="px:Entity/*[local-name()='layout']/*/@Name|px:Entity[not(*[local-name()='layout']/*)]/px:Record/px:*/@Name|px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id" use="ancestor::px:Entity[1]/@xo:id"/>
 	<xsl:key name="wizard:section" match="px:Entity/*[local-name()='layout']/*/@Name|px:Entity[1]/*[local-name()='layout']/*[not(@Name)]/@xo:id" use="concat(count(../preceding-sibling::*|..),'::',ancestor::px:Entity[1]/@xo:id)"/>
 	<!--<xsl:key name="wizard:section" match="px:Entity/*[local-name()='layout']//*/@Name|px:Entity[1]/*[local-name()='layout']//*[not(@Name)]/@xo:id" use="concat(count(ancestor::*[local-name(parent::*)='layout'][1]/preceding-sibling::*|.),'::',ancestor::px:Entity[1]/@xo:id)"/>-->
 
@@ -58,8 +58,8 @@
 	<xsl:key name="field-ref" match="xo:r/px:Association/px:Entity/@xo:id" use="concat(../../../@xo:id,'::meta:',../../@AssociationName)"/>
 	
 	<!--Schema-->
-	<xsl:key name="schema" match="px:Record/px:Field/@Name" use="concat(ancestor::px:Entity[1]/@xo:id,'::',.)"/>
-	<xsl:key name="schema" match="px:Record/px:Association/@AssociationName" use="concat(ancestor::px:Entity[1]/@xo:id,'::meta:',.)"/>
+	<xsl:key name="schema" match="px:Record/px:*/@Name" use="concat(ancestor::px:Entity[1]/@xo:id,'::',.)"/>
+	<xsl:key name="schema" match="px:Record/px:Association/@Name" use="concat(ancestor::px:Entity[1]/@xo:id,'::meta:',.)"/>
 
 	<!--widgets-->
 	<xsl:key name="widget" match="*[@control:type]/@*" use="concat(substring-before(../@control:type,':'),':',ancestor::px:Entity[1]/@xo:id)"/>

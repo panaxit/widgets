@@ -36,7 +36,11 @@
 
 	<xsl:key name="datagrid:row-header-element" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='add']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
 	<xsl:key name="datagrid:row-header-element" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='delete']/@Method" use="ancestor::px:Entity[1]/@xo:id"/>
-	
+
+	<!--<xsl:key name="datagrid:filters-enabled" match="dummy/@*" use="concat(/px:Entity[1]/@xo:id,'::',../@Name)"/>-->
+	<xsl:key name="datagrid:filters-disabled" match="px:Association//px:Record/px:*/@*" use="concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)"/>
+	<xsl:key name="datagrid:sort-disabled" match="px:Association//px:Record/px:*/@*" use="concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)"/>
+
 	<xsl:key name="hidden" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='edit']" use="@xo:id"/>
 
 	<xsl:template mode="datagrid:row-header" match="@*">
