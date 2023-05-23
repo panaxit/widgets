@@ -395,8 +395,13 @@
 			</xsl:apply-templates>
 		</div>
 	</xsl:template>
+	<xsl:key name="datagrid:editable" match="xo:r[@state:edit='true']" use="@xo:id"/>
+	<xsl:key name="datagrid:editable" match="xo:r[@state:checked='true'][ancestor::px:Association[1]/@DataType='junctionTable']" use="@xo:id"/>
+	<xsl:template mode="widget" match="key('entity','datagrid:widget')/data:rows/xo:r[not(key('datagrid:editable',@xo:id))]/@*">
+		<xsl:apply-templates select="."/>
+	</xsl:template>
 
-	<xsl:template mode="widget" match="key('entity','datagrid:widget')/data:rows/xo:r/@*">
+	<xsl:template mode="widget" match="px:Association[@DataType='junctionTable']/px:Entity/data:rows/xo:r[@state:checked='true']/@meta:*">
 		<xsl:apply-templates select="."/>
 	</xsl:template>
 

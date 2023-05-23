@@ -86,7 +86,7 @@
 	<xsl:key name="widget" match="px:Record/px:Field[@mode='readonly']/@Name" use="concat('readonly:',ancestor::px:Entity[1]/@xo:id,'::',.)"/>
 	<xsl:key name="widget" match="px:Record/px:Association[@mode='readonly']/@AssociationName" use="concat('readonly:',ancestor::px:Entity[1]/@xo:id,'::meta:',.)"/>
 
-	<xsl:key name="widget" match="px:Record/px:Association[@Type='belongsTo']/@AssociationName" use="concat('combobox:',ancestor::px:Entity[1]/@xo:id,'::meta:',.)"/>
+	<xsl:key name="widget" match="px:Record/px:Association[@Type='belongsTo'][not(@controlType)]/@AssociationName" use="concat('combobox:',ancestor::px:Entity[1]/@xo:id,'::meta:',.)"/>
 
 	<xsl:key name="widget" match="container:fieldSet/@Name" use="concat('fieldset:',ancestor::px:Entity[1]/@xo:id,'::',.)"/>
 

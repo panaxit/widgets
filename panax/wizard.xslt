@@ -268,7 +268,7 @@
 					<xsl:with-param name="dataset" select="$dataset"/>
 				</xsl:apply-templates>
 			</div>
-			<div class="wizard-buttons-wrapper row" style="display: block;">
+			<div class="wizard-buttons-wrapper row" style="display: block; padding: 1rem 0 3rem 0;">
 				<div class="col-md-12">
 					<xsl:choose>
 						<xsl:when test="//*[key('wizard:section',concat(number($step)-1,'::',ancestor::px:Entity[1]/@xo:id))]">

@@ -101,7 +101,7 @@
 			<xsl:apply-templates mode="combobox:attributes" select="."/>
 			<xsl:choose>
 				<xsl:when test="$dataset[local-name()='nil' and namespace-uri()='http://www.w3.org/2001/XMLSchema-instance'] or not($dataset|$selection[not($dataset)])">
-					<option value="">Sin opciones</option>
+					<option value="" xo-scope="none">Sin opciones</option>
 				</xsl:when>
 				<xsl:when test="$dataset">
 					<xsl:apply-templates mode="combobox:previous-options" select=".">
@@ -127,7 +127,7 @@
 	</xsl:template>
 
 	<xsl:template mode="combobox:previous-options" match="@*">
-		<option value="">
+		<option value="" xo-scope="none">
 			Selecciona...
 		</option>
 	</xsl:template>
