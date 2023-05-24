@@ -63,7 +63,7 @@
 		<xsl:variable name="steps" select="key('wizard:steps', 'counter')[key('wizard:section',concat(position(),'::',current()/ancestor::px:Entity[1]/@xo:id))]"/>
 		<div id="wizard" class="wizard" style="display: block;">
 			<xsl:apply-templates mode="wizard:styles" select="."/>
-			<div class="wizard-progress-buttons-wrapper row" style="display: block;">
+			<div class="wizard-progress-buttons-wrapper row" style="display: block; top: 0; top: 70px; position: fixed; background: white; z-index: 199;">
 				<hr style="border-width: 4px; border-color: silver;"/>
 				<div class="col-md-12">
 					<xsl:apply-templates mode="wizard:nav" select=".">
