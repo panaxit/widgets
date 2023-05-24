@@ -62,10 +62,26 @@
 		<xsl:variable name="current" select="current()"/>
 		<xsl:variable name="steps" select="key('wizard:steps', 'counter')[key('wizard:section',concat(position(),'::',current()/ancestor::px:Entity[1]/@xo:id))]"/>
 		<div id="wizard" class="wizard" style="display: block;">
+			<script defer="defer">
+				<![CDATA[/*
+var container = document.querySelector('#wizard').closest('main,body');
+container.addEventListener('scroll', function() {
+  let scrollThreshold = getComputedStyle(document.documentElement).getPropertyValue('--z-index-freeze-header') || 86;
+  let stickyElement = document.querySelector('.wizard-progress-buttons-wrapper');
+  if (container.scrollTop >= scrollThreshold) {
+    stickyElement.style.position = 'absolute';
+    stickyElement.style.top = scrollThreshold + 'px';
+  } else {
+    stickyElement.style.position = 'sticky';
+    stickyElement.style.top = '0';
+  }
+});*/
+]]>
+			</script>
 			<xsl:apply-templates mode="wizard:styles" select="."/>
-			<div class="wizard-progress-buttons-wrapper row" style="display: block; top: 0; top: 70px; position: fixed; background: white; z-index: 199;">
+			<div class="wizard-progress-buttons-wrapper" style="top: 0; top: 0px; position: sticky; background: white; z-index: 199;">
 				<hr style="border-width: 4px; border-color: silver;"/>
-				<div class="col-md-12">
+				<div>
 					<xsl:apply-templates mode="wizard:nav" select=".">
 						<xsl:with-param name="steps" select="$steps"/>
 						<xsl:with-param name="active" select="$active"/>
@@ -74,7 +90,7 @@
 				</div>
 				<hr style="border-width: 4px; border-color: silver;"/>
 			</div>
-			<div class="wizard-steps-wrapper row" style="position: relative; width: 100%; min-height: 500px; height: 500px;">
+			<div class="wizard-steps-wrapper" style="position: relative; width: 100%; min-height: 500px; height: 500px;">
 				<xsl:apply-templates mode="wizard:step-panel" select="$steps[position()=$active]">
 					<xsl:with-param name="active" select="$active"/>
 					<xsl:with-param name="step" select="$active"/>
@@ -230,8 +246,9 @@
 	</xsl:template>
 
 	<xsl:template match="@*" mode="wizard:step-panel-content" priority="-1">
-		<p>No hay nada que hacer aún en este paso. <xsl:value-of select="name(..)"/>: <xsl:value-of select="."/>
-	</p>
+		<p>
+			No hay nada que hacer aún en este paso. <xsl:value-of select="name(..)"/>: <xsl:value-of select="."/>
+		</p>
 	</xsl:template>
 
 	<xsl:template match="@*" mode="wizard:step-panel" priority="-1">
@@ -253,7 +270,7 @@
 				</xsl:when>
 			</xsl:choose>
 			<div class="row wizard-step-title">
-				<div class="col-md-12">
+				<div>
 					<h2 class="wizard-step-title-text">
 						<xsl:apply-templates mode="wizard:step-panel-legend" select="$items[1]">
 							<xsl:with-param name="step" select="$step"/>
@@ -268,8 +285,8 @@
 					<xsl:with-param name="dataset" select="$dataset"/>
 				</xsl:apply-templates>
 			</div>
-			<div class="wizard-buttons-wrapper row" style="display: block; padding: 1rem 0 3rem 0;">
-				<div class="col-md-12">
+			<div class="wizard-buttons-wrapper" style="display: block; padding: 1rem 0 3rem 0;">
+				<div>
 					<xsl:choose>
 						<xsl:when test="//*[key('wizard:section',concat(number($step)-1,'::',ancestor::px:Entity[1]/@xo:id))]">
 							<xsl:apply-templates select="." mode="wizard:buttons-back">
@@ -302,7 +319,7 @@
 	<xsl:template mode="wizard:step-panel-content" match="@*">
 		<xsl:param name="step" select="0"/>
 		<xsl:param name="items" select="nodes-expected"/>
-		<div class="wizard-steps-wrapper row" style="position: relative; width: 100%; min-height: 500px;">
+		<div class="wizard-steps-wrapper" style="position: relative; width: 100%; min-height: 500px;">
 			<xsl:apply-templates mode="form:widget" select="ancestor::px:Entity[1]/@xo:id">
 				<xsl:with-param name="layout" select="$items[parent::field:ref or parent::association:ref]|$items/ancestor-or-self::*[1]/container:panel/*/@Name|$items/ancestor-or-self::*[1]/container:panel/*[not(@Name)]/@xo:id"/>
 			</xsl:apply-templates>
