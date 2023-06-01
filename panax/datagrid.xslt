@@ -29,8 +29,8 @@
 	<xsl:template match="@*" mode="datagrid:attributes"/>
 
 	<xsl:template mode="datagrid:widget" match="@*">
-		<xsl:param name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
 		<xsl:param name="layout" select="key('layout',ancestor::px:Entity[1]/@xo:id)"/>
+		<xsl:variable name="dataset" select="key('dataset',ancestor::px:Entity[1]/@xo:id)"/>
 		<div class="">
 			<xsl:apply-templates mode="datagrid:attributes" select="."/>
 			<style>
@@ -231,9 +231,12 @@
 					<xsl:text>color: gray;</xsl:text>
 				</xsl:attribute>
 			</xsl:if>
+			<xsl:apply-templates mode="datagrid:header-filters-attributes"/>
 			<path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z"/>
 		</svg>
 	</xsl:template>
+	
+	<xsl:template mode="datagrid:header-filters-attributes" match="@*"/>
 
 	<xsl:template mode="datagrid:header-sorter" match="@*">
 	</xsl:template>
@@ -483,6 +486,7 @@
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
 		<xsl:comment>No records</xsl:comment>
+	
 	</xsl:template>
 
 	<xsl:template match="@xsi:nil">No hay registros</xsl:template>
@@ -506,6 +510,8 @@
 			</td>
 		</tr>
 	</xsl:template>
+
+	<xsl:template mode="datagrid:row" match="*[key('state:hidden',@xo:id)]/@*" priority="1"></xsl:template>
 
 	<xsl:template mode="datagrid:row-header" match="@*">
 		<xsl:param name="dataset" select="../@*"/>
@@ -562,7 +568,7 @@
 	<xsl:template mode="datagrid:cell-content" match="@*">
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="dataset" select="."/>
-		<xsl:variable name="ref_field" select="$dataset[parent::xo:r][name()=current()[parent::field:ref]]|$dataset[parent::xo:f][.=current()[parent::field:ref]]|$dataset[name()=concat('meta:',current()[parent::association:ref])]|$dataset/../px:Association[@AssociationName=current()]/@AssociationName"/>
+		<xsl:variable name="ref_field" select="$dataset[parent::xo:r][name()=current()[parent::field:ref]]|$dataset[parent::xo:f][.=current()[parent::field:ref]]|$dataset[name()=concat('meta:',current()[parent::association:ref])]|$dataset/../px:Association[@AssociationName=current()]/@AssociationName|$dataset[current()=ancestor::px:Association[1]/@Name and ancestor::px:Entity[2]=current()/ancestor::px:Entity[1]]/../@meta:text"/>
 		<span>
 			<xsl:choose>
 				<xsl:when test="$context='header'">

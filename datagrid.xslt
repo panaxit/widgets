@@ -18,7 +18,8 @@
   xmlns:widget="http://panax.io/widget"
   xmlns:route="http://panax.io/routes"
   xmlns:container="http://panax.io/layout/container"
-  exclude-result-prefixes="xo state xsl datagrid container data height width data temp meta custom"
+  xmlns:association="http://panax.io/datatypes/association"
+  exclude-result-prefixes="xo state xsl datagrid container association data height width data temp meta custom"
 >
 	<xsl:import href="keys.xslt"/>
 	<xsl:import href="headers.xslt"/>
@@ -40,9 +41,13 @@
 	<!--<xsl:key name="datagrid:filters-enabled" match="dummy/@*" use="concat(/px:Entity[1]/@xo:id,'::',../@Name)"/>-->
 	<xsl:key name="datagrid:filters-disabled" match="px:Association//px:Record/px:*/@*" use="concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)"/>
 	<xsl:key name="datagrid:sort-disabled" match="px:Association//px:Record/px:*/@*" use="concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)"/>
+		<xsl:key name="datagrid:filters-enabled" match="px:Association[@DataType='junctionTable']/px:Entity/px:Record/px:Association/@*" use="concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)"/>
+	<xsl:key name="datagrid:sort-enabled" match="px:Association[@DataType='junctionTable']/px:Entity/px:Record/px:Association/@*" use="concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)"/>
+
 
 	<xsl:key name="hidden" match="px:Association[@DataType='junctionTable']/px:Entity/px:Routes/px:Route[@Method='edit']" use="@xo:id"/>
-
+	<xsl:key name="hidden" match="px:Association[@DataType='junctionTable']/px:Entity/px:Record/px:Association/px:Entity/px:Routes/px:Route[@Method='delete']" use="@xo:id"/>
+	
 	<xsl:template mode="datagrid:row-header" match="@*">
 		<!--<th scope="row">
 			<xsl:value-of select="../@meta:position"/>

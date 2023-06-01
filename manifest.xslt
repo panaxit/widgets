@@ -192,7 +192,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<xsl:template mode="widget" match="px:Entity[@control:type='combobox:control']/px:Routes/px:Route/@*">
+	<xsl:template mode="widget" match="px:Entity[not(ancestor::px:Association[@DataType='junctionTable'])][@control:type='combobox:control']/px:Routes/px:Route/@*">
 		<xsl:param name="dataset" select="node-expected"/>
 		<li>
 			<a class="dropdown-item" href="javascript:void(0)" xo-scope="{$dataset/ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name($dataset)}">
@@ -402,6 +402,10 @@
 	</xsl:template>
 
 	<xsl:template mode="widget" match="px:Association[@DataType='junctionTable']/px:Entity/data:rows/xo:r[@state:checked='true']/@meta:*">
+		<xsl:apply-templates select="."/>
+	</xsl:template>
+
+	<xsl:template mode="widget" match="px:Association[@DataType='junctionTable']/px:Entity/px:Record/px:Association/px:Entity/data:rows/xo:r/@*">
 		<xsl:apply-templates select="."/>
 	</xsl:template>
 

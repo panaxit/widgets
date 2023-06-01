@@ -11,11 +11,14 @@
   xmlns:container="http://panax.io/layout/container"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:control="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:association="http://panax.io/datatypes/association"
   exclude-result-prefixes="px form datagrid wizard combobox control data"
 >
 	<xsl:key name="hidden" match="node-expected" use="@xo:id"/>
+	<xsl:key name="state:hidden" match="node-expected" use="@xo:id"/>
 
 	<xsl:key name="changed" match="xo:r[@state:dirty='1']" use="@xo:id"/>
+	<xsl:key name="state:changed" match="xo:r[@state:dirty='1']" use="@xo:id"/>
 	
 	<xsl:key name="entity" match="px:Entity" use="@xo:id"/>
 	<xsl:key name="entity" match="px:Entity" use="concat(@Schema,'/',@Name)"/>
@@ -45,6 +48,7 @@
 	<xsl:key name="dataset" match="px:Association/px:Entity/data:rows/xo:r/@meta:text" use="concat(ancestor::px:Entity[2]/@xo:id,'::meta:',ancestor::px:Association[1]/@AssociationName)"/>
 
 	<xsl:key name="dataset" match="xo:r/@xo:id" use="."/>
+	<xsl:key name="dataset" match="px:Association[@DataType='junctionTable']/px:Entity/px:Record/px:Association[@Name=../../*[local-name()='layout']/association:ref/@Name]/px:Entity/data:rows/xo:r/@xo:id" use="ancestor::px:Entity[2]/@xo:id"/>
 	<xsl:key name="dataset" match="px:Entity[not(data:rows)]/@xo:id" use="ancestor::px:Entity[1]/@xo:id"/>
 	<xsl:key name="dataset" match="data:rows[not(@xsi:nil) and not(xo:r)]/@xo:id" use="ancestor::px:Entity[1]/@xo:id"/>
 	<xsl:key name="dataset" match="data:rows/@xsi:nil" use="ancestor::px:Entity[1]/@xo:id"/>
