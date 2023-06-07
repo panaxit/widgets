@@ -481,7 +481,7 @@
 		</tr>
 	</xsl:template>
 
-	<xsl:template mode="datagrid:row" match="data:rows[@xsi:type='mock']/@xsi:nil|data:rows[../data:rows/*]/@xsi:nil">
+	<xsl:template mode="datagrid:row" match="data:rows[@xsi:type='mock']/@xsi:nil|data:rows[../data:rows/*]/@xsi:nil|data:rows[ancestor::px:Association[1][@DataType='junctionTable']]/@xsi:nil">
 		<xsl:param name="context">body</xsl:param>
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:param name="layout" select="ancestor-or-self::*[1]/@xo:id"/>
@@ -491,7 +491,7 @@
 
 	<xsl:template match="@xsi:nil">No hay registros</xsl:template>
 
-	<xsl:template match="data:rows[../data:rows/*]/@xsi:nil"></xsl:template>
+	<xsl:template match="data:rows[ancestor::px:Association[1][@DataType='junctionTable']]/@xsi:nil"></xsl:template>
 
 	<xsl:template mode="datagrid:row" match="xo:r[not(ancestor::px:Association[1][@DataType='junctionTable'])][@state:delete]/@xo:id">
 		<xsl:param name="context">body</xsl:param>

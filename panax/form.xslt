@@ -94,7 +94,7 @@
 				<xsl:otherwise>12</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<div class="mb-3 row">
+		<div class="mb-3 row" style="max-width: 992px;">
 			<xsl:if test="$headerText!=''">
 				<label class="col-sm-2 col-form-label">
 					<xsl:value-of select="$headerText"/>

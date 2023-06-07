@@ -61,7 +61,7 @@
 
 		<xsl:variable name="current" select="current()"/>
 		<xsl:variable name="steps" select="key('wizard:steps', 'counter')[key('wizard:section',concat(position(),'::',current()/ancestor::px:Entity[1]/@xo:id))]"/>
-		<div id="wizard" class="wizard" style="display: block;">
+		<div id="wizard" class="wizard" style="display: block; min-width: fit-contents">
 			<script defer="defer">
 				<![CDATA[/*
 var container = document.querySelector('#wizard').closest('main,body');
