@@ -90,7 +90,7 @@ container.addEventListener('scroll', function() {
 				</div>
 				<hr style="border-width: 4px; border-color: silver;"/>
 			</div>
-			<div class="wizard-steps-wrapper" style="position: relative; width: 100%; min-height: 500px; height: 500px;">
+			<div class="wizard-steps-wrapper" style="position: relative; width: 100%; min-height: 500px; height: max-content;">
 				<xsl:apply-templates mode="wizard:step-panel" select="$steps[position()=$active]">
 					<xsl:with-param name="active" select="$active"/>
 					<xsl:with-param name="step" select="$active"/>
