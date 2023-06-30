@@ -101,13 +101,13 @@
 	</xsl:template>
 
 	<xsl:template match="Routine/@*" mode="modal:footer">
-		<xsl:for-each select="ancestor-or-self::*[1]">
 			<button type="button" class="btn btn_outline_information__data" data-dismiss="modal">
 				<xsl:attribute name="onclick">
 					<xsl:apply-templates mode="modal:buttons-close-attributes-onclick" select="."/>
 				</xsl:attribute>
 				Cancelar
 			</button>
+		<xsl:for-each select="ancestor-or-self::*[1]">
 			<button type="button" class="btn btn_information__data">
 				<xsl:choose>
 					<xsl:when test="not(key('invalid',generate-id())[not(key('optional',generate-id()))])">

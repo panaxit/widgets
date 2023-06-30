@@ -111,7 +111,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 					</div>
 				</div>
 			</header>
-			<nav class="navbar navbar-expand-md" xo-store="active" xo-stylesheet="page_navbar.xslt"/>
+			<nav class="navbar navbar-expand-md" xo-store="seed" xo-stylesheet="page_navbar.xslt"/>
 			<main>
 				<xsl:apply-templates mode="shell:body" select="."/>
 			</main>
