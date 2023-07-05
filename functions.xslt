@@ -90,4 +90,16 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+	<xsl:template name="distinct">
+		<xsl:param name="set" select="set-expected"/>
+		<xsl:variable name="current-item" select="$set[1]"/>
+		<xsl:variable name="new-set" select="$set[string(.)!=string($current-item)]"/>
+		<xsl:value-of select="concat($current-item,', ')"/>
+		<xsl:if test="count($new-set)">
+			<xsl:call-template name="distinct">
+				<xsl:with-param name="set" select="$new-set"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
 </xsl:stylesheet>
