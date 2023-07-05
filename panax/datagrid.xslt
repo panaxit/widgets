@@ -50,7 +50,12 @@
 					height: 25px;
 					vertical-align: middle;
 					opacity: .5;
-				}]]>
+				}
+				
+				thead .field-container  {
+					text-align: center
+				}
+				]]>
 			</style>
 			<xo-listener attribute="xsi:nil"/>
 			<table class="table table-striped table-hover table-sm datagrid">
@@ -184,7 +189,7 @@
 		<xsl:variable name="next-level" select="$row-content/*"/>
 		<tr class="freeze">
 			<xsl:apply-templates mode="datagrid:row-header" select="."/>
-			<xsl:apply-templates mode="datagrid:header" select="$row-content/@Name|$row-content[not(@Name)]/@xo:id">
+			<xsl:apply-templates mode="datagrid:header" select="$row-content[* or not($next-level)]/@Name|$row-content[* or not($next-level)][not(@Name)]/@xo:id|$row-content[$next-level and not(*)]/@Id">
 				<xsl:with-param name="context">header</xsl:with-param>
 				<xsl:with-param name="layout" select="$layout"/>
 			</xsl:apply-templates>
@@ -193,7 +198,7 @@
 		<xsl:if test="$next-level">
 			<xsl:apply-templates mode="datagrid:header" select="current()">
 				<xsl:with-param name="context">header</xsl:with-param>
-				<xsl:with-param name="layout" select="$next-level/@Name|$next-level[not(@Name)]/@xo:id"/>
+				<xsl:with-param name="layout" select="$next-level/@Name|$next-level[not(@Name)]/@xo:id|$row-content[not(*)]/@Name|$row-content[not(@Name)][not(*)]/@xo:id"/>
 			</xsl:apply-templates>
 		</xsl:if>
 	</xsl:template>
@@ -301,6 +306,10 @@
 			</label>
 			<xsl:apply-templates mode="datagrid:header-actions" select="$schema"/>
 		</th>
+	</xsl:template>
+
+	<xsl:template mode="datagrid:header" match="@Id" priority="1">
+		<th></th>
 	</xsl:template>
 
 	<!--<xsl:template mode="datagrid:header" match="container:subGroupTabPanel/@*|container:tab/@*">

@@ -25,7 +25,7 @@ exclude-result-prefixes="#default session sitemap shell state"
 	<xsl:template mode="sitemap:widget" match="@*">
 		<aside class="sidebar">
 			<script>
-				<![CDATA[xo.listener.on('click', function(){ 
+				<![CDATA[xo.listener.on('click', function(event){ 
 			    if (!event.srcElement.closest('aside,.menu_toggle')) {
 			        toggleSidebar(false);
 				}

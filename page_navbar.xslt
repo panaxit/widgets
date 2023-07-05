@@ -40,6 +40,8 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 		</nav>
 	</xsl:template>
 
+	<xsl:template mode="widget" match="text()" priority="-1"></xsl:template>
+
 	<xsl:template mode="widget" match="px:Entity">
 		<xsl:apply-templates mode="widget" select="data:rows"/>
 	</xsl:template>

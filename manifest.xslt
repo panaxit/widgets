@@ -43,9 +43,11 @@
 	<xsl:import href="panax/modal.xslt"/>
 	<xsl:import href="panax/tabPanel.xslt"/>
 	<xsl:import href="panax/groupTabPanel.xslt"/>
+	<xsl:import href="panax/picture.xslt"/>
 	<xsl:import href="panax/cardview.xslt"/>
+	<xsl:import href="panax/file.xslt"/>
 	<xsl:import href="panax/dropzone.xslt"/>
-	<xsl:import href="panax/wizard.xslt"/>
+	<xsl:import href="panax/fileExplorer.xslt"/>
 	<xsl:import href="panax/calendar.xslt"/>
 	<xsl:import href="panax/percentage.xslt"/>
 	<xsl:import href="panax/combobox.xslt"/>
