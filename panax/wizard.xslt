@@ -124,7 +124,7 @@ container.addEventListener('scroll', function() {
 	<xsl:template match="@*" mode="wizard:step" priority="-1">
 		<xsl:param name="active">1</xsl:param>
 		<xsl:param name="step" select="position()"/>
-		<li data-position="{$step}" class="inactive" style="padding: 0px 43px;" xo-attribute="state:active" onclick="scope.set('{$step}')">
+		<li data-position="{$step}" class="inactive" style="padding: 0px 43px;" xo-attribute="state:active" onclick="this.closest('main').scrollTo(0,0); scope.set('{$step}')">
 			<xsl:variable name="completed" select="not(key('wizard:section',concat(number($step),'::',ancestor::px:Entity[1]/@xo:id))[not(key('optional',concat(ancestor::px:Entity[1]/@xo:id,'::',.))) and key('invalid',concat(ancestor::px:Entity[1]/@xo:id,'::',.))])"/>
 			<xsl:choose>
 				<xsl:when test="$active=$step">
