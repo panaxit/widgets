@@ -5,6 +5,7 @@
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:custom="http://panax.io/custom"
   xmlns:data="http://panax.io/source"
+  xmlns:filter="http://panax.io/state/filter"
   xmlns:meta="http://panax.io/metadata"
   xmlns:combobox="http://panax.io/widget/combobox"
   xmlns:comboboxButton="http://panax.io/widget/combobox-button"
@@ -116,7 +117,7 @@
 					</xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:attribute name="style">cursor:wait</xsl:attribute>
+					<!--<xsl:attribute name="style">cursor:wait</xsl:attribute>-->
 					<xsl:apply-templates mode="combobox:option" select="$selection"/>
 				</xsl:otherwise>
 			</xsl:choose>
@@ -126,8 +127,276 @@
 		</xsl:apply-templates>
 	</xsl:template>
 
+	<xsl:template mode="combobox:widget" match="@*">
+		<xsl:param name="dataset" select="key('dataset', concat(ancestor::px:Entity[1]/@xo:id,'::',name()))"/>
+		<xsl:param name="selection" select="."/>
+		<xsl:param name="target" select="."/>
+		<xsl:param name="class"></xsl:param>
+		<xsl:variable name="schema" select="key('schema',concat(ancestor::px:Entity[1]/@xo:id,'::',name($selection)))/../px:Mappings/px:Mapping/@Referencee"/>
+		<xsl:variable name="current" select="."/>
+		<style>
+			<![CDATA[
+			.dropdown > button.form-control {
+				height: calc(3.5rem + 2px);
+			}
+			
+			.dropdown > button.form-control::after {
+				left: 1.25rem;
+				border-width: 0 1px 1px 0 !important;
+				scale: 1.5;
+				margin: auto;
+				position: relative;
+			}
+			
+			.form-floating>.form-control~label {
+				opacity: .65;
+				transform: scale(.85) translateY(-.5rem) translateX(.15rem);
+			}
+			
+			.dropdown > .dropdown-menu {
+				padding: 0;
+			}
+			
+			option.disabled {
+				opacity: .65;
+			}
+			]]>
+		</style>
+		<div class="dropdown form-input form-control" style="
+    min-width: 19ch;
+    display: flex;
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    padding: 0;
+    height: calc(3.5rem + 3px);
+    border: none !important;
+">
+			<xsl:attribute name="onmouseover">scope.dispatch('downloadCatalog')</xsl:attribute>
+			<button class="btn btn-lg dropdown-toggle form-control" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="display:flex; padding: 0; background: transparent; padding-right: 2.5rem;" tabindex="-1" onfocus="this.querySelector('input').focus()">
+				<div class="form-group form-floating input-group" style="min-width: calc(19ch + 6rem);border: none;">
+					<input type="text" name="" class="form-control" autocomplete="off" aria-autocomplete="none" maxlength="" size="" value="{current()}" style="border: 0 solid transparent !important; background: transparent;" xo-attribute="filter:{local-name()}" onfocus="this.select()">
+						<xsl:attribute name="onfocus">parentNode.scope.dispatch('downloadCatalog')</xsl:attribute>
+					</input>
+				</div>
+			</button>
+			<ul id="datalist_{../@xo:id}_{local-name()}" class="dropdown-menu" style="width:100%" aria-labelledby="dropdownMenuLink" data-bs-popper="none">
+				<select class="form-select" xo-scope="{../@xo:id}" xo-attribute="{name()}" size="10" tabindex="-1">
+					<xsl:attribute name="style">
+						<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
+					</xsl:attribute>
+					<xsl:apply-templates mode="combobox:attributes" select="."/>
+					<xsl:choose>
+						<xsl:when test="$dataset[local-name()='nil' and namespace-uri()='http://www.w3.org/2001/XMLSchema-instance'] or not($dataset|$selection[not($dataset)])">
+							<option value="" xo-scope="none">Sin opciones</option>
+						</xsl:when>
+						<xsl:when test="$dataset">
+							<xsl:apply-templates mode="combobox:previous-options" select=".">
+								<xsl:sort select="../@meta:text"/>
+								<xsl:with-param name="selection" select="$selection"/>
+								<xsl:with-param name="schema" select="$schema"/>
+							</xsl:apply-templates>
+							<xsl:apply-templates mode="combobox:option" select="$dataset">
+								<xsl:sort select="../@meta:text"/>
+								<xsl:with-param name="selection" select="$selection"/>
+								<xsl:with-param name="schema" select="$schema"/>
+							</xsl:apply-templates>
+						</xsl:when>
+						<xsl:otherwise>
+							<!--<xsl:attribute name="style">cursor:wait</xsl:attribute>-->
+							<xsl:apply-templates mode="combobox:option" select="$selection"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</select>
+				<!--<div class="FilterDropdown-menu">
+					<div class="FilterDropdown-menuItemsContainer FilterDropdown-menuItemsContainer- -block">
+						<div>
+							<div class="FilterOptionsCollapsible-header">
+								Seleccionar todo<svg class="MuiSvgIcon-root SamsaraIcon" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation" style="font-size: 1.8rem;">
+									<path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path>
+								</svg>
+							</div>
+							<div class="FilterOptionRow">
+								<div class="FilterOptionRow-container">
+									<label class="Checkbox">
+										<input type="checkbox"/>
+										<span class="Checkbox-box"></span>
+									</label>
+									<div class="FilterOptionRow-label">
+										<span data-isolate="true" isolate="">Leer</span>
+									</div>
+								</div>
+							</div>
+							<div class="FilterOptionRow">
+								<div class="FilterOptionRow-container">
+									<label class="Checkbox">
+										<input type="checkbox"/>
+										<span class="Checkbox-box"></span>
+									</label>
+									<div class="FilterOptionRow-label">
+										<span data-isolate="true" isolate="">Escribir</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div>
+							<div class="FilterOptionsCollapsible-header">
+								Asignaciones<svg class="MuiSvgIcon-root SamsaraIcon" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation" style="font-size: 1.8rem;">
+									<path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path>
+								</svg>
+							</div>
+							<div class="FilterOptionRow">
+								<div class="FilterOptionRow-container">
+									<label class="Checkbox">
+										<input type="checkbox" checked=""/>
+										<span class="Checkbox-box"></span>
+									</label>
+									<div class="FilterOptionRow-label">
+										<span data-isolate="true" isolate="">Leer asignaciones</span>
+									</div>
+								</div>
+							</div>
+							<div class="FilterOptionRow">
+								<div class="FilterOptionRow-container">
+									<label class="Checkbox">
+										<input type="checkbox" checked=""/>
+										<span class="Checkbox-box"></span>
+									</label>
+									<div class="FilterOptionRow-label">
+										<span data-isolate="true" isolate="">Escribir asignaciones</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div>
+							<div class="FilterOptionsCollapsible-header">
+								Asignaciones propuestas por el transportista<svg class="MuiSvgIcon-root SamsaraIcon" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation" style="font-size: 1.8rem;">
+									<path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path>
+								</svg>
+							</div>
+							<div class="FilterOptionRow">
+								<div class="FilterOptionRow-container">
+									<label class="Checkbox">
+										<input type="checkbox" checked=""/>
+										<span class="Checkbox-box"></span>
+									</label>
+									<div class="FilterOptionRow-label">
+										<span data-isolate="true" isolate="">Leer asignaciones propuestas por el operador</span>
+									</div>
+								</div>
+							</div>
+							<div class="FilterOptionRow">
+								<div class="FilterOptionRow-container">
+									<label class="Checkbox">
+										<input type="checkbox" checked=""/>
+										<span class="Checkbox-box"></span>
+									</label>
+									<div class="FilterOptionRow-label">
+										<span data-isolate="true" isolate="">Escribir asignaciones propuestas por el operador</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="FilterOptionSummary">
+						<span class="FilterOptionSummary-text">
+							<span data-notranslate="true">4</span>
+							<span>seleccionado</span>
+						</span>
+						<button class="FilterOptionSummary-clear" type="button">Borrar</button>
+					</div>
+				</div>-->
+			</ul>
+			<script>
+				<![CDATA[
+		function filterOptions() {
+			console.info('filtering...')
+			//console.assert(false)
+			let inputField = event.srcElement;
+			let optionsList = this//inputField.nextElementSibling.querySelector("ul");
+			//optionsList.style.width = inputField.parentNode.clientWidth+'px';
+			let options = optionsList.querySelectorAll("li,option");
+			for (let option of options) {
+				if (!inputField.value) {
+					option.style.display = "block";
+				} else if (option.classList.contains("disabled")) {
+					option.style.display = "none";
+				} else if (option.textContent.toLowerCase().includes(inputField.value.toLowerCase())) {
+					option.style.display = "block";
+				} else {
+					option.style.display = "none";
+				}
+			}
+		}
+		let dropdown = new bootstrap.Dropdown(context.querySelector('.dropdown-toggle'));
+        let optionsList = context.querySelector("#datalist_]]><xsl:value-of select="concat(../@xo:id,'_',local-name())"/><![CDATA[");
+		if (optionsList) {
+			let inputField = context.querySelector(".dropdown > button input[type=text]");//optionsList.parentNode.previousElementSibling;
+			//optionsList.style.width = inputField.parentNode.clientWidth+'px';
+			let options = optionsList.querySelectorAll("li,option");
+			inputField.addEventListener("keyup", function(event) {
+				if ((event.ctrlKey || event.altKey) || !['ArrowDown','ArrowUp','Tab','Escape'].includes(event.key)) return;
+				filtered_options = optionsList.querySelectorAll("li, option").toArray().filter(option => option.style.display!='none');
+
+				if (event.key=='Escape') {
+					optionsList.classList.remove('show');
+				} else {
+					optionsList.classList.add('show');
+				}
+				let active_item = filtered_options.toArray().filter(option=>option.disabled || option.classList.contains("disabled") || option.selected || option.classList.contains("active")).pop();
+				let active_item_index = filtered_options.toArray().findIndex(option => option === active_item);
+				if (event.key=='ArrowDown') {
+					++ active_item_index;
+					active_item_index = active_item_index >= filtered_options.length ? filtered_options.length - 1 : active_item_index;
+				} else if (event.key=='ArrowUp') {
+					-- active_item_index;
+					active_item_index = active_item_index < 0 ? 0 : active_item_index;
+				}
+				active_item = filtered_options[active_item_index];
+				[...options].forEach(op => op.classList.remove("active"));
+				active_item && active_item.classList.add("active");
+				if (active_item instanceof HTMLOptionElement) active_item.selected = true;
+				//if (event.key=='Tab') {
+				//	active_item && active_item.click();
+				//	/*active_item && active_item.closest('.autocomplete-box').scope.set(active_item.classList.contains//("disabled")? "" : active_item.textContent)*/
+				//	optionsList.classList.remove('show');
+				//}
+			});
+			
+			xo.listener.on('keydown', function(event){
+				if (!['Tab'].includes(event.key)) return;
+				let srcElement = event.srcElement;
+				let dropdown = srcElement.closest('.dropdown');
+				let scope = dropdown && dropdown.scope;
+				let optionsList = dropdown && dropdown.querySelector('.dropdown-menu.show');
+				if (!(optionsList && scope)) return;
+				let active_item = optionsList.querySelectorAll("li, option").toArray().filter(option=>!(option.disabled || option.classList.contains("disabled")) && (option.selected || option.classList.contains("active"))).pop();	
+				if (active_item) scope.set(active_item.value);
+			})
+		
+			inputField.addEventListener("input", (event) => {
+				dropdown.show();
+				filterOptions.apply(optionsList, []);
+			});
+
+			for (let option of options.toArray().filter(option => !(option instanceof HTMLOptionElement || option instanceof HTMLOptGroupElement))) {
+				option.addEventListener("click", () => {
+					let active_item = option;
+					active_item && active_item.closest('.autocomplete-box').scope.set(active_item.classList.contains("disabled") ? "" : active_item.textContent);
+					optionsList.classList.remove('show');
+				});
+			}
+		}
+			]]>
+			</script>
+		</div>
+		<xsl:apply-templates mode="combobox:following-siblings" select=".">
+			<xsl:with-param name="catalog" select="$dataset"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
 	<xsl:template mode="combobox:previous-options" match="@*">
-		<option value="" xo-scope="none">
+		<option value="" xo-scope="none" class="disabled">
 			Selecciona...
 		</option>
 	</xsl:template>

@@ -411,8 +411,13 @@ form.form-view fieldset form {
     border-color: var(--bg-primary-ps) !important;
 }*/
 
-.navbar {
-    background-color: var(--navbar-bg-color);
+header.navbar {
+    background-color: var(--header-bg-color);
+    position: unset; /*Se agrega para que no se encime en otros elementos con diferente z-index, como los men�s*/
+}
+
+.page-menu {
+    background-color: var(--page-menu-bg-color);
     position: unset; /*Se agrega para que no se encime en otros elementos con diferente z-index, como los men�s*/
 }
 
@@ -555,10 +560,6 @@ a.text-dark.sidebar-link:hover {
 
 .fas .fa-user-circle .rounded-circle .mr-3 {
     font-size: 4em;
-}
-
-.navbar .navbar-expand .navbar-light .bg-white {
-    padding: .6rem 1.25rem;
 }
 
 .navbar-collapse-img {

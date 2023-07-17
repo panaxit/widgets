@@ -124,7 +124,7 @@ container.addEventListener('scroll', function() {
 	<xsl:template match="@*" mode="wizard:step" priority="-1">
 		<xsl:param name="active">1</xsl:param>
 		<xsl:param name="step" select="position()"/>
-		<li data-position="{$step}" class="inactive" style="padding: 0px 43px;" xo-attribute="state:active" onclick="this.closest('main').scrollTo(0,0); scope.set('{$step}')">
+		<li data-position="{$step}" class="inactive" style="padding: 0px 43px;" xo-scope="inherit" xo-attribute="state:active" onclick="scope.set('{$step}')">
 			<xsl:variable name="completed" select="not(key('wizard:section',concat(number($step),'::',ancestor::px:Entity[1]/@xo:id))[not(key('optional',concat(ancestor::px:Entity[1]/@xo:id,'::',.))) and key('invalid',concat(ancestor::px:Entity[1]/@xo:id,'::',.))])"/>
 			<xsl:choose>
 				<xsl:when test="$active=$step">
@@ -255,8 +255,8 @@ container.addEventListener('scroll', function() {
 		<xsl:param name="step" select="position()"/>
 		<xsl:param name="items" select="key('wizard:section',concat($step,'::',ancestor::px:Entity[1]/@xo:id))"/>
 		<xsl:param name="dataset" select="set-expected"/>
-		<xsl:variable name="step-class">wizard-step</xsl:variable>
-		<div id="container_{@xo:id}" class="{$step-class}" data-position="{count(preceding-sibling::*|self::*)}" style="min-height: 400px; width: 100%; margin-left: 0px;" xo-scope="inherit">
+		<xsl:variable name="step-class">wizard-step step-<xsl:value-of select="$step"/></xsl:variable>
+		<div id="container_{@xo:id}" class="{$step-class}" step="{$step}" data-position="{count(preceding-sibling::*|self::*)}" style="min-height: 400px; width: 100%; margin-left: 0px;" xo-scope="inherit">
 			<xsl:choose>
 				<xsl:when test="$step=1">
 					<xsl:attribute name="class">
