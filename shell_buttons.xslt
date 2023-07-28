@@ -40,7 +40,7 @@ exclude-result-prefixes="#default xsl px xo xsi route"
 		<xsl:if test="../descendant-or-self::xo:r[key('changed',@xo:id)]">
 			<li class="ms-3">
 				<a class="text-muted" href="#" onclick="px.submit(scope)">
-					<button class="btn btn-success">Guardar</button>
+					<button type="button" class="btn btn-success">Guardar</button>
 				</a>
 			</li>
 		</xsl:if>
