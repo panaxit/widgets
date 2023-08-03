@@ -25,9 +25,6 @@ exclude-result-prefixes="#default xsl px xo xsi route"
 
 	<xsl:template match="/">
 		<ul id="shell_buttons" class="nav col-md-4 justify-content-end list-unstyled d-flex">
-			<xo-listener attribute="initial:*"/>
-			<xo-listener attribute="prev:*"/>
-			<xo-listener attribute="state:delete"/>
 			<xsl:apply-templates select="px:Entity/@xo:id" mode="shell:buttons"/>
 		</ul>
 	</xsl:template>

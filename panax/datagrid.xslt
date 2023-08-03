@@ -57,7 +57,6 @@
 				}
 				]]>
 			</style>
-			<xo-listener attribute="xsi:nil"/>
 			<table class="table table-striped table-hover table-sm datagrid">
 				<xsl:apply-templates mode="datagrid:header-colgroup" select="current()">
 					<xsl:with-param name="layout" select="$layout"/>

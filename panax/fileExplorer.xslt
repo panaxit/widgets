@@ -49,7 +49,6 @@ exclude-result-prefixes="#default xo session sitemap widget state source js xsi"
 		<xsl:param name="dataset" select="nodeset-expected"/>
 		<xsl:param name="layout" select="nodeset-expected"/>
 		<div class="flow-container file-explorer">
-			<xo-listener attribute="state:active-item"/>
 			<div class="row">
 				<div class="col-md-12">
 					<style>
