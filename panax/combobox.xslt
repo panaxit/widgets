@@ -155,6 +155,11 @@
 			
 			.dropdown > .dropdown-menu {
 				padding: 0;
+				width: 100%;
+				position: absolute;
+				inset: 0px auto auto 0px;
+				margin: 0px;
+				transform: translate(0px, 60px);
 			}
 			
 			option.disabled {

@@ -34,13 +34,13 @@
 		<xsl:variable name="text" select="key('display-text',concat(parent::xo:r[1]/@xo:id,'::',name()))"/>
 		<xsl:choose>
 			<xsl:when test="$text">
-				<xsl:value-of select="$text"/>
+				<xsl:value-of select="$text" disable-output-escaping="yes"/>
 			</xsl:when>
 			<xsl:when test="substring(.,1,1)!='0' and number(.)=. and string-length(.)&lt;=9">
 				<xsl:value-of select="number(.)"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="."/>
+				<xsl:value-of select="." disable-output-escaping="yes"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
