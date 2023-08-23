@@ -162,6 +162,10 @@
 				transform: translate(0px, 60px);
 			}
 			
+			option.hidden {
+				display: none;
+			}
+			
 			option.disabled {
 				opacity: .65;
 			}
@@ -182,17 +186,17 @@
     border: none !important;
 ">
 			<xsl:attribute name="onmouseover">scope.dispatch('downloadCatalog')</xsl:attribute>
-			<button class="btn btn-lg dropdown-toggle form-control" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="display:flex; padding: 0; background: transparent; padding-right: 2.5rem;" tabindex="-1" onfocus="this.querySelector('input').focus()">
+			<button class="btn btn-lg dropdown-toggle form-control xo-skip-compare" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="display:flex; padding: 0; background: transparent; padding-right: 2.5rem;" tabindex="-1" onfocus="this.querySelector('input').focus()">
 				<div class="form-group form-floating input-group" style="min-width: calc(19ch + 6rem);border: none;">
-					<input type="text" name="" class="form-control" autocomplete="off" aria-autocomplete="none" maxlength="" size="" value="{current()}" old-value="{current()}" style="border: 0 solid transparent !important; background: transparent;" xo-attribute="filter:{local-name()}">
+					<input type="text" name="" class="form-control" autocomplete="off" aria-autocomplete="none" maxlength="" size="" value="{current()}" old-value="{current()}" style="border: 0 solid transparent !important; background: transparent;" xo-scope="none">
 						<xsl:attribute name="onkeyup">xo.components.combobox.keyup(event)</xsl:attribute>
 						<xsl:attribute name="oninput">xo.components.combobox.filter(event)</xsl:attribute>
 						<xsl:attribute name="onfocus">this.select(); parentNode.scope.dispatch('downloadCatalog')</xsl:attribute>
 					</input>
 				</div>
 			</button>
-			<ul class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuLink" xo-swap="inner">
-				<select class="form-select" xo-scope="{../@xo:id}" xo-attribute="{name()}" size="10" tabindex="-1">
+			<ul class="dropdown-menu xo-skip-compare" style="width: 100%;" aria-labelledby="dropdownMenuLink">
+				<select class="form-select xo-stop-compare xo-skip-compare" xo-scope="{../@xo:id}" xo-attribute="{name()}" size="10" tabindex="-1" onchange="xo.components.combobox.change()">
 					<xsl:attribute name="style">
 						<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
 					</xsl:attribute>
@@ -237,13 +241,13 @@
 			let options = optionsList.querySelectorAll("li,option");
 			for (let option of options) {
 				if (!inputField.value) {
-					option.style.display = "block";
+					option.classList.remove("hidden");
 				} else if (option.classList.contains("disabled")) {
-					option.style.display = "none";
+					option.classList.add("hidden");
 				} else if (option.textContent.toLowerCase().includes(inputField.value.toLowerCase())) {
-					option.style.display = "block";
+					option.classList.remove("hidden");
 				} else {
-					option.style.display = "none";
+					option.classList.add("hidden");
 				}
 			}
 			optionsList.classList.add("filtered");
@@ -252,6 +256,13 @@
 		xo.listener.on('show::.dropdown-toggle', function(){
 			
 		})
+
+		xo.components.combobox.change = function() {
+			let srcElement = event.srcElement;
+			let dropdown = srcElement.closest('.dropdown');
+			let toggler = dropdown.querySelector("[data-bs-toggle]");
+			toggler && new bootstrap.Dropdown(toggler).hide();
+		}
 		
 		xo.components.combobox.keyup = function(event) {
 			if ((event.ctrlKey || event.altKey) || !['ArrowDown','ArrowUp','Tab','Escape'].includes(event.key)) return;
@@ -260,7 +271,7 @@
 			let optionsList = self.optionsList || wrapper.querySelector('.dropdown-menu');
 			self.optionsList = optionsList;
 
-			filtered_options = optionsList.querySelectorAll("li, option").toArray().filter(option => option.style.display!='none');
+			filtered_options = optionsList.querySelectorAll("li, option").toArray().filter(option => !(option.style.display=='none' || option.matches('.hidden')));
 
 			if (event.key=='Escape') {
 				optionsList.classList.remove('show');

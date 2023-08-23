@@ -249,6 +249,14 @@ li.sidebar-item.menu > a {
 .working svg, .working i, svg.working, i.working {
     animation: fa-spin 2s linear infinite;
 }
+
+.xo-working {
+    animation: blink 1s linear infinite;
+}
+
+.xo-working svg, .xo-working i, svg.xo-working, i.xo-working {
+    animation: fa-spin 2s linear infinite;
+}
 /*
 .wrapper > header h1 {
     margin-left: var(--sitemap-width);
