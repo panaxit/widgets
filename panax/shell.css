@@ -185,7 +185,7 @@ table.datagrid tbody table.datagrid thead {
 }
 
 .sidebar, .sidebar-content, .sidebar-link, a.sidebar-link {
-    background-color: var(--bg-primary-dark, #2A3F54) !important;
+    background-color: var(--bg-sidebar, var(--bg-primary-dark, #2A3F54)) !important;
 }
 
 .sidebar a.sidebar-link {

@@ -159,7 +159,8 @@
 				position: absolute;
 				inset: 0px auto auto 0px;
 				margin: 0px;
-				transform: translate(0px, 60px);
+				/*transform: translate(0px, 60px);*/
+				top: 57px !important;
 			}
 			
 			option.hidden {
@@ -186,7 +187,7 @@
     border: none !important;
 ">
 			<xsl:attribute name="onmouseover">scope.dispatch('downloadCatalog')</xsl:attribute>
-			<button class="btn btn-lg dropdown-toggle form-control xo-skip-compare" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="display:flex; padding: 0; background: transparent; padding-right: 2.5rem;" tabindex="-1" onfocus="this.querySelector('input').focus()">
+			<button class="btn btn-lg dropdown-toggle form-control xo-skip-compare" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="display:flex; padding: 0; background: transparent; padding-right: 2.5rem; position: absolute; top: 0;" tabindex="-1" onfocus="this.querySelector('input').focus()">
 				<div class="form-group form-floating input-group" style="min-width: calc(19ch + 6rem);border: none;">
 					<input type="text" name="" class="form-control" autocomplete="off" aria-autocomplete="none" maxlength="" size="" value="{current()}" old-value="{current()}" style="border: 0 solid transparent !important; background: transparent;" xo-scope="none">
 						<xsl:attribute name="onkeyup">xo.components.combobox.keyup(event)</xsl:attribute>
