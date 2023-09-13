@@ -94,7 +94,7 @@
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="schema" select="key('schema',concat(ancestor::px:Entity[1]/@xo:id,'::',name($selection)))/../px:Mappings/px:Mapping/@Referencee"/>
 		<xsl:variable name="current" select="."/>
-		<select class="form-select" xo-scope="{../@xo:id}" xo-attribute="{name()}">
+		<select class="form-select" xo-scope="{../@xo:id}" xo-slot="{name()}">
 			<xsl:attribute name="style">
 				<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
 			</xsl:attribute>
@@ -197,7 +197,7 @@
 				</div>
 			</button>
 			<ul class="dropdown-menu xo-skip-compare" style="width: 100%;" aria-labelledby="dropdownMenuLink">
-				<select class="form-select xo-stop-compare xo-skip-compare" xo-scope="{../@xo:id}" xo-attribute="{name()}" size="10" tabindex="-1" onchange="xo.components.combobox.change()">
+				<select class="form-select xo-stop-compare xo-skip-compare" xo-scope="{../@xo:id}" xo-slot="{name()}" size="10" tabindex="-1" onchange="xo.components.combobox.change()">
 					<xsl:attribute name="style">
 						<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
 					</xsl:attribute>

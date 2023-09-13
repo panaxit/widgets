@@ -51,7 +51,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		<li class="nav-item">
-			<a class="nav-link {$active}" href="#" xo-scope="{../../@xo:id}" xo-attribute="state:active" onclick="scope.set('{../@xo:id}')">
+			<a class="nav-link {$active}" href="#" xo-scope="{../../@xo:id}" xo-slot="state:active" onclick="scope.set('{../@xo:id}')">
 				<xsl:apply-templates mode="headerText" select="."/>
 			</a>
 		</li>

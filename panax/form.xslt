@@ -205,7 +205,7 @@
 
 	<xsl:template mode="form:field-body" match="container:modal/@*|container:tabPanel/@*|container:tab[not(parent::container:tabPanel)]/@*">
 		<xsl:param name="dataset" select="../@xo:id"/>
-		<div class="" xo-scope="{../@xo:id}" xo-attribute="state:active">
+		<div class="" xo-scope="{../@xo:id}" xo-slot="state:active">
 			<xsl:apply-templates mode="widget" select=".">
 				<xsl:with-param name="dataset" select="$dataset"/>
 			</xsl:apply-templates>

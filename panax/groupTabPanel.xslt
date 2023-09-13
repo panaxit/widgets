@@ -100,7 +100,7 @@
 				<xsl:when test="key('active', ../@xo:id)">active</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		<li class="nav-item" style="margin-bottom: 10px;" xo-scope="{../../@xo:id}" xo-attribute="state:active_child" onclick="scope.set('{../@xo:id}')">
+		<li class="nav-item" style="margin-bottom: 10px;" xo-scope="{../../@xo:id}" xo-slot="state:active_child" onclick="scope.set('{../@xo:id}')">
 			<a class="nav-link {$active}" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">
 				<xsl:apply-templates mode="headerText" select="."/>
 			</a>

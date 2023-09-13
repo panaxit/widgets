@@ -83,7 +83,7 @@
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
 		<xsl:variable name="schema" select="key('reference',concat(ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::header::field:ref::',name()))/.."/>
-		<input type="text" name="{name()}" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name()}" onfocus="this.value=(scope &amp;&amp; scope.value || this.value)" autocomplete="off" aria-autocomplete="none">
+		<input type="text" name="{name()}" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-slot="{name()}" onfocus="this.value=(scope &amp;&amp; scope.value || this.value)" autocomplete="off" aria-autocomplete="none">
 			<xsl:attribute name="maxlength">
 				<xsl:value-of select="$schema/@DataLength"/>
 			</xsl:attribute>
@@ -129,7 +129,7 @@
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="dataset" select="node-expected"/>
 		<xsl:variable name="current" select="."/>
-		<textarea class="form-control" id="{$schema/@xo:id}" rows="3" placeholder="" required="" xo-scope="{$current/../@xo:id}" xo-attribute="{name()}">
+		<textarea class="form-control" id="{$schema/@xo:id}" rows="3" placeholder="" required="" xo-scope="{$current/../@xo:id}" xo-slot="{name()}">
 			<xsl:attribute name="style">
 				<xsl:apply-templates mode="style" select="key('styles',concat(../@xo:id,'::',local-name()))"/>
 			</xsl:attribute>
@@ -140,13 +140,13 @@
 
 	<xsl:template mode="widget" match="@*[key('widget',concat('yesNo:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))]">
 		<div class="btn-group" role="group" style="position:relative;">
-			<button type="button" class="btn btn-outline-success" xo-scope="{../@xo:id}" xo-attribute="{name()}" onclick="scope.toggle('1')">
+			<button type="button" class="btn btn-outline-success" xo-scope="{../@xo:id}" xo-slot="{name()}" onclick="scope.toggle('1')">
 				<xsl:if test=".='1'">
 					<xsl:attribute name="class">btn btn-success</xsl:attribute>
 				</xsl:if>
 				<xsl:text>Sí</xsl:text>
 			</button>
-			<button type="button" class="btn btn-outline-danger" xo-scope="{../@xo:id}" xo-attribute="{name()}" onclick="scope.toggle(0)">
+			<button type="button" class="btn btn-outline-danger" xo-scope="{../@xo:id}" xo-slot="{name()}" onclick="scope.toggle(0)">
 				<xsl:if test=".='0'">
 					<xsl:attribute name="class">btn btn-danger</xsl:attribute>
 				</xsl:if>
@@ -167,7 +167,7 @@
 				<xsl:if test="$current = @value">checked</xsl:if>
 			</xsl:variable>
 			<div class="form-check form-check-inline" xo-scope="{$current/../@xo:id}">
-				<input class="form-check-input" type="radio" value="{@value}" id="{../@xo:id}_{position()}" xo-attribute="{name($current)}">
+				<input class="form-check-input" type="radio" value="{@value}" id="{../@xo:id}_{position()}" xo-slot="{name($current)}">
 					<xsl:for-each select="$schema/px:Mappings/px:Mapping">
 						<xsl:attribute name="onclick">
 							<xsl:text/>scope.parentNode.set('<xsl:value-of select="@Referencer"/>','<xsl:value-of select="$option/@*[name()=current()/@Referencee]"/>');<xsl:text/>
@@ -198,7 +198,7 @@
 	<xsl:template mode="widget" match="px:Entity[not(ancestor::px:Association[@DataType='junctionTable'])][@control:type='combobox:control']/px:Routes/px:Route/@*">
 		<xsl:param name="dataset" select="node-expected"/>
 		<li>
-			<a class="dropdown-item" href="javascript:void(0)" xo-scope="{$dataset/ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name($dataset)}">
+			<a class="dropdown-item" href="javascript:void(0)" xo-scope="{$dataset/ancestor-or-self::*[1]/@xo:id}" xo-slot="{name($dataset)}">
 				<xsl:apply-templates mode="widget-attributes" select="."/>
 				<xsl:apply-templates select=".">
 					<xsl:with-param name="dataset" select="$dataset"/>
@@ -481,7 +481,7 @@
 	<xsl:template mode="widget" match="container:modal/@*">
 		<xsl:param name="schema" select="node-expected"/>
 		<xsl:param name="dataset" select="node-expected"/>
-		<a class="text-muted" href="#" xo-scope="{../@xo:id}" xo-attribute="state:active" onclick="scope.toggle('true',null)">
+		<a class="text-muted" href="#" xo-scope="{../@xo:id}" xo-slot="state:active" onclick="scope.toggle('true',null)">
 			<button class="btn btn-secondary">
 				<xsl:apply-templates mode="headerText" select="."/>
 			</button>
@@ -523,7 +523,7 @@
 				<xsl:when test="key('active', ../@xo:id)">active</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		<li class="nav-item" style="margin-bottom: 10px;" xo-scope="{../../@xo:id}" xo-attribute="state:active" onclick="scope.set('{../@xo:id}')">
+		<li class="nav-item" style="margin-bottom: 10px;" xo-scope="{../../@xo:id}" xo-slot="state:active" onclick="scope.set('{../@xo:id}')">
 			<a class="nav-link {$active}" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">
 				<xsl:apply-templates mode="headerText" select="."/>
 			</a>

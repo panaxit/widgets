@@ -72,13 +72,13 @@
 		<xsl:param name="target" select="."/>
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
-		<input type="text" class="form-control dropdown-toggle" xo-scope="{../@xo:id}" xo-attribute="search:{local-name()}" autocomplete="off" onblur="this.value='{.}'; /*nextElementSibling.querySelector('ul').style.display='none';*/" onfocus="px.loadData(scope.parentNode.$(`ancestor-or-self::px:Entity[1]/px:Record/px:Association[@AssociationName='{local-name()}']/px:Entity`)); nextElementSibling.querySelector('ul').classList.toggle('show'); this.value=(this.scope.value || this.value); this.scope.value &amp;&amp; filterOptions(); this.select()" oninput="filterOptions()" style="position: relative" value="{.}">
+		<input type="text" class="form-control dropdown-toggle" xo-scope="{../@xo:id}" xo-slot="search:{local-name()}" autocomplete="off" onblur="this.value='{.}'; /*nextElementSibling.querySelector('ul').style.display='none';*/" onfocus="px.loadData(scope.parentNode.$(`ancestor-or-self::px:Entity[1]/px:Record/px:Association[@AssociationName='{local-name()}']/px:Entity`)); nextElementSibling.querySelector('ul').classList.toggle('show'); this.value=(this.scope.value || this.value); this.scope.value &amp;&amp; filterOptions(); this.select()" oninput="filterOptions()" style="position: relative" value="{.}">
 			<xsl:attribute name="style">
 				<xsl:text/>min-width:<xsl:value-of select="concat(string-length($selection)+1,'ch')"/>;<xsl:text/>
 			</xsl:attribute>
 			<xsl:apply-templates mode="autocompleteBox:attributes" select="."/>
 		</input>
-		<span class="autocomplete-box" xo-scope="{../@xo:id}" xo-attribute="{name()}" onclick="this.querySelector('ul').classList.toggle('show')">
+		<span class="autocomplete-box" xo-scope="{../@xo:id}" xo-slot="{name()}" onclick="this.querySelector('ul').classList.toggle('show')">
 			<xsl:attribute name="onmouseover">px.loadData(scope.$(`ancestor::px:Entity[1]/px:Record/px:Association[@AssociationName="${scope.localName}"]/px:Entity`))</xsl:attribute>
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
 				<path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>

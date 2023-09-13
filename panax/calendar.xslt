@@ -69,7 +69,7 @@ exclude-result-prefixes="#default xsl state data"
 	</xsl:template>
 
 	<xsl:template match="@*" mode="calendar:header-buttons-back">
-		<button class="btn btn_information_data btn-xs mx-1" type="button" xo-scope="{../@xo:id}" xo-attribute="state:current_month">
+		<button class="btn btn_information_data btn-xs mx-1" type="button" xo-scope="{../@xo:id}" xo-slot="state:current_month">
 			<xsl:attribute name="onclick">
 				<xsl:apply-templates mode="calendar:header-buttons-back-onclick" select="."/>
 			</xsl:attribute>
@@ -88,7 +88,7 @@ exclude-result-prefixes="#default xsl state data"
 	</xsl:template>
 
 	<xsl:template match="@*" mode="calendar:header-buttons-next">
-		<button class="btn btn_information_data btn-xs mx-1" type="button" xo-scope="{../@xo:id}" xo-attribute="state:current_month">
+		<button class="btn btn_information_data btn-xs mx-1" type="button" xo-scope="{../@xo:id}" xo-slot="state:current_month">
 			<xsl:attribute name="onclick">
 				<xsl:apply-templates mode="calendar:header-buttons-next-onclick" select="."/>
 			</xsl:attribute>

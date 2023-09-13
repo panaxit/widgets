@@ -56,7 +56,7 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 		</style>
 		<form action="javascript:void(0);">
 			<xsl:apply-templates mode="widget" select="px:Parameter"/>
-			<button type="submit" class="btn btn-success" onclick="px.applyFilters(scope)" xo-scope="{parent::px:Entity/data:rows/@xo:id}" xo-attribute="command">
+			<button type="submit" class="btn btn-success" onclick="px.applyFilters(scope)" xo-scope="{parent::px:Entity/data:rows/@xo:id}" xo-slot="command">
 				<xsl:text>Filtrar</xsl:text>
 			</button>
 		</form>
@@ -85,7 +85,7 @@ exclude-result-prefixes="#default xsl px xsi xo data site widget"
 	</xsl:template>
 
 	<xsl:template mode="widget" match="px:Parameter/@parameterName">
-		<input type="text" class="form-control" placeholder="" aria-label="" xo-scope="{../@xo:id}" xo-attribute="value" value="{../@value}" list="options_{../@xo:id}"/>
+		<input type="text" class="form-control" placeholder="" aria-label="" xo-scope="{../@xo:id}" xo-slot="value" value="{../@value}" list="options_{../@xo:id}"/>
 		<xsl:variable name="catalog" select="key('parameter-options',.)"/>
 		<datalist id="options_{../@xo:id}">
 			<xsl:apply-templates mode="widget:options" select="$catalog"/>

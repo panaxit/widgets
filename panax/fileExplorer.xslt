@@ -322,8 +322,8 @@ exclude-result-prefixes="#default xo session sitemap widget state source js xsi"
 	</xsl:template>
 
 	<xsl:template mode="fileExplorer:body-item-thumbnail" match="@*">
-		<a href="FilesRepository/{.}" target="_blank" xo-scope="x_r_e8bac8a7_db47_4f6c_851d_7fb10e839de8" xo-attribute="Archivo" xo:id="a_9e1e875a_9803_4697_afa1_61ba582e8c8e">
-			<img id="" src="FilesRepository/{.}" style="height:100px;" xo-scope="x_r_e8bac8a7_db47_4f6c_851d_7fb10e839de8" xo-attribute="Archivo" xo:id="img_7821a493_f8c7_496f_be62_179cb22725e8"/>
+		<a href="FilesRepository/{.}" target="_blank" xo-scope="x_r_e8bac8a7_db47_4f6c_851d_7fb10e839de8" xo-slot="Archivo" xo:id="a_9e1e875a_9803_4697_afa1_61ba582e8c8e">
+			<img id="" src="FilesRepository/{.}" style="height:100px;" xo-scope="x_r_e8bac8a7_db47_4f6c_851d_7fb10e839de8" xo-slot="Archivo" xo:id="img_7821a493_f8c7_496f_be62_179cb22725e8"/>
 		</a>
 		<xsl:apply-templates mode="fileExplorer:body-item-thumbnail-badge" select="current()"/>
 	</xsl:template>

@@ -43,7 +43,7 @@
 		<xsl:param name="class"></xsl:param>
 		<xsl:variable name="current" select="."/>
 		<xsl:variable name="schema" select=".."/>
-		<input type="text" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-attribute="{name()}" onfocus="this.value=(scope.value || this.value)" autocomplete="off" pattern="yyyy-mm-dd">
+		<input type="text" class="form-control {$class}" id="{$schema/@xo:id}" placeholder="" required="" xo-scope="{ancestor-or-self::*[1]/@xo:id}" xo-slot="{name()}" onfocus="this.value=(scope.value || this.value)" autocomplete="off" pattern="yyyy-mm-dd">
 			<xsl:attribute name="maxlength">
 				<xsl:value-of select="$schema/@DataLength"/>
 			</xsl:attribute>

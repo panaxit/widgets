@@ -229,7 +229,7 @@
 	<xsl:key name="datagrid:filters-enabled" match="path-to-attribute/@*" use="concat('entity/@xo:id','::',../@Name)"/>
 	<xsl:key name="datagrid:filters-disabled" match="path-to-attribute/@*" use="concat('entity/@xo:id','::',../@Name)"/>
 	<xsl:template mode="datagrid:header-filters" match="@*[key('datagrid:filters-enabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)) or not(key('datagrid:filters-disabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)))]">
-		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16" xo-scope="{../@xo:id}" xo-attribute="state:filter" onclick="scope.dispatch('filter')">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16" xo-scope="{../@xo:id}" xo-slot="state:filter" onclick="scope.dispatch('filter')">
 			<xsl:if test="not(parent::*[@state:filter])">
 				<xsl:attribute name="style">
 					<xsl:text>color: gray;</xsl:text>
@@ -248,7 +248,7 @@
 	<xsl:key name="datagrid:sort-enabled" match="path-to-attribute/@*" use="concat('entity/@xo:id','::',../@Name)"/>
 	<xsl:key name="datagrid:sort-disabled" match="path-to-attribute/@*" use="concat('entity/@xo:id','::',../@Name)"/>
 	<xsl:template mode="datagrid:header-sorter" match="@*[key('datagrid:sort-enabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)) or not(key('datagrid:sort-disabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)))]">
-		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down-alt" viewBox="0 0 16 16" xo-scope="{../@xo:id}" xo-attribute="sortDirection" onclick="scope.toggle('DESC','ASC')">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down-alt" viewBox="0 0 16 16" xo-scope="{../@xo:id}" xo-slot="sortDirection" onclick="scope.toggle('DESC','ASC')">
 			<xsl:if test="not(parent::*[@sortOrder])">
 				<xsl:attribute name="style">
 					<xsl:text>color: gray;</xsl:text>
@@ -262,7 +262,7 @@
 	</xsl:template>
 
 	<xsl:template mode="datagrid:header-sorter" match="*[@sortOrder][@sortDirection='DESC']/@*[key('datagrid:sort-enabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)) or not(key('datagrid:sort-disabled',concat(ancestor::px:Entity[1]/@xo:id,'::',../@Name)))]">
-		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down" viewBox="0 0 16 16" xo-scope="{../@xo:id}" xo-attribute="sortDirection" onclick="scope.set('ASC')">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down" viewBox="0 0 16 16" xo-scope="{../@xo:id}" xo-slot="sortDirection" onclick="scope.set('ASC')">
 			<path d="M3.5 2.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 11.293V2.5zm3.5 1a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zM7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z"/>
 		</svg>
 	</xsl:template>
@@ -319,7 +319,7 @@
 		<xsl:variable name="row-content" select="../*"/>
 		<xsl:variable name="row-elements" select="../*[not(@xo:id=$row-content/@xo:id)]"/>
 		<li class="nav-item">
-			<a class="nav-link active" href="#" xo-attribute="state:selected" onclick="scope.set('1')">
+			<a class="nav-link active" href="#" xo-slot="state:selected" onclick="scope.set('1')">
 				<xsl:apply-templates mode="headerText" select="."/>
 			</a>
 		</li>
@@ -339,7 +339,7 @@
 		<th colspan="{$colspan}">
 			<ul class="nav nav-tabs">
 				<li class="nav-item">
-					<a class="nav-link active" href="#" xo-attribute="state:selected" onclick="scope.set('1')">
+					<a class="nav-link active" href="#" xo-slot="state:selected" onclick="scope.set('1')">
 						<xsl:value-of select="."/>
 					</a>
 				</li>
@@ -365,7 +365,7 @@
 					<xsl:with-param name="layout" select="current()"/>
 				</xsl:apply-templates>
 				<li class="nav-item">
-					<a class="nav-link active" href="#" xo-attribute="state:selected" onclick="scope.set('1')">
+					<a class="nav-link active" href="#" xo-slot="state:selected" onclick="scope.set('1')">
 						<xsl:value-of select="."/>
 					</a>
 				</li>
@@ -507,7 +507,7 @@
 		<xsl:param name="layout" select="node-expected"/>
 		<tr xo-scope="{../@xo:id}" style="height:15px !important; background-color: #dc3545 !important;">
 			<td colspan="{count($layout)+3}" style="text-align:center;">
-				<div xo-attribute="state:delete">
+				<div xo-slot="state:delete">
 					<span class="badge-delete p-1 badge-danger-light" onclick="scope.remove()">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
 							<path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>

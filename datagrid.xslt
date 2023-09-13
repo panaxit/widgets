@@ -106,7 +106,7 @@
 			<xsl:attribute name="xo-scope">
 				<xsl:value-of select="../@xo:id"/>
 			</xsl:attribute>
-			<xsl:attribute name="xo-attribute">headerText</xsl:attribute>
+			<xsl:attribute name="xo-slot">headerText</xsl:attribute>
 			<xsl:apply-templates mode="headerText" select="."/>
 		</span>
 	</xsl:template>

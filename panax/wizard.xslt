@@ -124,7 +124,7 @@ container.addEventListener('scroll', function() {
 	<xsl:template match="@*" mode="wizard:step" priority="-1">
 		<xsl:param name="active">1</xsl:param>
 		<xsl:param name="step" select="position()"/>
-		<li data-position="{$step}" class="inactive" style="padding: 0px 43px;" xo-scope="inherit" xo-attribute="state:active" onclick="scope.set('{$step}')">
+		<li data-position="{$step}" class="inactive" style="padding: 0px 43px;" xo-scope="inherit" xo-slot="state:active" onclick="scope.set('{$step}')">
 			<xsl:variable name="completed" select="not(key('wizard:section',concat(number($step),'::',ancestor::px:Entity[1]/@xo:id))[not(key('optional',concat(ancestor::px:Entity[1]/@xo:id,'::',.))) and key('invalid',concat(ancestor::px:Entity[1]/@xo:id,'::',.))])"/>
 			<xsl:choose>
 				<xsl:when test="$active=$step">
@@ -175,7 +175,7 @@ container.addEventListener('scroll', function() {
 	<xsl:template match="@*" mode="wizard:buttons-back" name="wizard:buttons-back" priority="-1">
 		<xsl:param name="step" select="count(preceding-sibling::*|self::*)"/>
 		<xsl:if test="//*[key('wizard:section',concat(number($step)-1,'::',ancestor::px:Entity[1]/@xo:id))]">
-			<button class="btn btn-primary pull-left wizard-button-previous" xo-attribute="state:active">
+			<button class="btn btn-primary pull-left wizard-button-previous" xo-slot="state:active">
 				<xsl:attribute name="onclick">
 					<xsl:apply-templates mode="wizard:buttons-back-attributes-onclick" select=".">
 						<xsl:with-param name="step" select="$step"/>
@@ -216,7 +216,7 @@ container.addEventListener('scroll', function() {
 	<xsl:template match="@*" mode="wizard:buttons-next" name="wizard:buttons-next" priority="-1">
 		<xsl:param name="step" select="count(preceding-sibling::*|self::*)"/>
 		<xsl:param name="label">Siguiente</xsl:param>
-		<button class="btn btn-primary pull-right wizard-button-next" xo-attribute="state:active">
+		<button class="btn btn-primary pull-right wizard-button-next" xo-slot="state:active">
 			<xsl:attribute name="onclick">
 				<xsl:apply-templates mode="wizard:buttons-next-attributes-onclick" select=".">
 					<xsl:with-param name="step" select="$step"/>
@@ -232,7 +232,7 @@ container.addEventListener('scroll', function() {
 	<xsl:template match="@*" mode="wizard:buttons-finish" name="wizard:buttons-finish" priority="-1">
 		<xsl:param name="step" select="count(preceding-sibling::*|self::*)"/>
 		<xsl:param name="label">Siguiente</xsl:param>
-		<button class="btn btn-success pull-right wizard-button-finish" xo-attribute="state:active">
+		<button class="btn btn-success pull-right wizard-button-finish" xo-slot="state:active">
 			<xsl:attribute name="onclick">
 				<xsl:apply-templates mode="wizard:buttons-finish-attributes.onclick" select=".">
 					<xsl:with-param name="step" select="$step"/>

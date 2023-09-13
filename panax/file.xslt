@@ -108,7 +108,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 		<div class="card shadow col-2" style="width: 200px;text-align: center;">
 			<div class="card-body" style="padding: unset;">
 				<xsl:if test="not(self::xo:id)">
-					<xsl:attribute name="xo-attribute">
+					<xsl:attribute name="xo-slot">
 						<xsl:value-of select="name()"/>
 					</xsl:attribute>
 				</xsl:if>
@@ -118,7 +118,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 						<xsl:attribute name="multiple"/>
 					</xsl:if>
 					<xsl:if test="not(self::*)">
-						<xsl:attribute name="xo-attribute">
+						<xsl:attribute name="xo-slot">
 							<xsl:value-of select="name()"/>
 						</xsl:attribute>
 					</xsl:if>
@@ -220,7 +220,7 @@ exclude-result-prefixes="#default xo session sitemap login widget state source j
 				</xsl:choose>
 			</xsl:variable>
 			<div class="custom-file">
-				<input type="file" readonly="readonly" class="custom-file-input" id="{$data_field/@xo:id}" name="{$data_field/@xo:id}" onchange="xover.server.uploadFile(this, '{$data_field/@xo:id}', '{$parent_folder}');" xo-attribute="value">
+				<input type="file" readonly="readonly" class="custom-file-input" id="{$data_field/@xo:id}" name="{$data_field/@xo:id}" onchange="xover.server.uploadFile(this, '{$data_field/@xo:id}', '{$parent_folder}');" xo-slot="value">
 					<xsl:if test="$data_field/@value!=''">
 						-->
 		<!--<xsl:attribute name="type">text</xsl:attribute>-->

@@ -50,7 +50,7 @@
 		<xsl:attribute name="xo-scope">
 			<xsl:value-of select="../@xo:id"/>
 		</xsl:attribute>
-		<xsl:attribute name="xo-attribute">headerText</xsl:attribute>
+		<xsl:attribute name="xo-slot">headerText</xsl:attribute>
 		<xsl:choose>
 			<xsl:when test="$ref_field">
 				<xsl:apply-templates mode="form:field-header" select="$ref_field"/>

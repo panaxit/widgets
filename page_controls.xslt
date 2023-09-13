@@ -36,7 +36,7 @@ exclude-result-prefixes="#default xsl px xsi xo data site"
 					<xsl:variable name="pageSize" select="@meta:pageSize"/>
 					<xsl:variable name="totalRows" select="*/@meta:totalCount"/>
 					<xsl:if test="$totalRows &gt; $pageSize or $pageIndex &gt; 1">
-						<li class="page-item" xo-scope="{$scope/@xo:id}" xo-attribute="meta:pageIndex">
+						<li class="page-item" xo-scope="{$scope/@xo:id}" xo-slot="meta:pageIndex">
 							<xsl:if test="$pageIndex = 1">
 								<xsl:attribute name="class">page-item disabled</xsl:attribute>
 							</xsl:if>
@@ -45,7 +45,7 @@ exclude-result-prefixes="#default xsl px xsi xo data site"
 							</a>
 						</li>
 						<xsl:for-each select="(//*)[position() &lt;= ceiling($totalRows div $pageSize) and position()&lt;10]">
-							<li class="page-item" xo-scope="{$scope/@xo:id}" xo-attribute="meta:pageIndex">
+							<li class="page-item" xo-scope="{$scope/@xo:id}" xo-slot="meta:pageIndex">
 								<xsl:if test="$pageIndex = position()">
 									<xsl:attribute name="class">page-item active</xsl:attribute>
 								</xsl:if>
@@ -54,7 +54,7 @@ exclude-result-prefixes="#default xsl px xsi xo data site"
 								</a>
 							</li>
 						</xsl:for-each>
-						<li class="page-item" xo-scope="{$scope/@xo:id}" xo-attribute="meta:pageIndex">
+						<li class="page-item" xo-scope="{$scope/@xo:id}" xo-slot="meta:pageIndex">
 							<xsl:if test="$pageIndex + 1 &gt; ceiling($totalRows div $pageSize)">
 								<xsl:attribute name="class">page-item disabled</xsl:attribute>
 							</xsl:if>
