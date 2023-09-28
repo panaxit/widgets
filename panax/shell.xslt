@@ -36,7 +36,7 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 				}
 				
 				xover.listener.on('keyup', async function (event) {
-					if (event.keyCode == 27) {
+					if (event.keyCode == 27 && !document.querySelector('body.sitemap_collapsed')) {
 						toggleSidebar(false);
 						event.stopPropagation();
 					}
@@ -104,14 +104,14 @@ exclude-result-prefixes="#default x session sitemap shell state source"
 									</svg>
 								</a>
 
-								<span xo-store="#menu">
+								<span xo-source="#menu">
 								</span>
 							</li>
 						</ul>
 					</div>
 				</div>
 			</header>
-			<nav class="page-menu" xo-store="seed" xo-stylesheet="page_navbar.xslt"/>
+			<nav class="page-menu" xo-source="seed" xo-stylesheet="page_navbar.xslt"/>
 			<main>
 				<xsl:apply-templates mode="shell:body" select="."/>
 			</main>

@@ -80,7 +80,7 @@ container.addEventListener('scroll', function() {
 			</script>
 			<xsl:apply-templates mode="wizard:styles" select="."/>
 			<div class="wizard-progress-buttons-wrapper" style="top: 0; top: 0px; position: sticky; background: white; z-index: 199;">
-				<hr style="border-width: 4px; border-color: silver;"/>
+				<hr style="border-width: 4px; border-color: silver; margin: 0 0 1rem;"/>
 				<div>
 					<xsl:apply-templates mode="wizard:nav" select=".">
 						<xsl:with-param name="steps" select="$steps"/>
@@ -88,7 +88,7 @@ container.addEventListener('scroll', function() {
 						<xsl:with-param name="dataset" select="$dataset"/>
 					</xsl:apply-templates>
 				</div>
-				<hr style="border-width: 4px; border-color: silver;"/>
+				<hr style="border-width: 4px; border-color: silver;; margin: 1rem 0 0;"/>
 			</div>
 			<div class="wizard-steps-wrapper" style="position: relative; width: 100%; min-height: 500px; height: max-content;">
 				<xsl:apply-templates mode="wizard:step-panel" select="$steps[position()=$active]">

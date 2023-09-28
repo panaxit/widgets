@@ -140,13 +140,13 @@
 
 	<xsl:template mode="widget" match="@*[key('widget',concat('yesNo:',ancestor::*[key('entity',@xo:id)][1]/@xo:id,'::',name()))]">
 		<div class="btn-group" role="group" style="position:relative;">
-			<button type="button" class="btn btn-outline-success" xo-scope="{../@xo:id}" xo-slot="{name()}" onclick="scope.toggle('1')">
+			<button type="button" class="btn btn-outline-success" xo-scope="{../@xo:id}" xo-slot="{name()}" onclick="scope.toggle('1','')">
 				<xsl:if test=".='1'">
 					<xsl:attribute name="class">btn btn-success</xsl:attribute>
 				</xsl:if>
 				<xsl:text>Sí</xsl:text>
 			</button>
-			<button type="button" class="btn btn-outline-danger" xo-scope="{../@xo:id}" xo-slot="{name()}" onclick="scope.toggle(0)">
+			<button type="button" class="btn btn-outline-danger" xo-scope="{../@xo:id}" xo-slot="{name()}" onclick="scope.toggle(0,'')">
 				<xsl:if test=".='0'">
 					<xsl:attribute name="class">btn btn-danger</xsl:attribute>
 				</xsl:if>

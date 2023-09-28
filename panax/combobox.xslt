@@ -136,11 +136,11 @@
 		<xsl:variable name="current" select="."/>
 		<style>
 			<![CDATA[
-			.dropdown > button.form-control {
+			.dropdown.form-input > button.form-control {
 				height: calc(3.5rem + 2px);
 			}
 			
-			.dropdown > button.form-control::after {
+			.dropdown.form-input > button.form-control::after {
 				left: 1.25rem;
 				border-width: 0 1px 1px 0 !important;
 				scale: 1.5;
@@ -153,14 +153,14 @@
 				transform: scale(.85) translateY(-.5rem) translateX(.15rem);
 			}
 			
-			.dropdown > .dropdown-menu {
+			.dropdown.form-input > .dropdown-menu {
 				padding: 0;
 				width: 100%;
 				position: absolute;
 				inset: 0px auto auto 0px;
-				margin: 0px;
-				/*transform: translate(0px, 60px);*/
-				top: 57px !important;
+				margin: 0px;/*
+				transform: translate(0px, 0px);
+				top: 57px !important;*/
 			}
 			
 			option.hidden {
@@ -171,7 +171,7 @@
 				opacity: .65;
 			}
 			
-			.dropdown input[type=text]:focus {
+			.dropdown.form-input input[type=text]:focus {
 				color: silver !important
 			}
 			]]>
@@ -262,7 +262,12 @@
 			let srcElement = event.srcElement;
 			let dropdown = srcElement.closest('.dropdown');
 			let toggler = dropdown.querySelector("[data-bs-toggle]");
-			toggler && new bootstrap.Dropdown(toggler).hide();
+			try {
+				if (toggler) {
+					toggler = (bootstrap.Dropdown.getInstance(toggler) || new bootstrap.Dropdown(toggler))
+					toggler.hide();
+				}
+			} catch(e) {}
 		}
 		
 		xo.components.combobox.keyup = function(event) {
