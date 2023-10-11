@@ -283,8 +283,12 @@ xmlns:shell="http://xover.dev/shell"
 	</xsl:template>
 
 	<xsl:template mode="shell:footer" match="@*|*">
-		<footer>
+		<footer class="d-flex p-3">
+			<xsl:apply-templates mode="shell:footer-content" select="."/>
 		</footer>
+	</xsl:template>
+
+	<xsl:template mode="shell:footer-content" match="@*|*">
 	</xsl:template>
 
 	<xsl:template mode="shell:extra" match="@*|*">
